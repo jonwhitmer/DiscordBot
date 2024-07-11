@@ -1,0 +1,1318 @@
+./
+    blackjack_1170556246257057888_dealer_hand.png
+    blackjack_1170556246257057888_player_hand.png
+    blackjack_443232925769531392_dealer_hand.png
+    blackjack_443232925769531392_player_hand.png
+    blackjack_462165652719927318_dealer_hand.png
+    blackjack_462165652719927318_player_hand.png
+    blackjack_624678686980833312_dealer_hand.png
+    blackjack_624678686980833312_player_hand.png
+    main.py
+    nullbytes.py
+    project_summary.txt
+    requirements.txt
+    resetdata.py
+    summary.py
+    temp_0C.png
+    temp_0D.png
+    temp_0H.png
+    temp_0S.png
+    temp_2C.png
+    temp_2D.png
+    temp_2H.png
+    temp_2S.png
+    temp_3C.png
+    temp_3D.png
+    temp_3H.png
+    temp_3S.png
+    temp_4D.png
+    temp_4H.png
+    temp_4S.png
+    temp_5C.png
+    temp_5D.png
+    temp_5H.png
+    temp_5S.png
+    temp_6C.png
+    temp_6D.png
+    temp_6H.png
+    temp_6S.png
+    temp_7C.png
+    temp_7D.png
+    temp_7H.png
+    temp_7S.png
+    temp_8C.png
+    temp_8D.png
+    temp_8H.png
+    temp_8S.png
+    temp_9C.png
+    temp_9D.png
+    temp_9H.png
+    temp_9S.png
+    temp_AC.png
+    temp_aceDiamonds.png
+    temp_AH.png
+    temp_AS.png
+    temp_back.png
+    temp_JC.png
+    temp_JD.png
+    temp_JH.png
+    temp_JS.png
+    temp_KC.png
+    temp_KD.png
+    temp_KH.png
+    temp_KS.png
+    temp_QC.png
+    temp_QD.png
+    temp_QH.png
+    temp_QS.png
+    test.py
+    bot/
+        activity_tracker.py
+        commands.py
+        games.py
+        level_widget.py
+        shop.py
+        __init__.py
+        __pycache__/
+            abilities.cpython-311.pyc
+            activity_tracker.cpython-311.pyc
+            commands.cpython-311.pyc
+            games.cpython-311.pyc
+            level_widget.cpython-311.pyc
+            shop.cpython-311.pyc
+            __init__.cpython-311.pyc
+    data/
+        player_data.json
+    settings/
+        .env
+        game_settings.json
+        settings.json
+        settings.py
+        __pycache__/
+            settings.cpython-311.pyc
+    utils/
+        graphics.py
+        __init__.py
+        images/
+            level_bar.png
+            level_image.png
+            statistics_visualization.png
+            blackjackdump/
+                back.png
+            deckofcards/
+        __pycache__/
+            graphics.cpython-311.pyc
+            settings.cpython-311.pyc
+            __init__.cpython-311.pyc
+
+
+.\main.py
+import discord
+from discord.ext import commands
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path='settings/.env')
+TOKEN = os.getenv('TOKEN')
+
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user.name}')
+    await bot.load_extension('bot.activity_tracker')
+    await bot.load_extension('bot.commands')
+    await bot.load_extension('bot.games')
+    await bot.load_extension('bot.shop')
+
+bot.run(TOKEN)
+
+
+.\nullbytes.py
+import os
+
+def scan_file_for_null_bytes(file_path):
+    with open(file_path, 'rb') as file:
+        content = file.read()
+        if b'\x00' in content:
+            return True
+    return False
+
+def scan_directory_for_null_bytes(directory):
+    null_byte_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            if scan_file_for_null_bytes(file_path):
+                null_byte_files.append(file_path)
+    return null_byte_files
+
+if __name__ == "__main__":
+    directory_to_scan = '.'  # Current directory
+    null_byte_files = scan_directory_for_null_bytes(directory_to_scan)
+    
+    if null_byte_files:
+        print("Files containing null bytes:")
+        for file in null_byte_files:
+            print(file)
+    else:
+        print("No files containing null bytes found.")
+
+
+.\resetdata.py
+import json
+
+def wipe_activity_data():
+    with open('data/player_data.json', 'w') as f:
+        json.dump({}, f, indent=4)
+
+
+wipe_activity_data()
+
+.\summary.py
+import os
+
+def generate_directory_tree(directory, exceptions):
+    tree = []
+    for root, dirs, files in os.walk(directory):
+        relative_root = os.path.relpath(root, directory)
+        # Check if the current root is in the exceptions list
+        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions):
+            continue
+        level = root.replace(directory, '').count(os.sep)
+        indent = ' ' * 4 * (level)
+        tree.append(f"{indent}{os.path.basename(root)}/")
+        subindent = ' ' * 4 * (level + 1)
+        for file in files:
+            file_relative_path = os.path.join(relative_root, file)
+            # Check if the file is in the exceptions list
+            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions):
+                tree.append(f"{subindent}{file}")
+    return tree
+
+def generate_summary(directory, exceptions, include_extensions):
+    summary = []
+    for root, dirs, files in os.walk(directory):
+        relative_root = os.path.relpath(root, directory)
+        # Check if the current root is in the exceptions list
+        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions):
+            continue
+        for file in files:
+            file_relative_path = os.path.join(relative_root, file)
+            # Check if the file is in the exceptions list and has an allowed extension
+            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions):
+                if any(file.endswith(ext) for ext in include_extensions):
+                    file_path = os.path.join(root, file)
+                    summary.append(file_path)
+    return summary
+
+def read_and_prepend_file(file_path):
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+        content = file.read()
+    return f"{file_path}\n{content}"
+
+if __name__ == "__main__":
+    exceptions = [
+        os.path.normpath('extensions/gulp'),
+        os.path.normpath('assets/instance/database.db'),
+        os.path.normpath('assets/migrations')
+    ]  # Add more directories to this list if needed
+    include_extensions = [
+        '.html', '.css', '.scss', '.py', '.java', '.cpp', '.js', '.ts', '.jsx', '.tsx'
+    ]  # Add more file extensions to this list if needed
+    with open('project_summary.txt', 'w', encoding='utf-8') as f:
+        # Write directory tree
+        directory_tree = generate_directory_tree('.', exceptions)
+        for line in directory_tree:
+            f.write(line + '\n')
+
+        f.write('\n\n')  # Separate the directory tree from the file contents
+
+        # Write file contents
+        summary = generate_summary('.', exceptions, include_extensions)
+        for file_path in summary:
+            file_content = read_and_prepend_file(file_path)
+            f.write(file_content + '\n\n')
+
+
+.\test.py
+INITIAL_LEVEL_POINTS_NEEDED = 1000  # Starting with a higher initial value
+INITIAL_LEVEL = 1
+
+def calculate_level_points(POINTS_NEEDED, CURRENT_LEVEL, growth_factor):
+    if CURRENT_LEVEL == 1:
+        return INITIAL_LEVEL_POINTS_NEEDED
+    else:
+        return round(POINTS_NEEDED * growth_factor)
+
+# Calculate total points needed to reach a certain level
+def total_points_to_reach_level(target_level, growth_factor):
+    total_points = 0
+    points_needed = INITIAL_LEVEL_POINTS_NEEDED
+    for level in range(2, target_level + 1):
+        points_needed = calculate_level_points(points_needed, level, growth_factor)
+        total_points += points_needed
+    return total_points
+
+# Adjust growth factor to fit the goal
+def find_optimal_growth_factor(target_levels, target_points):
+    growth_factor = 1.01
+    while True:
+        match = True
+        for target_level, target_point in zip(target_levels, target_points):
+            total_points = total_points_to_reach_level(target_level, growth_factor)
+            if abs(total_points - target_point) > target_point * 0.01:  # Allow 1% tolerance
+                match = False
+                break
+        if match:
+            break
+        growth_factor += 0.001
+    return growth_factor - 0.001  # Step back to the last valid growth factor
+
+# Target levels and their corresponding total points
+target_levels = [10, 100, 300]
+target_points = [12000, 97000, 600000]
+
+# Calculate the optimal growth factor
+optimal_growth_factor = find_optimal_growth_factor(target_levels, target_points)
+
+# Print the optimal growth factor
+print(f"Optimal growth factor: {optimal_growth_factor:.4f}")
+
+# Calculate points needed for each level incrementally
+def points_needed_per_level(target_level, growth_factor):
+    points_per_level = []
+    points_needed = INITIAL_LEVEL_POINTS_NEEDED
+    for level in range(1, target_level):
+        next_level_points = calculate_level_points(points_needed, level, growth_factor)
+        points_per_level.append((level, next_level_points))
+        points_needed = next_level_points
+    return points_per_level
+
+# Print points needed for each level from 1 to target level
+target_level = 500
+points_per_level = points_needed_per_level(target_level, optimal_growth_factor)
+for level, points in points_per_level:
+    print(f"Points needed from level {level} to {level + 1}: {points} points")
+
+
+.\bot\activity_tracker.py
+import discord
+from discord.ext import commands, tasks
+import json
+import os
+from datetime import datetime, timezone
+
+# Variables for point increments and bot testing mode
+MESSAGE_POINTS = 10
+VOICE_POINTS = 5
+ONLINE_POINTS = 2
+CHARACTERS_TYPED_POINTS = 0.1
+DUEL_WIN_POINTS = 100
+DUEL_WIN_COINS = 500
+BOT_TESTING_MODE = True  # Set to False to disable bot auto-playing duels
+
+class ActivityTracker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.activity_data = self.load_activity_data()
+        self.reset_daily_stats.start()
+        self.track_activity.start()
+
+    def load_activity_data(self):
+        if os.path.exists('data/player_data.json'):
+            with open('data/player_data.json', 'r') as f:
+                return json.load(f)
+        return {}
+
+    def save_activity_data(self):
+        with open('data/player_data.json', 'w') as f:
+            json.dump(self.activity_data, f, indent=4)
+
+    @tasks.loop(hours=24)
+    async def reset_daily_stats(self):
+        now = datetime.now(timezone.utc)
+        if now.hour == 5:  # 5 AM UTC, midnight EST
+            for user_id in self.activity_data:
+                self.activity_data[user_id]['points_today'] = 0
+            self.save_activity_data()
+
+    @reset_daily_stats.before_loop
+    async def before_reset_daily_stats(self):
+        await self.bot.wait_until_ready()
+
+    @tasks.loop(minutes=5)
+    async def track_activity(self):
+        for guild in self.bot.guilds:
+            for member in guild.members:
+                if member.status != discord.Status.offline and not member.bot:
+                    user_id = str(member.id)
+                    if user_id not in self.activity_data:
+                        self.activity_data[user_id] = {
+                            "username": member.name,
+                            "points": 0,
+                            "points_today": 0,
+                            "level": 1,
+                            "messages_sent": 0,
+                            "characters_typed": 0,
+                            "minutes_in_voice": 0,
+                            "minutes_online": 0,
+                            "voice_activations": 0,
+                            "total_talking_time": 0,
+                            "coins": 0  # Add coins attribute
+                        }
+                    self.activity_data[user_id]['minutes_online'] += ONLINE_POINTS  # Increment by ONLINE_POINTS
+                    self.save_activity_data()
+
+    def update_user_activity(self, user, points=0, coins=0):
+        user_id = str(user.id)
+        if user_id not in self.activity_data:
+            self.activity_data[user_id] = {
+                "username": user.name,
+                "points": 0,
+                "points_today": 0,
+                "level": 1,
+                "messages_sent": 0,
+                "characters_typed": 0,
+                "minutes_in_voice": 0,
+                "minutes_online": 0,
+                "voice_activations": 0,
+                "total_talking_time": 0,
+                "coins": 0  # Add coins attribute
+            }
+        self.activity_data[user_id]['points'] += points
+        self.activity_data[user_id]['points_today'] += points
+        self.activity_data[user_id]['coins'] += coins
+        self.save_activity_data()
+
+    def update_user_coins(self, user, coins):
+        user_id = str(user.id)
+        if user_id not in self.activity_data:
+            self.activity_data[user_id] = {
+                "username": user.name,
+                "coins": 0,
+                # Add other fields as necessary
+            }
+        self.activity_data[user_id]['coins'] += coins
+        self.save_activity_data()
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if not message.author.bot:
+            self.update_user_activity(message.author, points=MESSAGE_POINTS)
+            self.activity_data[str(message.author.id)]['messages_sent'] += 1
+            self.activity_data[str(message.author.id)]['characters_typed'] += len(message.content)
+            self.save_activity_data()
+
+    def get_statistics(self, user_id):
+        return self.activity_data.get(user_id, {})
+
+async def setup(bot):
+    await bot.add_cog(ActivityTracker(bot))
+
+
+.\bot\commands.py
+# bot/commands.py
+from discord.ext import commands
+import discord
+from utils.graphics import generate_level_image, generate_statistics_visualization
+from discord.ui import View, Button
+import pandas as pd
+from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
+import asyncio
+import aiohttp
+
+class LevelUIView(View):
+    def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
+        super().__init__(timeout=60)
+        self.username = username
+        self.avatar_url = avatar_url
+        self.points = points
+        self.current_level = current_level
+        self.next_level = next_level
+        self.progress_percentage = progress_percentage
+        self.remaining_points = remaining_points
+
+class LevelUI(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='level')
+    async def level(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        
+        # Dummy data for illustration
+        username = member.display_name
+        avatar_url = member.avatar.url
+        points = 20
+        current_level = 1
+        next_level = 2
+        progress_percentage = 1.00
+        remaining_points = 100  # Calculate the remaining points needed to reach the next level
+        
+        # Create the embed with initial information
+        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
+        embed.set_thumbnail(url=avatar_url)
+        embed.add_field(name=f"{username}", value=f"Points: {points}", inline=False)
+        embed.add_field(name=f"Level {current_level}", value=f"{progress_percentage:.2f}%", inline=True)
+        embed.add_field(name=f"Next Level {next_level}", value=f"{progress_percentage:.2f}%", inline=True)
+
+        # Create the view with the button
+        view = LevelUIView(username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points)
+        
+        await ctx.send(embed=embed, view=view)
+
+    @commands.command(name='leaderboard')
+    async def leaderboard(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
+        sorted_stats = sorted(stats.items(), key=lambda x: x[1]['points'], reverse=True)[:20]
+        
+        df = pd.DataFrame(columns=["Rank", "Username", "Level", "Points"])
+        for idx, (user_id, data) in enumerate(sorted_stats, start=1):
+            member = ctx.guild.get_member(int(user_id))
+            if member:
+                df = pd.concat([df, pd.DataFrame({"Rank": [idx], "Username": [member.display_name], "Level": [data['level']], "Points": [data['points']]})], ignore_index=True)
+        
+        table_str = df.to_markdown(index=False)
+        embed = discord.Embed(title="Leaderboard", color=discord.Color.green())
+        embed.add_field(name="Top 20 Users", value=f"```\n{table_str}\n```", inline=False)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name='leaderboard_today')
+    async def leaderboard_today(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
+        sorted_stats = sorted(stats.items(), key=lambda x: x[1].get('points_today', 0), reverse=True)[:20]
+
+        df = pd.DataFrame(columns=["Rank", "Username", "Points Today"])
+        for idx, (user_id, data) in enumerate(sorted_stats, start=1):
+            member = ctx.guild.get_member(int(user_id))
+            if member:
+                df = pd.concat([df, pd.DataFrame({"Rank": [idx], "Username": [member.display_name], "Points Today": [data.get('points_today', 0)]})], ignore_index=True)
+
+        table_str = df.to_markdown(index=False)
+        embed = discord.Embed(title="Today's Leaderboard", color=discord.Color.green())
+        embed.add_field(name="Top 20 Users", value=f"```\n{table_str}\n```", inline=False)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name='statistics')
+    async def statistics(self, ctx, *, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        stats = self.bot.get_cog('ActivityTracker').get_statistics(str(member.id))
+        if stats:
+            embed = discord.Embed(title="Statistics", color=discord.Color.purple())
+            embed.add_field(name="Username", value=member.display_name, inline=True)
+            embed.add_field(name="Total Points", value=stats.get('points', 0), inline=True)
+            embed.add_field(name="Level", value=stats.get('level', 1), inline=True)
+            embed.add_field(name="XP to Next Level", value=stats.get('xp_to_next_level', 0), inline=True)
+            embed.add_field(name="Minutes in Voice", value=stats.get('minutes_in_voice', 0), inline=True)
+            embed.add_field(name="Minutes Online", value=stats.get('minutes_online', 0), inline=True)
+            embed.add_field(name="Messages Sent", value=stats.get('messages_sent', 0), inline=True)
+            embed.add_field(name="Characters Typed", value=stats.get('characters_typed', 0), inline=True)
+            embed.add_field(name="Points Today", value=stats.get('points_today', 0), inline=True)
+
+            # Add coin information
+            coins = stats.get('coins', 0)
+            coin_icon_url = "https://cdn4.iconfinder.com/data/icons/coins-virtual-currency/104/Guarani-256.png"
+            embed.add_field(name=f"\u200b", value=f"[![coins]({coin_icon_url})]({coin_icon_url}) **{coins}**", inline=False)
+
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("No statistics available for this user.")
+
+    @commands.command(name='statistics_visualization')
+    async def statistics_visualization(self, ctx, *, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        stats = self.bot.get_cog('ActivityTracker').get_statistics(str(member.id))
+        if stats:
+            # Generate the visualization
+            visualization_path = generate_statistics_visualization(stats)
+            embed = discord.Embed(title="Statistics Visualization", color=discord.Color.purple())
+            file = discord.File(visualization_path, filename="statistics_visualization.png")
+            embed.set_image(url=f"attachment://statistics_visualization.png")
+            await member.send(embed=embed, file=file)
+        else:
+            await ctx.send("No statistics available for this user.")
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            botlog_channel = discord.utils.get(ctx.guild.channels, name='botlog')
+            if botlog_channel:
+                await botlog_channel.send("Invalid Command Called.")
+        else:
+            raise error
+
+async def setup(bot):
+    await bot.add_cog(LevelUI(bot))
+
+.\bot\games.py
+# bot/games.py
+
+from datetime import timedelta
+import random  # Importing the random module to use for shuffling and generating random letters
+import aiohttp  # Importing aiohttp for making asynchronous HTTP requests
+import os  # Importing os for file operations
+from PIL import Image  # Importing PIL (Pillow) for image processing
+import json  # Importing json to read configuration settings from a file
+import discord
+import shutil
+import io
+from io import BytesIO  # Importing BytesIO for handling image data in memory
+import asyncio
+from discord.ext import commands
+
+# Load game settings from a JSON file
+with open('settings/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+# Blackjack settings
+CARD_VALUES = game_settings['blackjack']['card_values']  # Dictionary of card values
+SUITS = game_settings['blackjack']['suits']  # List of suits
+DECK = [f'{value}_of_{suit}' for suit in SUITS for value in CARD_VALUES.keys()]  # List of all cards in the deck
+
+# Duel settings
+DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
+DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
+BOT_TESTING_MODE = game_settings['duel']['bot_testing_mode']  # Whether bot testing mode is enabled
+
+# Class for handling duel game logic
+class Duel:
+    def __init__(self, player1, player2):
+        self.player1 = player1  # ID of player 1
+        self.player2 = player2  # ID of player 2
+        self.health = {player1: 100, player2: 100}  # Initial health for both players
+        self.letter = None  # The current letter for the duel
+        self.used_words = set()  # Set of words that have already been used
+
+    def generate_letter(self):
+        self.letter = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # Generate a random letter
+
+    async def is_valid_word(self, word):
+        url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word.lower()}"  # URL to check if the word is valid
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                return resp.status == 200  # Return True if the word is valid
+
+    def calculate_damage(self, words):
+        valid_words = [word for word in words if word.lower().startswith(self.letter.lower()) and word.lower() not in self.used_words]
+        self.used_words.update(word.lower() for word in valid_words)  # Add valid words to the set of used words
+        return sum(len(word) for word in valid_words)  # Calculate damage as the sum of the lengths of valid words
+
+    def get_winner(self):
+        if self.health[self.player1] <= 0:
+            return self.player2  # Player 2 wins if player 1's health is 0 or less
+        elif self.health[self.player2] <= 0:
+            return self.player1  # Player 1 wins if player 2's health is 0 or less
+        return None  # No winner if both players have health above 0
+
+    def adjust_health(self, player_id, damage):
+        self.health[player_id] = max(self.health[player_id] - damage, 0)  # Reduce health by the damage amount, but not below 0
+
+# Class for handling blackjack game logic
+class BlackjackGame:
+    def __init__(self, player, bot):
+        self.deck = []
+        self.player = player
+        self.bot = bot
+        self.player_hand = []
+        self.dealer_hand = []
+        self.player_points = 0
+        self.dealer_points = 0
+        self.bet = 0
+        self.deck_id = None
+
+    async def initialize_deck(self):
+        url = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                data = await resp.json()
+                self.deck_id = data['deck_id']
+
+    async def draw_card(self):
+        url = f"https://deckofcardsapi.com/api/deck/{self.deck_id}/draw/?count=1"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                data = await resp.json()
+                return data['cards'][0]
+
+    async def deal_initial_cards(self):
+        self.player_hand = [await self.draw_card(), await self.draw_card()]
+        self.dealer_hand = [await self.draw_card(), await self.draw_card()]
+        self.player_points = self.calculate_hand_value(self.player_hand)
+        self.dealer_points = self.calculate_hand_value(self.dealer_hand)
+
+    def calculate_hand_value(self, hand):
+        value = 0
+        aces = 0
+        for card in hand:
+            card_value = card['value']
+            if card_value.isdigit():
+                value += int(card_value)
+            elif card_value in ['JACK', 'QUEEN', 'KING']:
+                value += 10
+            else:
+                value += 11
+                aces += 1
+        while value > 21 and aces:
+            value -= 10
+            aces -= 1
+        return value
+
+    async def start_game(self, bet):
+        self.bet = bet
+        await self.initialize_deck()
+        await self.deal_initial_cards()
+
+    async def player_hit(self):
+        card = await self.draw_card()
+        self.player_hand.append(card)
+        self.player_points = self.calculate_hand_value(self.player_hand)
+        return card
+
+    async def dealer_play(self):
+        while self.dealer_points < 17:
+            card = await self.draw_card()
+            self.dealer_hand.append(card)
+            self.dealer_points = self.calculate_hand_value(self.dealer_hand)
+        return self.dealer_hand
+
+    def get_game_result(self):
+        if self.player_points > 21:
+            return "bust"
+        elif self.dealer_points > 21 or self.player_points > self.dealer_points:
+            return "win"
+        elif self.player_points == self.dealer_points:
+            return "push"
+        else:
+            return "lose"
+
+    async def create_hand_image(self, hand, reveal_dealer=False):
+        card_images = []
+        for card in hand:
+            if isinstance(card, str) and card == 'back.png':
+                card_images.append('https://deckofcardsapi.com/static/img/back.png')
+            else:
+                card_images.append(card['image'])
+        return card_images
+
+    async def concatenate_images(self, image_paths, filename):
+        images = [Image.open(path) for path in image_paths]
+        widths, heights = zip(*(img.size for img in images))
+        total_width = sum(widths)
+        max_height = max(heights)
+        new_image = Image.new('RGB', (total_width, max_height))
+
+        x_offset = 0
+        for img in images:
+            new_image.paste(img, (x_offset, 0))
+            x_offset += img.size[0]
+
+        new_image.save(filename)
+        return filename
+
+    async def hit(self, ctx):
+        card = await self.player_hit()
+        await self.send_hand(ctx)
+
+        if self.player_points > 21:
+            await self.end_game(ctx, "bust")
+
+    async def stand(self, ctx):
+        dealer_hand = await self.dealer_play()
+        await self.send_hand(ctx, reveal_dealer=True)
+
+        result = self.get_game_result()
+        await self.end_game(ctx, result)
+
+    async def end_game(self, ctx, result):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        if result == "win":
+            payout = self.bet * 2
+            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=self.bet)
+            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} coins.")
+        elif result == "bust":
+            payout = -(self.bet)
+            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
+            await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} coins.")
+        elif result == "lose":
+            payout = -(self.bet)
+            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
+            await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} coins.")
+        elif result == "push":
+            await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} coins has been returned.")
+        del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
+
+    async def download_image(self, url):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                data = await resp.read()
+                filename = f'temp_{url.split("/")[-1]}'
+                with open(filename, 'wb') as f:
+                    f.write(data)
+                return filename
+
+    async def send_hand(self, ctx, reveal_dealer=False):
+        player_images = await self.create_hand_image(self.player_hand)
+        dealer_images = await self.create_hand_image(self.dealer_hand if reveal_dealer else self.dealer_hand[:1] + ['back.png'])
+
+        resized_player_images = [await self.download_image(url) for url in player_images]
+        resized_dealer_images = [await self.download_image(url) for url in dealer_images]
+
+        concatenated_player_image = await self.concatenate_images(resized_player_images, f'blackjack_{ctx.author.id}_player_hand.png')
+        concatenated_dealer_image = await self.concatenate_images(resized_dealer_images, f'blackjack_{ctx.author.id}_dealer_hand.png')
+
+        player_hand_embed = discord.File(concatenated_player_image, filename="player_hand.png")
+        dealer_hand_embed = discord.File(concatenated_dealer_image, filename="dealer_hand.png")
+
+        embed = discord.Embed(title="Blackjack Game")
+        embed.add_field(name="Your hand", value=f"Points: {self.player_points}", inline=True)
+        embed.add_field(name="Dealer's hand", value=f"Points: {self.dealer_points if reveal_dealer else '?'}", inline=True)
+        embed.set_image(url=f"attachment://player_hand.png")
+        embed.set_thumbnail(url=f"attachment://dealer_hand.png")
+
+        await ctx.send(embed=embed, files=[player_hand_embed, dealer_hand_embed])
+
+class PokerGame:
+
+    DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'
+
+    def __init__(self, ctx, bot):
+        self.bot = bot
+        self.ctx = ctx
+        self.players = []
+        self.betting_order = []
+        self.current_bet = 0
+        self.pot = 0
+        self.current_player_index = 0
+        self.community_cards = []
+        self.player_hands = {}
+        self.player_balances = {}
+        self.all_in_players = set()
+
+    async def start_game(self):
+        await self.collect_players()
+        if len(self.players) < 1:
+            await self.ctx.send("Not enough players to start the game.")
+            return
+
+        self.betting_order = self.players[:]
+        random.shuffle(self.betting_order)
+        await self.deal_cards()
+        await self.betting_round(pre_flop=True)
+        await self.reveal_community_cards(3)  # Flop
+        await self.betting_round()
+        await self.reveal_community_cards(1)  # Turn
+        await self.betting_round()
+        await self.reveal_community_cards(1)  # River
+        await self.betting_round()
+        await self.showdown()
+
+    async def collect_players(self):
+        await self.ctx.send("A new poker game is starting! Type `!join poker` to join. You have 2 minutes to join.")
+        
+        if self.ctx.author not in self.players:
+            self.players.append(self.ctx.author)
+            self.player_balances[self.ctx.author] = 20000  # Starting balance
+            await self.display_player_list()
+    
+        def check(m):
+            return m.content.lower() == "!join poker" and m.channel == self.ctx.channel
+    
+        end_time = discord.utils.utcnow() + timedelta(minutes=2)
+        
+        while discord.utils.utcnow() < end_time:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=(end_time - discord.utils.utcnow()).total_seconds())
+                if msg.author not in self.players:
+                    self.players.append(msg.author)
+                    self.player_balances[msg.author] = 20000  # Starting balance
+                    await self.ctx.send(f"{msg.author.mention} has joined the game!")
+                    await self.display_player_list()
+            except asyncio.TimeoutError:
+                break
+
+    async def deal_cards(self):
+        self.deck = [f'{value}{suit}' for value in '23456789TJQKA' for suit in 'CDHS']
+        random.shuffle(self.deck)
+        for player in self.players:
+            self.player_hands[player] = [self.deck.pop(), self.deck.pop()]
+            await self.send_hand(player)
+
+    async def send_hand(self, player):
+        hand = self.player_hands[player]
+        cards = [await self.get_card_image(card) for card in hand]
+        embed = discord.Embed(title="Your Hand")
+        for i, card in enumerate(cards):
+            embed.add_field(name=f"Card {i+1}", value=f"[{card}]({card})")
+        await player.send(embed=embed)
+
+    async def get_card_image(self, card):
+        card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, f"{card}.png")
+        return card_image_path
+
+    async def betting_round(self, pre_flop=False):
+        self.current_bet = 0 if pre_flop else self.current_bet
+        for player in self.betting_order:
+            if player in self.all_in_players:
+                continue
+            await self.prompt_player_action(player)
+
+    async def prompt_player_action(self, player):
+        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} coins.")
+        def check(m):
+            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in ['!call', '!fold', '!raise', '!allin']
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=120)
+            action = msg.content.lower()
+            if action == '!call':
+                await self.call(player)
+            elif action == '!fold':
+                await self.fold(player)
+            elif action == '!raise':
+                await self.raise_bet(player)
+            elif action == '!allin':
+                await self.allin(player)
+        except asyncio.TimeoutError:
+            await self.fold(player)
+
+    async def call(self, player):
+        call_amount = self.current_bet - self.player_balances[player]
+        if self.player_balances[player] < call_amount:
+            await self.allin(player)
+        else:
+            self.player_balances[player] -= call_amount
+            self.pot += call_amount
+            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} coins.")
+
+    async def fold(self, player):
+        self.betting_order.remove(player)
+        await self.ctx.send(f"{player.mention} folds.")
+
+    async def raise_bet(self, player):
+        await self.ctx.send(f"{player.mention}, how much would you like to raise? Type an amount or `!allin`.")
+        def check(m):
+            return m.author == player and m.channel == self.ctx.channel
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=120)
+            if msg.content.lower() == '!allin':
+                await self.allin(player)
+            else:
+                raise_amount = int(msg.content)
+                if raise_amount > self.player_balances[player]:
+                    await self.ctx.send("You don't have enough coins to raise that amount.")
+                    await self.raise_bet(player)
+                else:
+                    self.current_bet += raise_amount
+                    self.player_balances[player] -= raise_amount
+                    self.pot += raise_amount
+                    await self.ctx.send(f"{player.mention} raises by {raise_amount} coins. Current bet is now {self.current_bet} coins. Pot is now {self.pot} coins.")
+        except asyncio.TimeoutError:
+            await self.fold(player)
+
+    async def allin(self, player):
+        allin_amount = self.player_balances[player]
+        self.all_in_players.add(player)
+        self.player_balances[player] = 0
+        self.pot += allin_amount
+        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} coins. Pot is now {self.pot} coins.")
+
+    async def reveal_community_cards(self, num):
+        for _ in range(num):
+            self.community_cards.append(self.deck.pop())
+        cards = [await self.get_card_image(card) for card in self.community_cards]
+        embed = discord.Embed(title="Community Cards")
+        card_str = " ".join([f"[{i+1}]({card})" for i, card in enumerate(cards)])
+        embed.add_field(name="Cards", value=card_str, inline=False)
+        await self.ctx.send(embed=embed)
+
+    async def showdown(self):
+        await self.ctx.send("Showdown! Revealing hands...")
+        hands = []
+        for player in self.betting_order:
+            hand = self.player_hands[player] + self.community_cards
+            best_hand = self.get_best_hand(hand)
+            hands.append((player, best_hand))
+            await self.reveal_hand(player, best_hand)
+        winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
+        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} coins!")
+
+    async def display_player_list(self):
+        if self.players:
+            player_list = "\n".join([player.mention for player in self.players])
+            embed = discord.Embed(title="Current Player List", description=player_list, color=discord.Color.blue())
+            await self.ctx.send(embed=embed)
+        else:
+            await self.ctx.send("No players have joined yet.")
+
+    def get_best_hand(self, hand):
+        # Implement poker hand ranking logic to return the best 5-card hand
+        pass
+
+    def hand_rank(self, hand):
+        # Implement hand ranking comparison
+        pass
+
+    async def reveal_hand(self, player, hand):
+        cards = [await self.get_card_image(card) for card in hand]
+        embed = discord.Embed(title=f"{player.display_name}'s Hand")
+        for card in cards:
+            embed.set_image(url=card)
+        await self.ctx.send(embed=embed)
+
+class CommandHandler(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.duels = {}
+        self.blackjack_games = {}
+        self.poker_games = {}
+
+    @commands.command(name='challenge')
+    async def challenge(self, ctx, opponent_name: str):
+        opponent = self.find_member(ctx.guild, opponent_name)
+        if opponent is None:
+            await ctx.send(f"Could not find a unique member with the name '{opponent_name}'. Please specify a more exact name or use mention.")
+            return
+
+        if ctx.author.id in self.duels or opponent.id in self.duels:
+            await ctx.send("One of the players is already in a duel!")
+            return
+
+        self.duels[ctx.author.id] = Duel(ctx.author.id, opponent.id)
+        self.duels[opponent.id] = self.duels[ctx.author.id]
+
+        if opponent == self.bot.user and BOT_TESTING_MODE:
+            await self.accept_duel(ctx)
+        else:
+            await ctx.send(f"{ctx.author.mention} has challenged {opponent.mention} to a duel! Use !accept to accept the challenge.")
+
+    @commands.command(name='accept')
+    async def accept_duel(self, ctx):
+        if ctx.author.id not in self.duels:
+            await ctx.send("You have not been challenged to a duel!")
+            return
+
+        duel = self.duels[ctx.author.id]
+        duel.generate_letter()
+        await ctx.send(f"The duel between {self.bot.get_user(duel.player1).mention} and {self.bot.get_user(duel.player2).mention} has begun! The challenge is to type as many words as you can that start with '{duel.letter}'. The duel will continue until one player's health reaches zero. Type your words separated by spaces.")
+
+        await self.handle_duel(ctx, duel)
+
+    async def handle_duel(self, ctx, duel):
+        def check(m):
+            return m.channel == ctx.channel and m.author.id in [duel.player1, duel.player2]
+
+        while True:
+            msg = await self.bot.wait_for('message', check=check)
+            damage = await self.process_message(msg, duel)
+            opponent_id = duel.player1 if msg.author.id == duel.player2 else duel.player2
+            duel.adjust_health(opponent_id, damage)
+
+            embed = discord.Embed(
+                title="Duel Status",
+                description=f"{self.bot.get_user(duel.player1).mention} vs {self.bot.get_user(duel.player2).mention}",
+                color=discord.Color.red()
+            )
+            embed.add_field(name=f"{self.bot.get_user(duel.player1).display_name} HP", value=duel.health[duel.player1])
+            embed.add_field(name=f"{self.bot.get_user(duel.player2).display_name} HP", value=duel.health[duel.player2])
+            await ctx.send(embed=embed)
+
+            winner_id = duel.get_winner()
+            if winner_id:
+                winner = self.bot.get_user(winner_id)
+                await ctx.send(f"{winner.mention} wins the duel!")
+                activity_tracker = self.bot.get_cog('ActivityTracker')
+                activity_tracker.update_user_activity(winner, points=DUEL_WIN_POINTS, coins=DUEL_WIN_COINS)
+                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} coins! Total coins: {activity_tracker.activity_data[str(winner.id)]['coins']}")
+                
+                del self.duels[duel.player1]
+                del self.duels[duel.player2]
+                return
+
+    async def process_message(self, msg, duel):
+        words = msg.content.split()
+        valid_words = []
+        for word in words:
+            if await duel.is_valid_word(word):
+                if word.lower() not in duel.used_words:
+                    valid_words.append(word)
+                else:
+                    await msg.channel.send(f"The word '{word}' has already been used.")
+            else:
+                await msg.channel.send(f"The word '{word}' is not a valid word.")
+        return duel.calculate_damage(valid_words)
+
+    @commands.command(name='blackjack')
+    async def blackjack(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(ctx.author.id))
+        current_coins = stats.get('coins', 0)
+
+        await ctx.send(f"You have {current_coins} coins. How many coins would you like to bet?")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+        while True:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
+                bet = int(msg.content)
+                if bet > 0 and bet <= current_coins:
+                    break
+                else:
+                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} coins). You have 30 seconds to respond accurately.")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond! Please use !blackjack again.")
+                return
+
+        game = BlackjackGame(ctx.author, self.bot)
+        await game.start_game(bet)
+        self.blackjack_games[ctx.author.id] = game
+
+        await game.send_hand(ctx)
+
+    @commands.command(name='hit')
+    async def hit(self, ctx):
+        game = self.blackjack_games.get(ctx.author.id)
+        if game:
+            await game.hit(ctx)
+
+    @commands.command(name='stand')
+    async def stand(self, ctx):
+        game = self.blackjack_games.get(ctx.author.id)
+        if game:
+            await game.stand(ctx)
+
+    def find_member(self, guild, name):
+        members = [member for member in guild.members if member.display_name.lower() == name.lower()]
+        if len(members) == 1:
+            return members[0]
+        return None
+    
+    @commands.command(name='poker')
+    async def start_poker(self, ctx):
+        if ctx.author.id in self.poker_games:
+            await ctx.send("You are already in a game!")
+            return
+        game = PokerGame(ctx, self.bot)
+        self.poker_games[ctx.author.id] = game
+        await game.start_game()
+
+    @commands.command(name='join poker')
+    async def join_poker(self, ctx):
+        if ctx.author.id not in self.poker_games:
+            await ctx.send("You need to start a game first using !poker.")
+            return
+        game = self.poker_games[ctx.author.id]
+        await game.collect_players()
+
+async def setup(bot):
+    await bot.add_cog(CommandHandler(bot))
+
+.\bot\level_widget.py
+import discord
+from discord.ext import commands
+
+class LevelWidget(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        print("LevelWidget initialized")
+
+async def setup(bot):
+    print("Setting up LevelWidget")
+    await bot.add_cog(LevelWidget(bot))
+    print("LevelWidget added to bot")
+
+
+.\bot\shop.py
+# bot/shop.py
+import discord
+from discord.ext import commands
+from discord.ui import View, Button
+import os
+
+class PaginatedShopView(View):
+    def __init__(self, items, per_page=5):
+        super().__init__(timeout=60)
+        self.items = items
+        self.per_page = per_page
+        self.current_page = 0
+        self.add_item(Button(label="Previous", style=discord.ButtonStyle.secondary, custom_id="previous_page"))
+        self.add_item(Button(label="Next", style=discord.ButtonStyle.secondary, custom_id="next_page"))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.message.author
+
+    @discord.ui.button(label='Previous', style=discord.ButtonStyle.secondary)
+    async def previous_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.current_page -= 1
+        await self.update_embed(interaction)
+
+    @discord.ui.button(label='Next', style=discord.ButtonStyle.secondary)
+    async def next_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.current_page += 1
+        await self.update_embed(interaction)
+
+    async def update_embed(self, interaction: discord.Interaction):
+        start = self.current_page * self.per_page
+        end = start + self.per_page
+        items = self.items[start:end]
+        
+        embed = discord.Embed(
+            title="Casino Shop",
+            description="Welcome to the Casino Shop! Here are some items you can purchase:",
+            color=discord.Color.blue()
+        )
+        
+        for item in items:
+            embed.add_field(name=item['name'], value=f"{item['description']} - {item['price']} {item['icon']}", inline=False)
+        
+        await interaction.response.edit_message(embed=embed, view=self)
+
+class Shop(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='shop')
+    async def shop(self, ctx):
+        items = [
+            {'name': 'Virtual Pet', 'description': 'A cute virtual pet.', 'price': 100, 'icon': "<:coin:>"},
+            {'name': 'Badge', 'description': 'A collectible badge.', 'price': 50, 'icon': "<:coin:>"},
+            {'name': 'Game Tokens', 'description': 'Tokens for playing games.', 'price': 20, 'icon': "<:coin:>"}
+        ]
+        view = PaginatedShopView(items)
+        await ctx.send(embed=view.create_embed(), view=view)
+
+
+async def setup(bot):
+    await bot.add_cog(Shop(bot))
+
+
+.\bot\__init__.py
+
+
+.\settings\settings.py
+import json 
+
+def load_settings():
+    with open("settings.json", "r") as f:
+        settings = json.load(f)
+    return settings
+
+.\utils\graphics.py
+# utils/graphics.py
+import matplotlib.pyplot as plt  # Importing the Matplotlib library for creating visualizations
+import matplotlib.patches as patches  # Importing patches to draw shapes
+import requests  # Importing requests to download images from the web
+from PIL import Image  # Importing Pillow to handle image processing
+from io import BytesIO  # Importing BytesIO to handle image data in memory
+import numpy as np
+import os  # Importing os to handle file paths
+
+# This function generates an image showing the user's level information.
+def generate_level_image(username, level, progress, points, next_level, avatar_url):
+    try:
+        # Download the avatar image from the provided URL
+        response = requests.get(avatar_url)
+        # Open the downloaded image and resize it to 100x100 pixels
+        avatar = Image.open(BytesIO(response.content)).resize((225, 225))
+
+        # Create a new "figure" which is basically a blank canvas where we draw everything.
+        fig, ax = plt.subplots(figsize=(7, 2))
+
+        # Set the background color of the figure and the axis to a gradient-like effect
+        fig.patch.set_facecolor((255/255, 127/255, 80/255))  # Light Pink
+        ax.set_facecolor((173/255, 216/255, 230/255))  # Light Blue 
+
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 250)
+
+        # Hide the axes to make the image look clean
+        ax.axis('on')
+
+        # Draw the avatar image at a specific location on the figure
+        plt.imshow(avatar, aspect='auto', extent=(10, 10 + avatar.size[0], 12.5, 12.5 + avatar.size[1]))
+
+        font_properties1 = {'family': 'Comic Sans MS', 'weight': 'bold', 'size': 25}
+        font_properties2 = {'family': 'Comic Sans MS', 'size': 18}
+
+        # Draw the username text next to the avatar
+        plt.text(250, 200, "Calvinaustinfan6969fortnitefan", fontdict=font_properties1, color='white', ha='left', va='center')
+        plt.text(250, 135, f"{points}", fontdict=font_properties2, color='white', ha='left', va='center')
+
+        # Define the position and size of the progress bar
+        canvas_width = 1000  # Width of the canvas
+        bar_width = 350  # Width of the progress bar
+        bar_height = 60  # Height of the progress bar
+        bar_x = (canvas_width - bar_width + 225) / 2  # X-coordinate of the progress bar (centered horizontally)
+        bar_y = 20  # Y-coordinate of the progress bar
+
+        # Draw the background of the progress bar (a white rectangle with transparency)
+        ax.add_patch(patches.Rectangle((bar_x, bar_y), bar_width, bar_height, color=(255/255, 255/255, 255/255), alpha=0.3))
+
+        # Calculate the width of the filled part of the progress bar based on the progress percentage
+        fill_width = progress * 3.5
+        # Draw the filled part of the progress bar (a green rectangle)
+        ax.add_patch(patches.Rectangle((bar_x, bar_y), fill_width, bar_height, color=(76/255, 175/255, 80/255)))
+
+        # Draw the current level text to the left of the progress bar
+        plt.text(bar_x - 15, (bar_y + bar_height / 2) - 12.5, f"{level}", fontdict=font_properties1, color='white', ha='right', va='center')
+
+        # Draw the progress percentage text in the middle of the progress bar
+        plt.text(bar_x + bar_width / 2, bar_y + bar_height / 2, f"{progress:.2f}%", fontsize=15, color='white', ha='center', va='center')
+
+        # Draw the next level text to the right of the progress bar
+        plt.text(bar_x + bar_width + 15, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
+
+        # Define the file path to save the generated image
+        image_path = 'level_image.png'
+        # Save the figure (canvas) to a file with no extra padding and a resolution of 100 DPI
+        plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)
+        # Close the figure to free memory
+        plt.close()
+
+        # Check if the image file was created and exists
+        if os.path.exists(image_path):
+            return image_path  # Return the path to the generated image
+        else:
+            print("Error: Image file was not created.")  # Print an error message if the image file was not created
+            return None  # Return None if the image file was not created
+
+    except Exception as e:
+        print(f"Error in generate_level_image: {e}")  # Print the exception message if an error occurs
+        return None  # Return None if an error occurs
+
+def generate_statistics_visualization(stats):
+    labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']
+    user_values = [stats.get('messages_sent', 0), stats.get('minutes_in_voice', 0), stats.get('minutes_online', 0)]
+    server_averages = [100, 50, 300]  # These values should be calculated based on your server's data
+
+    x = np.arange(len(labels))
+
+    fig, ax = plt.subplots()
+    ax.bar(x - 0.2, user_values, width=0.4, label='User')
+    ax.bar(x + 0.2, server_averages, width=0.4, label='Server Average')
+
+    ax.set_xlabel('Activity')
+    ax.set_ylabel('Count')
+    ax.set_title('User Activity vs Server Average')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+    plt.tight_layout()
+    plt.savefig('utils/images/statistics_visualization.png')
+    plt.close()
+
+    return 'utils/images/statistics_visualization.png'
+
+.\utils\__init__.py
+
+
