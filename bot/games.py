@@ -1,6 +1,6 @@
 # bot/games.py
 
-# Games played in the discord server
+# Games played in the discord server from bot
 
 from datetime import timedelta
 import random  # Importing the random module to use for shuffling and generating random letters
