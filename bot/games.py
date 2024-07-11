@@ -14,9 +14,10 @@ import io
 from io import BytesIO  # Importing BytesIO for handling image data in memory
 import asyncio
 from discord.ext import commands
+from settings.settings import load_settings
 
 # Load game settings from a JSON file
-with open('settings/game_settings.json', 'r') as f:
+with open('settings/json/game_settings.json', 'r') as f:
     game_settings = json.load(f)
 
 # Blackjack settings
@@ -28,6 +29,9 @@ DECK = [f'{value}_of_{suit}' for suit in SUITS for value in CARD_VALUES.keys()] 
 DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
 DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
 BOT_TESTING_MODE = game_settings['duel']['bot_testing_mode']  # Whether bot testing mode is enabled
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
 
 # Class for handling duel game logic
 class Duel:
@@ -183,17 +187,17 @@ class BlackjackGame:
         if result == "win":
             payout = self.bet * 2
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=self.bet)
-            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} coins.")
+            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} {coin_icon}.")
         elif result == "bust":
             payout = -(self.bet)
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
-            await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} coins.")
+            await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} {coin_icon}.")
         elif result == "lose":
             payout = -(self.bet)
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
-            await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} coins.")
+            await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
-            await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} coins has been returned.")
+            await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
         del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
 
     async def download_image(self, url):
@@ -312,7 +316,7 @@ class PokerGame:
             await self.prompt_player_action(player)
 
     async def prompt_player_action(self, player):
-        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} coins.")
+        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
         def check(m):
             return m.author == player and m.channel == self.ctx.channel and m.content.lower() in ['!call', '!fold', '!raise', '!allin']
         try:
@@ -336,7 +340,7 @@ class PokerGame:
         else:
             self.player_balances[player] -= call_amount
             self.pot += call_amount
-            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} coins.")
+            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} {coin_icon}.")
 
     async def fold(self, player):
         self.betting_order.remove(player)
@@ -353,13 +357,13 @@ class PokerGame:
             else:
                 raise_amount = int(msg.content)
                 if raise_amount > self.player_balances[player]:
-                    await self.ctx.send("You don't have enough coins to raise that amount.")
+                    await self.ctx.send(f"You don't have enough {coin_icon} to raise that amount.")
                     await self.raise_bet(player)
                 else:
                     self.current_bet += raise_amount
                     self.player_balances[player] -= raise_amount
                     self.pot += raise_amount
-                    await self.ctx.send(f"{player.mention} raises by {raise_amount} coins. Current bet is now {self.current_bet} coins. Pot is now {self.pot} coins.")
+                    await self.ctx.send(f"{player.mention} raises by {raise_amount} {coin_icon}. Current bet is now {self.current_bet} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
         except asyncio.TimeoutError:
             await self.fold(player)
 
@@ -368,7 +372,7 @@ class PokerGame:
         self.all_in_players.add(player)
         self.player_balances[player] = 0
         self.pot += allin_amount
-        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} coins. Pot is now {self.pot} coins.")
+        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
 
     async def reveal_community_cards(self, num):
         for _ in range(num):
@@ -388,7 +392,7 @@ class PokerGame:
             hands.append((player, best_hand))
             await self.reveal_hand(player, best_hand)
         winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
-        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} coins!")
+        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} {coin_icon}!")
 
     async def display_player_list(self):
         if self.players:
@@ -476,7 +480,7 @@ class CommandHandler(commands.Cog):
                 await ctx.send(f"{winner.mention} wins the duel!")
                 activity_tracker = self.bot.get_cog('ActivityTracker')
                 activity_tracker.update_user_activity(winner, points=DUEL_WIN_POINTS, coins=DUEL_WIN_COINS)
-                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} coins! Total coins: {activity_tracker.activity_data[str(winner.id)]['coins']}")
+                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} {coin_icon}! Total {coin_icon}: {activity_tracker.activity_data[str(winner.id)]['coins']}")
                 
                 del self.duels[duel.player1]
                 del self.duels[duel.player2]
@@ -501,7 +505,7 @@ class CommandHandler(commands.Cog):
         stats = activity_tracker.get_statistics(str(ctx.author.id))
         current_coins = stats.get('coins', 0)
 
-        await ctx.send(f"You have {current_coins} coins. How many coins would you like to bet?")
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to bet?")
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
@@ -513,7 +517,7 @@ class CommandHandler(commands.Cog):
                 if bet > 0 and bet <= current_coins:
                     break
                 else:
-                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} coins). You have 30 seconds to respond accurately.")
+                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
             except asyncio.TimeoutError:
                 await ctx.send("You took too long to respond! Please use !blackjack again.")
                 return

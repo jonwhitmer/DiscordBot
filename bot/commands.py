@@ -7,6 +7,61 @@ import pandas as pd
 from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
 import asyncio
 import aiohttp
+from datetime import datetime, timedelta
+import random
+import pytz
+from settings.settings import load_settings
+
+TESTING = False
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+class GeneralCommands(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='daily')
+    async def daily(self, ctx):
+        user_id = str(ctx.author.id)
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.activity_data.get(user_id, {})
+
+        if ctx.message.content.strip() != '!daily':
+            return
+
+        if TESTING:
+            last_daily = None
+        else:
+            last_daily = user_data.get('last_daily', None)
+
+        now = datetime.utcnow()
+
+        if last_daily:
+            last_daily_time = datetime.strptime(last_daily, "%Y-%m-%d %H:%M:%S")
+            if now < last_daily_time + timedelta(hours = 24):
+                next_claim_time = last_daily_time + timedelta(hours = 24)
+                est = pytz.timezone('US/Eastern')
+                next_claim_time_est = next_claim_time.replace(tzinfo=pytz.utc).astimezone(est)
+                next_claim_time_str = next_claim_time_est.strftime('%Y-%m-%d %I:%M:%S %p')
+                await ctx.send(f"You have already claimed your daily {coin_icon}.  NEXT CLAIM TIME: {next_claim_time_str} EST.")
+                return
+            
+        daily_coins = random.randint(0, 10000)
+        digits = str(daily_coins)
+
+        await ctx.send(f"{ctx.author.mention}, generating your daily coins...")
+        
+        accumulated_digits = ""
+        for digit in digits:
+            accumulated_digits += digit
+            await ctx.send(f"{accumulated_digits}")
+            await asyncio.sleep(0.5)
+
+        activity_tracker.update_user_coins(ctx.author, daily_coins)
+        activity_tracker.activity_data[user_id]['last_daily'] = now.strftime('%Y-%m-%d %H:%M:%S')
+        activity_tracker.save_activity_data()
+
+        await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
 
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
@@ -136,4 +191,4 @@ class LevelUI(commands.Cog):
             raise error
 
 async def setup(bot):
-    await bot.add_cog(LevelUI(bot))
+    await bot.add_cog(GeneralCommands(bot))

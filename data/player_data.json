@@ -14,29 +14,31 @@
     },
     "1170556246257057888": {
         "username": "jonnyboyballa",
-        "points": 14530,
-        "points_today": 14530,
+        "points": 15860,
+        "points_today": 15860,
         "level": 1,
-        "messages_sent": 722,
-        "characters_typed": 7466,
+        "messages_sent": 815,
+        "characters_typed": 11421,
         "minutes_in_voice": 0,
-        "minutes_online": 1605,
+        "minutes_online": 1665,
         "voice_activations": 0,
         "total_talking_time": 0,
-        "coins": 750
+        "coins": 2654,
+        "last_daily": "2024-07-11 15:54:33"
     },
     "443232925769531392": {
         "username": "dommyduke",
-        "points": 4390,
-        "points_today": 4390,
+        "points": 4430,
+        "points_today": 4430,
         "level": 1,
-        "messages_sent": 289,
-        "characters_typed": 2390,
+        "messages_sent": 293,
+        "characters_typed": 2416,
         "minutes_in_voice": 0,
-        "minutes_online": 468,
+        "minutes_online": 472,
         "voice_activations": 0,
         "total_talking_time": 0,
-        "coins": 0
+        "coins": 814,
+        "last_daily": "2024-07-11 15:08:08"
     },
     "711995446020669450": {
         "username": "tyman0099",
@@ -46,7 +48,7 @@
         "messages_sent": 0,
         "characters_typed": 0,
         "minutes_in_voice": 0,
-        "minutes_online": 302,
+        "minutes_online": 358,
         "voice_activations": 0,
         "total_talking_time": 0,
         "coins": 0
@@ -59,7 +61,7 @@
         "messages_sent": 190,
         "characters_typed": 2834,
         "minutes_in_voice": 0,
-        "minutes_online": 454,
+        "minutes_online": 456,
         "voice_activations": 0,
         "total_talking_time": 0,
         "coins": 2100
@@ -189,7 +191,7 @@
         "messages_sent": 3,
         "characters_typed": 35,
         "minutes_in_voice": 0,
-        "minutes_online": 62,
+        "minutes_online": 66,
         "voice_activations": 0,
         "total_talking_time": 0,
         "coins": 0

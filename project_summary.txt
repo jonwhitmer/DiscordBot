@@ -66,6 +66,264 @@
     temp_QH.png
     temp_QS.png
     test.py
+    .git/
+        COMMIT_EDITMSG
+        config
+        description
+        FETCH_HEAD
+        HEAD
+        index
+        hooks/
+            applypatch-msg.sample
+            commit-msg.sample
+            fsmonitor-watchman.sample
+            post-update.sample
+            pre-applypatch.sample
+            pre-commit.sample
+            pre-merge-commit.sample
+            pre-push.sample
+            pre-rebase.sample
+            pre-receive.sample
+            prepare-commit-msg.sample
+            push-to-checkout.sample
+            sendemail-validate.sample
+            update.sample
+        info/
+            exclude
+        logs/
+            HEAD
+            refs/
+                heads/
+                    dev
+                    main
+                remotes/
+                    DiscordBot/
+                        main
+                        Source-Code-Implementation
+        objects/
+            00/
+                4de6c8f192f0ddc15b3acc4a7fa25b6b6fa488
+                9355b168b69030b3502769523fa85741b3f26c
+                f109da7e9a586aea31ad808949b0d190c21cd6
+            01/
+                2f0c5d49647e67d74331189a6fa7f816cb07c0
+                e2314bc19a410bf73c2247c77b443f6fc42aa2
+            06/
+                d3fc6d20426aa058f1065fb56329fe1874e722
+            0e/
+                638cdf6588bd8af5664efdc11363104c3c5b3d
+            0f/
+                094f627622511f772310d5043d85ccac4550f2
+            10/
+                779b8aa8cb957354d4bdf7570db43973152f60
+            17/
+                63b6038f3e5d6e9b51b186a5c45635c70a6363
+                dfae167ce9b7bdd32908b9abcd8a8725fcd00b
+            18/
+                14e84bf9ee23517f3d235b09e24a247305c6df
+            19/
+                3aa697c4df9ff6f803e64e67be2af20a9b0914
+            1d/
+                aa7e051967bfda1b2419928341f1ad02828c44
+            1f/
+                edcad9519ad8dbd3b56f50aff3656f8fd91fca
+            20/
+                7491a555eb6ef65b85c9525314b00242fe02e8
+                dcc1020e0a5737ddc3415dcadf5bf3394c4761
+            21/
+                c0c63d634926abb2bb5d554f24e98c58b4c1e4
+            24/
+                201748e13db38855599d98c451c459dc57b8ab
+            25/
+                99fa09dea639b6d84d7a6ace65d0d98f038681
+            28/
+                a9764ae2b92a2568b1de03ed418881fff642b1
+            2b/
+                15136c0c7963e417c0d6ba59a470626b2c7435
+            2c/
+                7dd95cf6271aa0a9440e5fab700493a61dd665
+            2d/
+                7194f4869d904a806ad19870414f4548b21896
+            33/
+                8b331a971faca76a2ac629e9d75246f672536f
+            34/
+                623dc3cb192afdaa6664a4a5714e210960d1ce
+            38/
+                272b63ff81efb3c496665d65ef22085916fc4c
+            39/
+                11c011e9aa4b0128910a3d3787dabf45ae18aa
+            3a/
+                feb9b41007a1346769613cc7391d0cf42cf8f8
+            3b/
+                b37d29c930f566df143517c7122f42de1a9f01
+            3c/
+                475b65a5235f333e980385e74d1b482f14edf1
+            43/
+                3a124cd0fd8c3da58a2dfd3a8577a5e09f90c5
+                7a5fc67113854863fb6dbdb1eaec9b0e724f60
+            51/
+                a286c151ea61336b78a043397994adfe780592
+            55/
+                a4af7e3fa35d64bb795041ffe338c163f3c677
+            56/
+                71fdc65cd5ca543aae6e34f0060c03567d1f57
+            59/
+                eb7fe4c8a9eca34a2d89b95aa987c71d02d309
+            5a/
+                12c5f193b05890020a1192bb505928ed1dbdc3
+            5c/
+                646fbdc571f2e42d8fd91bbfcac8c6c1fa56b6
+            5d/
+                a7712095a7b1d7f461c965446726173e96806f
+            60/
+                a984edc5ef13ab53f985e8437ca250c0613253
+            68/
+                7bdeeadfd4a43fafdf39fd35c337aac38b8469
+                c01f04d9ed1af5efed86b6928731b3f536d805
+            6e/
+                13bdcdb856312deeddadb7c00b361beca77cb1
+                fc3dc9d7976ece1105ea9b4b10e35e9a50c644
+            6f/
+                d6f0ffebe5d4bc187493a98e9ca2017715bc9b
+            72/
+                f71743aed80939d3e3b7cfad66dc9c842a7dec
+            78/
+                eaa8267d19d8c8515f74bef3207311753a77ca
+            7e/
+                380d81861063d9b3e656831e94ee42a22ebefc
+                b55341ae360d563111a3ad6c4f297dda01a94b
+            7f/
+                54bff2aafcaab9940218d2ab445907ce9d9e7c
+            84/
+                ff2eb89b0c7e4b2e19a57a8dcfd47e67013b9b
+            86/
+                9afde63c3e872cf06417e67c12aad2e32b9fac
+            88/
+                191737933e9b47cd5386c880b97d8c1817d3d7
+                86341471938f6c3fcc779426ef55b6b83838d8
+            8a/
+                25d115419db98997bb2318921eb5374c0a2f94
+                aa44f4a887ffdac788312f373b4db71cf35f21
+            8e/
+                4fcfa9e88c2794a4732d519c13c1c4f309a6d7
+            8f/
+                3274712ed24adbe4c159927495470fd3f8bb3b
+            91/
+                aa74f94b8e5ec27fdabde2f405af25aae692cc
+                f2d0034730026165cef77a3f4c2a0449b455a8
+            95/
+                46ff1a4de74defe3b8122b7fc0ac851fb427f4
+            96/
+                1bdc18943e953dbd6d7772d6c4cf1545df8eec
+            9a/
+                fcc1442d272b26bbd520f4573cdb170f156d65
+            9b/
+                96a90259354e12e04a684f15582a0788b8e691
+            9c/
+                acfc490b2ec0847b50f8b046ccf6b5315d21eb
+                f33fdb46a6f3bfbb3f7c76283b776960a9dd17
+            9d/
+                372f06b19933407304f06e7f6e63754a6bbad0
+                7c7aca062f3798921789867418d638bc6c8b2a
+            9e/
+                ed8d57a75333376cc610c4bb5f0061c3a3912d
+            a4/
+                953b3238a4cc0483da6622a1cf9c9fc8e09db3
+            a7/
+                0e0853d4badd2b97c23b0a2bed420186882423
+            a9/
+                41c70f77c18712ba6d4535cb96b06ff82fc7e8
+            ac/
+                0f8a9fc2f69097b36160643781a17682419078
+            ad/
+                2b55eae03cc8a8abbcace0cae3e37e46d57cdd
+                5142cf78e860c8372560ea8f7ad7aae485e589
+            af/
+                10b6c860a16d81b9086cc14c5bffa89c325358
+            b0/
+                42e102255d390215a0c370f63141715434313d
+            b1/
+                752727d2170396de18642d7743d02afae6ee68
+                f5323b2ca9940202a7100c1ec2e50292da4cbb
+            b3/
+                d7b03c5e02cee04333c7b3141d19710c1bca9f
+            b4/
+                650aac71698ab50eb7d04586013154247f6ea6
+            b7/
+                53ae962310ebde0d621e16d3da02ccfe52b5c5
+            b8/
+                096ba7329f1760c5d9c8909255d1dedd14bb52
+            ba/
+                546fa4b5685b8271f6a4e5dcd12c3ec1786294
+                a174956ad862484368c23376e18e0b95b55f65
+                a5f0c9dd7d635cc32436861cfdb29961b71b01
+            bb/
+                e04e2b54cc369f9a19c3fa105017a19b0fcf14
+            bd/
+                b949c074b5bb070d72cde558493f47f7e78248
+            be/
+                10f7c1e3ea54b665ac6e20f2025bbc382faad9
+                8c12dbe24782a94df4c3cc9e3d50d17f17ef5e
+                c9e58e95ac14f002cd23fc82d87d420b92709f
+            c0/
+                b92d630f4f8c6f497b8209fe00b9d14632318b
+            c3/
+                f2a17145dc99e27b72c1a96773254577ce28c7
+            c9/
+                8edbc61c4b3b4eb19c228199e7a09e3fbbe9ff
+            cd/
+                03693d10f59e2484e80cdae21b196c94d958e2
+                bcb31bfbe79eaa5584bd7e8132aa8c0c6ddb67
+            ce/
+                b411db85572f721f572704915c44bc8e8e7f35
+            d4/
+                5852426aacbe54353b93cdb43e976eef24df71
+            d5/
+                050a9179c94ca7ae3d8997da4382be07f726ed
+                6f0c79453891c7e20f85b8295505a705d495c0
+            d8/
+                990a7ae3b2c6661ee0c4b1293e5c96392b052f
+            d9/
+                151d6e14b6bc74896de1d2f61ef1571be2613e
+            db/
+                1845ea27cea38c8c5d48e9527cb1505a2797b3
+                c6367fe8759b2f528011209c66b83bc8d02977
+            e0/
+                b185c1ca58ab1d62a65d985f28676d6908a196
+            e6/
+                9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+            e9/
+                9b56c0be3d423031eca34ed90add0c72db1ee4
+            eb/
+                fb09960429532dc26c4bd9abb86585c18ad6aa
+            ef/
+                a71b893ad305ac0818fedf0ecfa3d5edd17acf
+            f1/
+                2629aa1829132e4c4ce7da9ccb1bca771eb257
+                b04f043e38a6a7c4c3fe9928cf43f0c9c1b0d8
+            f3/
+                456da972c902706d268c04a26d96f193e4901f
+            f5/
+                f92bd5b2dccd1fae7256f952cdd3ff5ae0ebc8
+            f6/
+                e6736c3663dfa7564fd83b12b2393265955828
+            fa/
+                1015b0d461417a4f1a2e1ad41d34a373c793e2
+            fe/
+                fb94f1b6600d66d1ecb31b50b28962dad862d4
+            ff/
+                38f0280d6886cf358afb712fe5ff2c68793e3d
+            info/
+            pack/
+        refs/
+            heads/
+                dev
+                main
+            remotes/
+                DiscordBot/
+                    main
+                    Source-Code-Implementation
+            tags/
     bot/
         activity_tracker.py
         commands.py
@@ -85,9 +343,10 @@
         player_data.json
     settings/
         .env
-        game_settings.json
-        settings.json
         settings.py
+        json/
+            game_settings.json
+            settings.json
         __pycache__/
             settings.cpython-311.pyc
     utils/
@@ -422,6 +681,64 @@ import pandas as pd
 from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
 import asyncio
 import aiohttp
+from datetime import datetime, timedelta
+import random
+import pytz
+from settings.settings import load_settings
+
+TESTING = False
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+class GeneralCommands(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='daily')
+    async def daily(self, ctx):
+        user_id = str(ctx.author.id)
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.activity_data.get(user_id, {})
+
+        if ctx.message.content.strip() != '!daily':
+            return
+
+        if TESTING:
+            last_daily = None
+        else:
+            last_daily = user_data.get('last_daily', None)
+
+        now = datetime.utcnow()
+
+        if last_daily:
+            last_daily_time = datetime.strptime(last_daily, "%Y-%m-%d %H:%M:%S")
+            if now < last_daily_time + timedelta(hours = 24):
+                next_claim_time = last_daily_time + timedelta(hours = 24)
+                est = pytz.timezone('US/Eastern')
+                next_claim_time_est = next_claim_time.replace(tzinfo=pytz.utc).astimezone(est)
+                next_claim_time_str = next_claim_time_est.strftime('%Y-%m-%d %I:%M:%S %p')
+                await ctx.send(f"You have already claimed your daily {coin_icon}.  NEXT CLAIM TIME: {next_claim_time_str} EST.")
+                return
+            
+        daily_coins = random.randint(0, 10000)
+        digits = str(daily_coins)
+
+        await ctx.send(f"{ctx.author.mention}, generating your daily coins...")
+        
+        accumulated_digits = ""
+        for digit in digits:
+            accumulated_digits += digit
+            await ctx.send(f"{accumulated_digits}")
+            await asyncio.sleep(0.5)
+
+        activity_tracker.update_user_coins(ctx.author, daily_coins)
+        activity_tracker.activity_data[user_id]['last_daily'] = now.strftime('%Y-%m-%d %H:%M:%S')
+        activity_tracker.save_activity_data()
+
+        await ctx.send(f"You have been rewarded {daily_coins} coins for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} coins.")
+
+        if TESTING:
+            last_daily = None
 
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
@@ -551,10 +868,12 @@ class LevelUI(commands.Cog):
             raise error
 
 async def setup(bot):
-    await bot.add_cog(LevelUI(bot))
+    await bot.add_cog(GeneralCommands(bot))
 
 .\bot\games.py
 # bot/games.py
+
+# Games played in the discord server from bot
 
 from datetime import timedelta
 import random  # Importing the random module to use for shuffling and generating random letters
@@ -570,7 +889,7 @@ import asyncio
 from discord.ext import commands
 
 # Load game settings from a JSON file
-with open('settings/game_settings.json', 'r') as f:
+with open('settings/json/game_settings.json', 'r') as f:
     game_settings = json.load(f)
 
 # Blackjack settings
@@ -1200,9 +1519,15 @@ async def setup(bot):
 
 .\settings\settings.py
 import json 
+import os
 
 def load_settings():
-    with open("settings.json", "r") as f:
+    # Get the current directory of the settings.py file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Construct the path to the settings.json file
+    settings_path = os.path.join(current_dir, 'json', 'settings.json')
+    # Open and load the settings.json file
+    with open(settings_path, 'r', encoding='utf-8') as f:
         settings = json.load(f)
     return settings
 
