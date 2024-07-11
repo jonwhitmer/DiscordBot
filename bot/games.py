@@ -1,5 +1,7 @@
 # bot/games.py
 
+# Games played in the discord server
+
 from datetime import timedelta
 import random  # Importing the random module to use for shuffling and generating random letters
 import aiohttp  # Importing aiohttp for making asynchronous HTTP requests
