@@ -73,6 +73,7 @@
         FETCH_HEAD
         HEAD
         index
+        ORIG_HEAD
         hooks/
             applypatch-msg.sample
             commit-msg.sample
@@ -96,8 +97,12 @@
                 heads/
                     dev
                     main
+                    r
+                    DiscordBot/
+                        Source-Code-Implementation
                 remotes/
                     DiscordBot/
+                        dev
                         main
                         Source-Code-Implementation
         objects/
@@ -123,6 +128,8 @@
                 14e84bf9ee23517f3d235b09e24a247305c6df
             19/
                 3aa697c4df9ff6f803e64e67be2af20a9b0914
+            1a/
+                b08272ab73deb481521b30ac5519395a516def
             1d/
                 aa7e051967bfda1b2419928341f1ad02828c44
             1f/
@@ -138,16 +145,23 @@
                 99fa09dea639b6d84d7a6ace65d0d98f038681
             28/
                 a9764ae2b92a2568b1de03ed418881fff642b1
+            29/
+                29dc7abee09e1a72fe481f9230e67565029df9
             2b/
                 15136c0c7963e417c0d6ba59a470626b2c7435
+                3092c052d31720dde786222a14952643ffd1b6
             2c/
                 7dd95cf6271aa0a9440e5fab700493a61dd665
+                b03fcb717ce4c62a1e8d2a8b40cb8d8b372aaf
             2d/
                 7194f4869d904a806ad19870414f4548b21896
             33/
                 8b331a971faca76a2ac629e9d75246f672536f
+                a894560ea4769885afa8a4f379d3ea4d7ae24d
             34/
                 623dc3cb192afdaa6664a4a5714e210960d1ce
+            35/
+                856c24a06e7967c2708c950c4ae9016f0c060e
             38/
                 272b63ff81efb3c496665d65ef22085916fc4c
             39/
@@ -155,14 +169,19 @@
             3a/
                 feb9b41007a1346769613cc7391d0cf42cf8f8
             3b/
+                9594f72b8d6908a1180e953ff1c3b4a4cedd73
                 b37d29c930f566df143517c7122f42de1a9f01
             3c/
                 475b65a5235f333e980385e74d1b482f14edf1
             43/
                 3a124cd0fd8c3da58a2dfd3a8577a5e09f90c5
                 7a5fc67113854863fb6dbdb1eaec9b0e724f60
+            47/
+                8dc2c929bc1881ff957e41df71f23a34670a3f
             51/
                 a286c151ea61336b78a043397994adfe780592
+            53/
+                e68b90921ae48743e7e128ec7e24b8365b0c09
             55/
                 a4af7e3fa35d64bb795041ffe338c163f3c677
             56/
@@ -180,6 +199,10 @@
             68/
                 7bdeeadfd4a43fafdf39fd35c337aac38b8469
                 c01f04d9ed1af5efed86b6928731b3f536d805
+            6a/
+                3251469fd54a7687f04e5d9c0e1473edbc9811
+            6d/
+                26a252a549b151bf4a906f3f21f9e2380e4498
             6e/
                 13bdcdb856312deeddadb7c00b361beca77cb1
                 fc3dc9d7976ece1105ea9b4b10e35e9a50c644
@@ -194,6 +217,8 @@
                 b55341ae360d563111a3ad6c4f297dda01a94b
             7f/
                 54bff2aafcaab9940218d2ab445907ce9d9e7c
+            82/
+                f70657a820252f37f5b3291e4ed1fd8e3ca7cb
             84/
                 ff2eb89b0c7e4b2e19a57a8dcfd47e67013b9b
             86/
@@ -227,6 +252,11 @@
                 7c7aca062f3798921789867418d638bc6c8b2a
             9e/
                 ed8d57a75333376cc610c4bb5f0061c3a3912d
+                f0f7506b0935cf4ba0411798bfb6e353844b82
+            a2/
+                3e2f7732ad44e802c733b9f0072bd9b908c422
+            a3/
+                01ead626ed055378d05c0399ee60170548426d
             a4/
                 953b3238a4cc0483da6622a1cf9c9fc8e09db3
             a7/
@@ -237,14 +267,18 @@
                 0f8a9fc2f69097b36160643781a17682419078
             ad/
                 2b55eae03cc8a8abbcace0cae3e37e46d57cdd
+                3d14020048b54d75ca6856c354e49aa7f3c744
                 5142cf78e860c8372560ea8f7ad7aae485e589
             af/
                 10b6c860a16d81b9086cc14c5bffa89c325358
             b0/
                 42e102255d390215a0c370f63141715434313d
+                574b92661853a6be73dfd63e8f9d1765427e26
             b1/
                 752727d2170396de18642d7743d02afae6ee68
                 f5323b2ca9940202a7100c1ec2e50292da4cbb
+            b2/
+                31dfd9a923bfc7a957efaa998de3d195774b1e
             b3/
                 d7b03c5e02cee04333c7b3141d19710c1bca9f
             b4/
@@ -269,6 +303,8 @@
                 b92d630f4f8c6f497b8209fe00b9d14632318b
             c3/
                 f2a17145dc99e27b72c1a96773254577ce28c7
+            c6/
+                dacbd903a178e8f090146e9ba24895900bd234
             c9/
                 8edbc61c4b3b4eb19c228199e7a09e3fbbe9ff
             cd/
@@ -281,6 +317,7 @@
             d5/
                 050a9179c94ca7ae3d8997da4382be07f726ed
                 6f0c79453891c7e20f85b8295505a705d495c0
+                cbff5dde6e03addc22c71314b8b8553856df43
             d8/
                 990a7ae3b2c6661ee0c4b1293e5c96392b052f
             d9/
@@ -290,6 +327,8 @@
                 c6367fe8759b2f528011209c66b83bc8d02977
             e0/
                 b185c1ca58ab1d62a65d985f28676d6908a196
+            e4/
+                658f134747d3c15fb2304eda100090bd114192
             e6/
                 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
             e9/
@@ -304,11 +343,14 @@
             f3/
                 456da972c902706d268c04a26d96f193e4901f
             f5/
+                a8332bc15a1778337fa2ba44e87c1585990568
                 f92bd5b2dccd1fae7256f952cdd3ff5ae0ebc8
             f6/
                 e6736c3663dfa7564fd83b12b2393265955828
             fa/
                 1015b0d461417a4f1a2e1ad41d34a373c793e2
+            fd/
+                032ad9b6792684c99934bf5782b8c02050e3d3
             fe/
                 fb94f1b6600d66d1ecb31b50b28962dad862d4
             ff/
@@ -319,8 +361,12 @@
             heads/
                 dev
                 main
+                r
+                DiscordBot/
+                    Source-Code-Implementation
             remotes/
                 DiscordBot/
+                    dev
                     main
                     Source-Code-Implementation
             tags/
@@ -735,10 +781,7 @@ class GeneralCommands(commands.Cog):
         activity_tracker.activity_data[user_id]['last_daily'] = now.strftime('%Y-%m-%d %H:%M:%S')
         activity_tracker.save_activity_data()
 
-        await ctx.send(f"You have been rewarded {daily_coins} coins for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} coins.")
-
-        if TESTING:
-            last_daily = None
+        await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
 
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
@@ -887,6 +930,7 @@ import io
 from io import BytesIO  # Importing BytesIO for handling image data in memory
 import asyncio
 from discord.ext import commands
+from settings.settings import load_settings
 
 # Load game settings from a JSON file
 with open('settings/json/game_settings.json', 'r') as f:
@@ -901,6 +945,9 @@ DECK = [f'{value}_of_{suit}' for suit in SUITS for value in CARD_VALUES.keys()] 
 DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
 DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
 BOT_TESTING_MODE = game_settings['duel']['bot_testing_mode']  # Whether bot testing mode is enabled
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
 
 # Class for handling duel game logic
 class Duel:
@@ -1056,17 +1103,17 @@ class BlackjackGame:
         if result == "win":
             payout = self.bet * 2
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=self.bet)
-            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} coins.")
+            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} {coin_icon}.")
         elif result == "bust":
             payout = -(self.bet)
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
-            await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} coins.")
+            await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} {coin_icon}.")
         elif result == "lose":
             payout = -(self.bet)
             activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
-            await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} coins.")
+            await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
-            await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} coins has been returned.")
+            await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
         del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
 
     async def download_image(self, url):
@@ -1185,7 +1232,7 @@ class PokerGame:
             await self.prompt_player_action(player)
 
     async def prompt_player_action(self, player):
-        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} coins.")
+        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
         def check(m):
             return m.author == player and m.channel == self.ctx.channel and m.content.lower() in ['!call', '!fold', '!raise', '!allin']
         try:
@@ -1209,7 +1256,7 @@ class PokerGame:
         else:
             self.player_balances[player] -= call_amount
             self.pot += call_amount
-            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} coins.")
+            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} {coin_icon}.")
 
     async def fold(self, player):
         self.betting_order.remove(player)
@@ -1226,13 +1273,13 @@ class PokerGame:
             else:
                 raise_amount = int(msg.content)
                 if raise_amount > self.player_balances[player]:
-                    await self.ctx.send("You don't have enough coins to raise that amount.")
+                    await self.ctx.send(f"You don't have enough {coin_icon} to raise that amount.")
                     await self.raise_bet(player)
                 else:
                     self.current_bet += raise_amount
                     self.player_balances[player] -= raise_amount
                     self.pot += raise_amount
-                    await self.ctx.send(f"{player.mention} raises by {raise_amount} coins. Current bet is now {self.current_bet} coins. Pot is now {self.pot} coins.")
+                    await self.ctx.send(f"{player.mention} raises by {raise_amount} {coin_icon}. Current bet is now {self.current_bet} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
         except asyncio.TimeoutError:
             await self.fold(player)
 
@@ -1241,7 +1288,7 @@ class PokerGame:
         self.all_in_players.add(player)
         self.player_balances[player] = 0
         self.pot += allin_amount
-        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} coins. Pot is now {self.pot} coins.")
+        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
 
     async def reveal_community_cards(self, num):
         for _ in range(num):
@@ -1261,7 +1308,7 @@ class PokerGame:
             hands.append((player, best_hand))
             await self.reveal_hand(player, best_hand)
         winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
-        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} coins!")
+        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} {coin_icon}!")
 
     async def display_player_list(self):
         if self.players:
@@ -1349,7 +1396,7 @@ class CommandHandler(commands.Cog):
                 await ctx.send(f"{winner.mention} wins the duel!")
                 activity_tracker = self.bot.get_cog('ActivityTracker')
                 activity_tracker.update_user_activity(winner, points=DUEL_WIN_POINTS, coins=DUEL_WIN_COINS)
-                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} coins! Total coins: {activity_tracker.activity_data[str(winner.id)]['coins']}")
+                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} {coin_icon}! Total {coin_icon}: {activity_tracker.activity_data[str(winner.id)]['coins']}")
                 
                 del self.duels[duel.player1]
                 del self.duels[duel.player2]
@@ -1374,7 +1421,7 @@ class CommandHandler(commands.Cog):
         stats = activity_tracker.get_statistics(str(ctx.author.id))
         current_coins = stats.get('coins', 0)
 
-        await ctx.send(f"You have {current_coins} coins. How many coins would you like to bet?")
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to bet?")
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
@@ -1386,7 +1433,7 @@ class CommandHandler(commands.Cog):
                 if bet > 0 and bet <= current_coins:
                     break
                 else:
-                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} coins). You have 30 seconds to respond accurately.")
+                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
             except asyncio.TimeoutError:
                 await ctx.send("You took too long to respond! Please use !blackjack again.")
                 return
