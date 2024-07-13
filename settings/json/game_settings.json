@@ -1,6 +1,12 @@
 {
-    "blackjack": {
-      "card_values": {
+    "game":
+    {
+      "bot_testing_mode": true
+    },
+    "blackjack": 
+    {
+      "card_values": 
+      {
         "2": 2,
         "3": 3,
         "4": 4,
@@ -17,10 +23,24 @@
       },
       "suits": ["hearts", "diamonds", "clubs", "spades"]
     },
-    "duel": {
+
+    "duel": 
+    {
       "win_points": 100,
-      "win_coins": 500,
-      "bot_testing_mode": true
+      "win_coins": 500
+    },
+
+    "poker":
+    {
+      "win_points": 500,
+
+      "preflop_max_bet": 10000,
+
+      "min_players": 2,
+      "max_players": 10,
+      "lobby_time": 120,
+
+      "time_per_turn": 90
     }
   }
   

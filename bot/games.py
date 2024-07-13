@@ -15,6 +15,7 @@ from io import BytesIO  # Importing BytesIO for handling image data in memory
 import asyncio
 from discord.ext import commands
 from settings.settings import load_settings
+import itertools
 
 # Load game settings from a JSON file
 with open('settings/json/game_settings.json', 'r') as f:
@@ -30,7 +31,19 @@ DUMP_IMAGES_FOLDER = 'utils/images/blackjackdump'
 # Duel settings
 DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
 DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
-BOT_TESTING_MODE = game_settings['duel']['bot_testing_mode']  # Whether bot testing mode is enabled
+
+# Poker settings
+POKER_WIN_POINTS = game_settings['poker']['win_points']
+POKER_PREFLOP_MAX_BET = game_settings['poker']['preflop_max_bet']
+POKER_MIN_PLAYERS = game_settings['poker']['min_players']
+POKER_MAX_PLAYERS = game_settings['poker']['max_players']
+DUMP_IMAGES_FOLDER_POKER = 'utils/images/pokerdump'
+
+# Game Settings
+BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
+if BOT_TESTING_MODE:
+    POKER_MIN_PLAYERS = 1
+    POKER_MAX_PLAYERS = 1
 
 settings = load_settings()
 coin_icon = settings['coin_icon']
@@ -232,12 +245,10 @@ class BlackjackGame:
                 os.unlink(file_path)
 
 class PokerGame:
-
-    DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'
-
-    def __init__(self, ctx, bot):
+    def __init__(self, ctx, bot, buy_in):
         self.bot = bot
         self.ctx = ctx
+        self.buy_in = buy_in
         self.players = []
         self.betting_order = []
         self.current_bet = 0
@@ -247,11 +258,22 @@ class PokerGame:
         self.player_hands = {}
         self.player_balances = {}
         self.all_in_players = set()
+        self.DECK_OF_CARDS_FOLDER = DECK_IMAGES_FOLDER
+        self.game_cancelled = False
+
+        # Settings
+        if BOT_TESTING_MODE:
+            self.POKER_MIN_PLAYERS = 1
+            self.POKER_MAX_PLAYERS = 1
+        else:
+            self.POKER_WIN_POINTS = POKER_WIN_POINTS
+            self.POKER_PREFLOP_MAX_BET = POKER_PREFLOP_MAX_BET
+            self.POKER_MIN_PLAYERS = POKER_MIN_PLAYERS
+            self.POKER_MAX_PLAYERS = POKER_MAX_PLAYERS
 
     async def start_game(self):
         await self.collect_players()
-        if len(self.players) < 1:
-            await self.ctx.send("Not enough players to start the game.")
+        if len(self.players) < self.POKER_MIN_PLAYERS:
             return
 
         self.betting_order = self.players[:]
@@ -267,46 +289,147 @@ class PokerGame:
         await self.showdown()
 
     async def collect_players(self):
-        await self.ctx.send("A new poker game is starting! Type `!join poker` to join. You have 2 minutes to join.")
-        
-        if self.ctx.author not in self.players:
-            self.players.append(self.ctx.author)
-            self.player_balances[self.ctx.author] = 20000  # Starting balance
-            await self.display_player_list()
-    
-        def check(m):
+        await self.ctx.send(f"A new poker game is starting with a buy-in of {self.buy_in} {coin_icon}! Type `!join poker` to join. You have 2 minutes to join. The host can type `!cancel poker` to cancel the game.")
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        player_coins = activity_tracker.get_statistics(str(self.ctx.author.id)).get('coins', 0)
+        if player_coins < self.buy_in:
+            await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough coins to start the game.")
+            return
+
+        self.players.append(self.ctx.author)
+        self.player_balances[self.ctx.author] = self.buy_in
+        activity_tracker.update_user_activity(self.ctx.author, coins=-(self.buy_in))
+        await self.display_player_list()
+
+        def join_check(m):
             return m.content.lower() == "!join poker" and m.channel == self.ctx.channel
-    
+
+        def cancel_check(m):
+            return m.content.lower() == "!cancel poker" and m.channel == self.ctx.channel and m.author == self.ctx.author
+
         end_time = discord.utils.utcnow() + timedelta(minutes=2)
-        
-        while discord.utils.utcnow() < end_time:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=(end_time - discord.utils.utcnow()).total_seconds())
-                if msg.author not in self.players:
-                    self.players.append(msg.author)
-                    self.player_balances[msg.author] = 20000  # Starting balance
-                    await self.ctx.send(f"{msg.author.mention} has joined the game!")
-                    await self.display_player_list()
-            except asyncio.TimeoutError:
+        warning_times = [60, 30, 10]  # Times to send warnings in seconds
+        sent_warnings = set()
+
+        while True:
+            remaining_time = (end_time - discord.utils.utcnow()).total_seconds()
+
+            # Send warning messages
+            for warning in warning_times:
+                if remaining_time <= warning and warning not in sent_warnings:
+                    await self.ctx.send(f"{int(warning)} seconds remaining to join the game!")
+                    sent_warnings.add(warning)
+
+            if remaining_time <= 0:
                 break
 
+            try:
+                done, pending = await asyncio.wait(
+                    [asyncio.create_task(self.bot.wait_for('message', check=join_check)), asyncio.create_task(self.bot.wait_for('message', check=cancel_check))],
+                    timeout=1,
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+
+                if not done:
+                    continue
+
+                msg = done.pop().result()
+
+                if msg.content.lower() == "!cancel poker":
+                    await self.cancel_game()
+                    return
+
+                if msg.author in self.players:
+                    await self.ctx.send(f"{msg.author.mention}, you are already in the game!")
+                    continue
+
+                player_coins = activity_tracker.get_statistics(str(msg.author.id)).get('coins', 0)
+                if player_coins < self.buy_in:
+                    await self.ctx.send(f"{msg.author.mention}, you do not have enough coins to join the game.")
+                    continue
+
+                self.players.append(msg.author)
+                self.player_balances[msg.author] = self.buy_in
+                activity_tracker.update_user_activity(msg.author, coins=-self.buy_in)
+                await self.ctx.send(f"{msg.author.mention} has joined the game!")
+                await self.display_player_list()
+
+                if len(self.players) > self.POKER_MAX_PLAYERS:
+                    await self.ctx.send(f"MAX PLAYER EXCEEDED ERROR! The game has been cancelled.")
+                    await self.cancel_game()
+                    return
+
+                if len(self.players) == self.POKER_MAX_PLAYERS:
+                    await self.ctx.send("Maximum number of players reached. Starting the game now!")
+                    await self.start_game()
+                    return
+            except asyncio.TimeoutError:
+                continue
+
+        if len(self.players) < self.POKER_MIN_PLAYERS:
+            await self.ctx.send("Not enough players to start the game. Refunding buy-ins.")
+            for player in self.players:
+                activity_tracker.update_user_activity(player, coins=self.buy_in)
+                await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} {coin_icon}.")
+            return
+
+        await self.start_game()
+
+    async def cancel_game(self):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        for player in self.players:
+            activity_tracker.update_user_activity(player, coins=self.buy_in)
+            await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} {coin_icon}.")
+        await self.ctx.send("The poker game has been cancelled by the host.")
+
     async def deal_cards(self):
-        self.deck = [f'{value}{suit}' for value in '23456789TJQKA' for suit in 'CDHS']
+        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
+        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
         random.shuffle(self.deck)
         for player in self.players:
             self.player_hands[player] = [self.deck.pop(), self.deck.pop()]
             await self.send_hand(player)
 
-    async def send_hand(self, player):
+    async def concatenate_images(self, image_paths, filename):
+        images = [Image.open(path) for path in image_paths]
+        widths, heights = zip(*(img.size for img in images))
+        total_width = sum(widths)
+        max_height = max(heights)
+        new_image = Image.new('RGB', (total_width, max_height))
+
+        x_offset = 0
+        for img in images:
+            new_image.paste(img, (x_offset, 0))
+            x_offset += img.size[0]
+
+        output_path = os.path.join(DUMP_IMAGES_FOLDER_POKER, filename)
+        new_image.save(output_path)
+
+        return output_path
+    
+    async def send_hand(self, player, reveal=False):
         hand = self.player_hands[player]
-        cards = [await self.get_card_image(card) for card in hand]
-        embed = discord.Embed(title="Your Hand")
-        for i, card in enumerate(cards):
-            embed.add_field(name=f"Card {i+1}", value=f"[{card}]({card})")
-        await player.send(embed=embed)
+        card_images = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(card_images, f'poker_{player.id}_hand.png')
+        file = discord.File(concatenated_image_path, filename="hand.png")
+
+        if reveal:
+            embed = discord.Embed(title=f"{player.display_name}'s Hand")
+        else:
+            embed = discord.Embed(title="Your Hand")
+        
+        embed.set_image(url="attachment://hand.png")
+        await player.send(file=file, embed=embed)
 
     async def get_card_image(self, card):
-        card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, f"{card}.png")
+        card_value = card[:-1]
+        card_suit = card[-1].upper()
+        if card_value == '10':
+            card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, '10', f'10{card_suit}.png')
+        else:
+            card_value = card_value[0].upper()
+            card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, card_value, f'{card_value}{card_suit}.png')
         return card_image_path
 
     async def betting_round(self, pre_flop=False):
@@ -317,13 +440,22 @@ class PokerGame:
             await self.prompt_player_action(player)
 
     async def prompt_player_action(self, player):
-        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
+        if self.current_bet == 0:
+            await self.ctx.send(f"{player.mention}, it's your turn. You can `!check`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
+            valid_actions = ['!check', '!fold', 'raise', '!allin']
+        else: 
+            await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
+            valid_actions = ['!call', '!fold', '!raise', '!allin']
+
         def check(m):
-            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in ['!call', '!fold', '!raise', '!allin']
+            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in valid_actions
+        
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=120)
             action = msg.content.lower()
-            if action == '!call':
+            if action == '!check':
+                await self.check(player)
+            elif action == '!call':
                 await self.call(player)
             elif action == '!fold':
                 await self.fold(player)
@@ -332,7 +464,24 @@ class PokerGame:
             elif action == '!allin':
                 await self.allin(player)
         except asyncio.TimeoutError:
-            await self.fold(player)
+                await self.fold(player)
+
+    async def peek(self, ctx):
+        if ctx.author not in self.players:
+            await ctx.send(f"{ctx.author.mention}, you are not part of this game!")
+            return
+
+        hand = self.player_hands[ctx.author]
+        card_images = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(card_images, f'poker_{ctx.author.id}_peek_hand.png')
+        file = discord.File(concatenated_image_path, filename="peek_hand.png")
+
+        embed = discord.Embed(title="Your Poker Hand")
+        embed.set_image(url="attachment://peek_hand.png")
+        await ctx.send(embed=embed, file=file, ephemeral=True)
+
+    async def check(self, player):
+        await self.ctx.send(f"{player.mention} checks.")
 
     async def call(self, player):
         call_amount = self.current_bet - self.player_balances[player]
@@ -377,12 +526,15 @@ class PokerGame:
 
     async def reveal_community_cards(self, num):
         for _ in range(num):
+            self.deck.pop()  # Burn card
             self.community_cards.append(self.deck.pop())
         cards = [await self.get_card_image(card) for card in self.community_cards]
+        concatenated_image_path = await self.concatenate_images(cards, 'community_cards.png')
+        file = discord.File(concatenated_image_path, filename="community_cards.png")
+
         embed = discord.Embed(title="Community Cards")
-        card_str = " ".join([f"[{i+1}]({card})" for i, card in enumerate(cards)])
-        embed.add_field(name="Cards", value=card_str, inline=False)
-        await self.ctx.send(embed=embed)
+        embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=file, embed=embed)
 
     async def showdown(self):
         await self.ctx.send("Showdown! Revealing hands...")
@@ -391,7 +543,12 @@ class PokerGame:
             hand = self.player_hands[player] + self.community_cards
             best_hand = self.get_best_hand(hand)
             hands.append((player, best_hand))
-            await self.reveal_hand(player, best_hand)
+            await self.send_hand(player, reveal=True)
+        
+        if not hands:
+            await self.ctx.send("No hands to compare, ending showdown.")
+            return
+        
         winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
         await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} {coin_icon}!")
 
@@ -403,13 +560,66 @@ class PokerGame:
         else:
             await self.ctx.send("No players have joined yet.")
 
-    def get_best_hand(self, hand):
-        # Implement poker hand ranking logic to return the best 5-card hand
-        pass
-
     def hand_rank(self, hand):
-        # Implement hand ranking comparison
-        pass
+        """
+        Determine the rank of a given poker hand.
+
+        :param hand: List of 5 card strings (e.g., ['2H', '3D', '5S', '9C', 'KD'])
+        :return: Tuple representing the hand rank and its components for comparison
+        """
+
+        # Define card ranks and their corresponding values
+        ranks = '2345678910JQKA'
+        values = {r: i for i, r in enumerate(ranks.split(), start=2)}
+
+        # Get the numeric value of each card in the hand
+        hand_ranks = sorted(
+            [values['10'] if card[:-1] == '10' else values[card[0]] for card in hand],
+            reverse=True
+        )
+
+        # Check for flush (all cards have the same suit)
+        is_flush = len(set(card[-1] for card in hand)) == 1
+
+        # Check for straight (consecutive card values)
+        is_straight = len(set(hand_ranks)) == 5 and (hand_ranks[0] - hand_ranks[-1] == 4)
+
+        # Special case: A-5 straight
+        if hand_ranks == [14, 5, 4, 3, 2]:
+            hand_ranks = [5, 4, 3, 2, 1]
+            is_straight = True
+
+        # Count the occurrences of each rank in the hand
+        rank_counter = {r: hand_ranks.count(r) for r in hand_ranks}
+        rank_values = sorted(((count, rank) for rank, count in rank_counter.items()), reverse=True)
+
+        # Determine the rank of the hand
+        if is_straight and is_flush:
+            return (8, hand_ranks[0])  # Straight flush
+        elif rank_values[0][0] == 4:
+            return (7, rank_values[0][1], rank_values[1][1])  # Four of a kind
+        elif rank_values[0][0] == 3 and rank_values[1][0] == 2:
+            return (6, rank_values[0][1], rank_values[1][1])  # Full house
+        elif is_flush:
+            return (5, hand_ranks)  # Flush
+        elif is_straight:
+            return (4, hand_ranks[0])  # Straight
+        elif rank_values[0][0] == 3:
+            return (3, rank_values[0][1], hand_ranks)  # Three of a kind
+        elif rank_values[0][0] == 2 and rank_values[1][0] == 2:
+            return (2, rank_values[0][1], rank_values[1][1], hand_ranks)  # Two pair
+        elif rank_values[0][0] == 2:
+            return (1, rank_values[0][1], hand_ranks)  # One pair
+        else:
+            return (0, hand_ranks)  # High card
+        
+    def get_best_hand(self, hand):
+        """
+        From the 7 cards, choose the best 5-card hand.
+        """
+        all_combinations = itertools.combinations(hand, 5)
+        best_hand = max(all_combinations, key=self.hand_rank)
+        return best_hand
 
     async def reveal_hand(self, player, hand):
         cards = [await self.get_card_image(card) for card in hand]
@@ -552,17 +762,42 @@ class CommandHandler(commands.Cog):
         if ctx.author.id in self.poker_games:
             await ctx.send("You are already in a game!")
             return
-        game = PokerGame(ctx, self.bot)
-        self.poker_games[ctx.author.id] = game
-        await game.start_game()
 
-    @commands.command(name='join poker')
-    async def join_poker(self, ctx):
-        if ctx.author.id not in self.poker_games:
-            await ctx.send("You need to start a game first using !poker.")
-            return
-        game = self.poker_games[ctx.author.id]
-        await game.collect_players()
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(ctx.author.id))
+        current_coins = stats.get('coins', 0)
+
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+        while True:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
+                buy_in = int(msg.content)
+                if buy_in > 0 and buy_in <= current_coins:
+                    break
+                else:
+                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond! Please use !poker again.")
+                return
+
+        game = PokerGame(ctx, self.bot, buy_in)
+        self.poker_games[ctx.author.id] = game
+        try:
+            await game.start_game()
+        finally:
+            del self.poker_games[ctx.author.id]
+
+        @commands.command(name='join poker')
+        async def join_poker(self, ctx):
+            if ctx.author.id not in self.poker_games:
+                await ctx.send("You need to start a game first using !poker.")
+                return
+            game = self.poker_games[ctx.author.id]
+            await game.collect_players()
 
 async def setup(bot):
     await bot.add_cog(CommandHandler(bot))
