@@ -11,6 +11,9 @@ from datetime import datetime, timedelta
 import random
 import pytz
 from settings.settings import load_settings
+import subprocess
+import sys
+import os
 
 TESTING = False
 settings = load_settings()
@@ -19,6 +22,24 @@ coin_icon = settings['coin_icon']
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    @commands.command(name='update_notes')
+    async def update_notes(self, ctx, *, notes):
+        try:
+            # Determine if the bot is online or offline
+            online_status = True  # Replace with your logic to determine the status
+
+            script_path = os.path.join('bot', 'status', 'online.py' if online_status else 'offline.py')
+
+            # Run the update_additional_notes method in the respective script
+            process = subprocess.run([sys.executable, script_path, notes], capture_output=True, text=True)
+
+            if process.returncode == 0:
+                print("Successful Notes Change")
+            else:
+                await ctx.send(f"Failed to update additional notes. Error: {process.stderr}")
+        except Exception as e:
+            await ctx.send(f"An error occurred: {str(e)}")
 
     @commands.command(name='daily')
     async def daily(self, ctx):

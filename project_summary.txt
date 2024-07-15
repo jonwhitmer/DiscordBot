@@ -1,70 +1,11 @@
 ./
-    blackjack_1170556246257057888_dealer_hand.png
-    blackjack_1170556246257057888_player_hand.png
-    blackjack_443232925769531392_dealer_hand.png
-    blackjack_443232925769531392_player_hand.png
-    blackjack_462165652719927318_dealer_hand.png
-    blackjack_462165652719927318_player_hand.png
-    blackjack_624678686980833312_dealer_hand.png
-    blackjack_624678686980833312_player_hand.png
+    download_cards.py
     main.py
     nullbytes.py
     project_summary.txt
     requirements.txt
     resetdata.py
     summary.py
-    temp_0C.png
-    temp_0D.png
-    temp_0H.png
-    temp_0S.png
-    temp_2C.png
-    temp_2D.png
-    temp_2H.png
-    temp_2S.png
-    temp_3C.png
-    temp_3D.png
-    temp_3H.png
-    temp_3S.png
-    temp_4D.png
-    temp_4H.png
-    temp_4S.png
-    temp_5C.png
-    temp_5D.png
-    temp_5H.png
-    temp_5S.png
-    temp_6C.png
-    temp_6D.png
-    temp_6H.png
-    temp_6S.png
-    temp_7C.png
-    temp_7D.png
-    temp_7H.png
-    temp_7S.png
-    temp_8C.png
-    temp_8D.png
-    temp_8H.png
-    temp_8S.png
-    temp_9C.png
-    temp_9D.png
-    temp_9H.png
-    temp_9S.png
-    temp_AC.png
-    temp_aceDiamonds.png
-    temp_AH.png
-    temp_AS.png
-    temp_back.png
-    temp_JC.png
-    temp_JD.png
-    temp_JH.png
-    temp_JS.png
-    temp_KC.png
-    temp_KD.png
-    temp_KH.png
-    temp_KS.png
-    temp_QC.png
-    temp_QD.png
-    temp_QH.png
-    temp_QS.png
     test.py
     .git/
         COMMIT_EDITMSG
@@ -74,6 +15,7 @@
         HEAD
         index
         ORIG_HEAD
+        packed-refs
         hooks/
             applypatch-msg.sample
             commit-msg.sample
@@ -97,14 +39,16 @@
                 heads/
                     dev
                     main
-                    r
-                    DiscordBot/
-                        Source-Code-Implementation
+                    testing
+                    wip
                 remotes/
-                    DiscordBot/
+                    origin/
                         dev
+                        features
                         main
                         Source-Code-Implementation
+                        testing
+                        wip
         objects/
             00/
                 4de6c8f192f0ddc15b3acc4a7fa25b6b6fa488
@@ -113,16 +57,28 @@
             01/
                 2f0c5d49647e67d74331189a6fa7f816cb07c0
                 e2314bc19a410bf73c2247c77b443f6fc42aa2
+            05/
+                f497cf944da16db531e09a29aa0016b0dd3d72
             06/
                 d3fc6d20426aa058f1065fb56329fe1874e722
+            07/
+                786fefc5f4c2f048c2a93c1afd608b40b6035a
+                bca2acaeee93d1a9fe435c77f626a928cf530f
+            0d/
+                f50f1fc2836db88454109c3962b5a4a249f5a8
             0e/
                 638cdf6588bd8af5664efdc11363104c3c5b3d
             0f/
                 094f627622511f772310d5043d85ccac4550f2
             10/
                 779b8aa8cb957354d4bdf7570db43973152f60
+                a805bf4381c6268bed15ab939eb1845ba0cc92
+            11/
+                8c33fc6979dd8b56201dd72be4c994e695597a
+                fac4b565f33ba735764383f2045ab77bc5756b
             17/
                 63b6038f3e5d6e9b51b186a5c45635c70a6363
+                bbfc7795d0a35514c43603afb9457d174a22ba
                 dfae167ce9b7bdd32908b9abcd8a8725fcd00b
             18/
                 14e84bf9ee23517f3d235b09e24a247305c6df
@@ -130,7 +86,12 @@
                 3aa697c4df9ff6f803e64e67be2af20a9b0914
             1a/
                 b08272ab73deb481521b30ac5519395a516def
+                faee21ce500e46e17297ab43eb2649a21d31f2
+            1c/
+                35adae7f315f4fa7a11da8fc272aecfe63760f
+                4fc2590436195beb211b114575d3fbf9124007
             1d/
+                a144b195b777a5ae5f68ff83397e1689da829e
                 aa7e051967bfda1b2419928341f1ad02828c44
             1f/
                 edcad9519ad8dbd3b56f50aff3656f8fd91fca
@@ -138,15 +99,21 @@
                 7491a555eb6ef65b85c9525314b00242fe02e8
                 dcc1020e0a5737ddc3415dcadf5bf3394c4761
             21/
+                0a60c6add0dbf391f52b3788150effc9674a81
                 c0c63d634926abb2bb5d554f24e98c58b4c1e4
             24/
                 201748e13db38855599d98c451c459dc57b8ab
             25/
                 99fa09dea639b6d84d7a6ace65d0d98f038681
+            26/
+                59a36846cbd3ec3ebb3865f1107cdf65628c23
+            27/
+                4b1aafbfa1d735b6996a51e013e59ea174c038
             28/
                 a9764ae2b92a2568b1de03ed418881fff642b1
             29/
                 29dc7abee09e1a72fe481f9230e67565029df9
+                cf1de7e08c8d787cbbfd95ea730c77d1c107d5
             2b/
                 15136c0c7963e417c0d6ba59a470626b2c7435
                 3092c052d31720dde786222a14952643ffd1b6
@@ -161,7 +128,10 @@
             34/
                 623dc3cb192afdaa6664a4a5714e210960d1ce
             35/
+                200a2371ab7f328a6a646bfc37f74b0ba33718
                 856c24a06e7967c2708c950c4ae9016f0c060e
+            36/
+                24068cca3992042f6a0fe41680c396470f7c41
             38/
                 272b63ff81efb3c496665d65ef22085916fc4c
             39/
@@ -169,6 +139,7 @@
             3a/
                 feb9b41007a1346769613cc7391d0cf42cf8f8
             3b/
+                6b70b57aea35ff01ee029542a93025a4f9ebad
                 9594f72b8d6908a1180e953ff1c3b4a4cedd73
                 b37d29c930f566df143517c7122f42de1a9f01
             3c/
@@ -176,8 +147,15 @@
             43/
                 3a124cd0fd8c3da58a2dfd3a8577a5e09f90c5
                 7a5fc67113854863fb6dbdb1eaec9b0e724f60
+            46/
+                5fdb3554f473fb3d1a5c32e6427e833105a0df
+                9b4b0ba77605ce7c1126648486553096e72280
             47/
                 8dc2c929bc1881ff957e41df71f23a34670a3f
+            49/
+                1b2e297e4a5032b3b3b630fdda6b53c4bf1b51
+            4f/
+                724a051e591e12f44cd513f12322f3c5a57caa
             51/
                 a286c151ea61336b78a043397994adfe780592
             53/
@@ -190,6 +168,8 @@
                 eb7fe4c8a9eca34a2d89b95aa987c71d02d309
             5a/
                 12c5f193b05890020a1192bb505928ed1dbdc3
+                15deee73ff44fbea12b59a0d67fdbf5ed7923b
+                56f47bd393eea0f6a01f8a1e8fd787afda84d7
             5c/
                 646fbdc571f2e42d8fd91bbfcac8c6c1fa56b6
             5d/
@@ -199,19 +179,28 @@
             68/
                 7bdeeadfd4a43fafdf39fd35c337aac38b8469
                 c01f04d9ed1af5efed86b6928731b3f536d805
+            69/
+                977903855f47180d6436a19c6907559031b02a
             6a/
                 3251469fd54a7687f04e5d9c0e1473edbc9811
             6d/
                 26a252a549b151bf4a906f3f21f9e2380e4498
             6e/
                 13bdcdb856312deeddadb7c00b361beca77cb1
+                93e3c0e1a5120f717b3d0877ac81b2d1d8fce1
                 fc3dc9d7976ece1105ea9b4b10e35e9a50c644
             6f/
                 d6f0ffebe5d4bc187493a98e9ca2017715bc9b
             72/
                 f71743aed80939d3e3b7cfad66dc9c842a7dec
+            75/
+                1f11e1f04f651e6c368f5d7d1cb15ddc941ce2
             78/
                 eaa8267d19d8c8515f74bef3207311753a77ca
+            7a/
+                af9971d4e13ce08f6143074b082c9f57d8596c
+            7b/
+                39594207bdebea8fcd9c4b8191a83f890cfe0b
             7e/
                 380d81861063d9b3e656831e94ee42a22ebefc
                 b55341ae360d563111a3ad6c4f297dda01a94b
@@ -222,20 +211,30 @@
             84/
                 ff2eb89b0c7e4b2e19a57a8dcfd47e67013b9b
             86/
+                5d547134439ee0b1b02475453b263881eeeac1
                 9afde63c3e872cf06417e67c12aad2e32b9fac
             88/
                 191737933e9b47cd5386c880b97d8c1817d3d7
                 86341471938f6c3fcc779426ef55b6b83838d8
+            89/
+                2ec021ab9f8bc0e1a7254ea27cea0d44784b5e
             8a/
                 25d115419db98997bb2318921eb5374c0a2f94
                 aa44f4a887ffdac788312f373b4db71cf35f21
+            8c/
+                28e4db2dbcc1de3d88c38486304a12a75b1c79
             8e/
+                084cb600cc6ff2e57c2a77fb44791eb73a12c8
                 4fcfa9e88c2794a4732d519c13c1c4f309a6d7
+                c4d8cd7547e23146c84d445e7b98992ace571d
             8f/
                 3274712ed24adbe4c159927495470fd3f8bb3b
             91/
+                48e5aa004df91473a567d81e4c97f23b81305f
                 aa74f94b8e5ec27fdabde2f405af25aae692cc
                 f2d0034730026165cef77a3f4c2a0449b455a8
+            93/
+                e1e972e8e5a77d69a4bce299cd52637265bbfb
             95/
                 46ff1a4de74defe3b8122b7fc0ac851fb427f4
             96/
@@ -259,16 +258,21 @@
                 01ead626ed055378d05c0399ee60170548426d
             a4/
                 953b3238a4cc0483da6622a1cf9c9fc8e09db3
+                f7ce594fd6003e28c2315f6cdd59744a9a4c40
             a7/
                 0e0853d4badd2b97c23b0a2bed420186882423
             a9/
                 41c70f77c18712ba6d4535cb96b06ff82fc7e8
+            ab/
+                2b48f2f5bc492b230dbf768d44eb65ed393bee
             ac/
                 0f8a9fc2f69097b36160643781a17682419078
             ad/
                 2b55eae03cc8a8abbcace0cae3e37e46d57cdd
                 3d14020048b54d75ca6856c354e49aa7f3c744
                 5142cf78e860c8372560ea8f7ad7aae485e589
+            ae/
+                d1aeca1e9d5d12786538e43994929979758706
             af/
                 10b6c860a16d81b9086cc14c5bffa89c325358
             b0/
@@ -283,6 +287,11 @@
                 d7b03c5e02cee04333c7b3141d19710c1bca9f
             b4/
                 650aac71698ab50eb7d04586013154247f6ea6
+            b5/
+                2dbf760e9db4fb6ebaa4c0b4528798554bce60
+            b6/
+                04a42196ac9e4bec6587d8ada871e4dae359cd
+                89ad328244fbfc2df9461a053859f8c83e00b0
             b7/
                 53ae962310ebde0d621e16d3da02ccfe52b5c5
             b8/
@@ -293,99 +302,155 @@
                 a5f0c9dd7d635cc32436861cfdb29961b71b01
             bb/
                 e04e2b54cc369f9a19c3fa105017a19b0fcf14
+                f00277b3a5b74171ea48f629124540937baecd
+            bc/
+                efe79b75f5394384261e4f679b12650af8e392
             bd/
                 b949c074b5bb070d72cde558493f47f7e78248
             be/
                 10f7c1e3ea54b665ac6e20f2025bbc382faad9
                 8c12dbe24782a94df4c3cc9e3d50d17f17ef5e
                 c9e58e95ac14f002cd23fc82d87d420b92709f
+            bf/
+                ba1df1b1be57d6e686358684c54cdd31c8dbe3
             c0/
                 b92d630f4f8c6f497b8209fe00b9d14632318b
+            c1/
+                e38a7214ee9a452e1366fc439eb073bc1c37ab
             c3/
                 f2a17145dc99e27b72c1a96773254577ce28c7
             c6/
                 dacbd903a178e8f090146e9ba24895900bd234
             c9/
                 8edbc61c4b3b4eb19c228199e7a09e3fbbe9ff
+            cb/
+                068df27bcf8da7c7e6bb8af262d139e7535311
+            cc/
+                93c042bd1bd0a5229b15ea0bfb1654725b2ca2
+                e944d334f28250ac656ee7067bc9af6cfff189
             cd/
                 03693d10f59e2484e80cdae21b196c94d958e2
                 bcb31bfbe79eaa5584bd7e8132aa8c0c6ddb67
             ce/
                 b411db85572f721f572704915c44bc8e8e7f35
+            d1/
+                52de4a57e862ec118c29a6ba27b2c0c6534645
+            d2/
+                dc88e04586acf5ae1913356d13e8b7cf63e586
+                eb7486ab81d361e70eade4fab3433da67a89b5
+            d3/
+                045af2167d1263afb2e6897e29422a719106b0
             d4/
                 5852426aacbe54353b93cdb43e976eef24df71
             d5/
                 050a9179c94ca7ae3d8997da4382be07f726ed
                 6f0c79453891c7e20f85b8295505a705d495c0
                 cbff5dde6e03addc22c71314b8b8553856df43
+            d7/
+                bc4a17bf1c994eeea2555c06c2c4a897c238d3
             d8/
+                827f64dd5c6b06177c343f3364c87efa6aecef
                 990a7ae3b2c6661ee0c4b1293e5c96392b052f
             d9/
                 151d6e14b6bc74896de1d2f61ef1571be2613e
             db/
                 1845ea27cea38c8c5d48e9527cb1505a2797b3
                 c6367fe8759b2f528011209c66b83bc8d02977
+            dc/
+                219253508ef68c380c4e91fcf7401a194f4d18
+            de/
+                25f74a7485f7bf6ffd12198117c823d93341ae
+            df/
+                66c5081d2f7cdee1683a5bdcaea34371025260
             e0/
                 b185c1ca58ab1d62a65d985f28676d6908a196
+            e2/
+                6bdfc3ec84cee5c85d2731d9b9699a5dfb139e
             e4/
                 658f134747d3c15fb2304eda100090bd114192
             e6/
                 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+            e7/
+                a70cbd176cf1e309d9342c75e4e73dea925ffe
             e9/
                 9b56c0be3d423031eca34ed90add0c72db1ee4
             eb/
                 fb09960429532dc26c4bd9abb86585c18ad6aa
+            ec/
+                b2ea6fc3fbd92761a9f620bd8002a9b1927c4c
             ef/
                 a71b893ad305ac0818fedf0ecfa3d5edd17acf
             f1/
                 2629aa1829132e4c4ce7da9ccb1bca771eb257
+                9e7374dd261796b83208c2f1bcaf590a2f0dc7
                 b04f043e38a6a7c4c3fe9928cf43f0c9c1b0d8
+            f2/
+                703bae16ae459aa906008d2cba389cf98e0194
             f3/
                 456da972c902706d268c04a26d96f193e4901f
+                c45f461a6a76e98759af3ef6acc425e41cf48d
             f5/
                 a8332bc15a1778337fa2ba44e87c1585990568
                 f92bd5b2dccd1fae7256f952cdd3ff5ae0ebc8
             f6/
                 e6736c3663dfa7564fd83b12b2393265955828
+            f9/
+                9f714ea1b84947a752f7426673e5a34920817d
             fa/
                 1015b0d461417a4f1a2e1ad41d34a373c793e2
             fd/
                 032ad9b6792684c99934bf5782b8c02050e3d3
             fe/
+                5649ccd213e8825ab06d9f2fef8dc73dc3764c
                 fb94f1b6600d66d1ecb31b50b28962dad862d4
             ff/
                 38f0280d6886cf358afb712fe5ff2c68793e3d
+                5afc1654e4ce3d55988bdbd6098b169d36dde2
             info/
             pack/
         refs/
             heads/
                 dev
                 main
-                r
-                DiscordBot/
-                    Source-Code-Implementation
+                testing
+                wip
             remotes/
-                DiscordBot/
+                origin/
                     dev
+                    features
                     main
                     Source-Code-Implementation
+                    testing
+                    wip
             tags/
     bot/
         activity_tracker.py
         commands.py
+        effects.py
         games.py
         level_widget.py
         shop.py
         __init__.py
+        status/
+            offline.py
+            online.py
+            setup.py
+            __pycache__/
+                offline.cpython-311.pyc
+                online.cpython-311.pyc
+                setup.cpython-311.pyc
         __pycache__/
             abilities.cpython-311.pyc
             activity_tracker.cpython-311.pyc
             commands.cpython-311.pyc
+            effects.cpython-311.pyc
             games.cpython-311.pyc
             level_widget.cpython-311.pyc
             shop.cpython-311.pyc
+            status.cpython-311.pyc
             __init__.cpython-311.pyc
     data/
+        game_data.json
         player_data.json
     settings/
         .env
@@ -403,18 +468,155 @@
             level_image.png
             statistics_visualization.png
             blackjackdump/
-                back.png
             deckofcards/
+                back.png
+                10/
+                    10C.png
+                    10D.png
+                    10H.png
+                    10S.png
+                2/
+                    2C.png
+                    2D.png
+                    2H.png
+                    2S.png
+                3/
+                    3C.png
+                    3D.png
+                    3H.png
+                    3S.png
+                4/
+                    4C.png
+                    4D.png
+                    4H.png
+                    4S.png
+                5/
+                    5C.png
+                    5D.png
+                    5H.png
+                    5S.png
+                6/
+                    6C.png
+                    6D.png
+                    6H.png
+                    6S.png
+                7/
+                    7C.png
+                    7D.png
+                    7H.png
+                    7S.png
+                8/
+                    8C.png
+                    8D.png
+                    8H.png
+                    8S.png
+                9/
+                    9C.png
+                    9D.png
+                    9H.png
+                    9S.png
+                A/
+                    AC.png
+                    AD.png
+                    AH.png
+                    AS.png
+                J/
+                    JC.png
+                    JD.png
+                    JH.png
+                    JS.png
+                K/
+                    KC.png
+                    KD.png
+                    KH.png
+                    KS.png
+                Q/
+                    QC.png
+                    QD.png
+                    QH.png
+                    QS.png
+            pokerdump/
+                community_cards.png
+                poker_1170556246257057888_hand.png
+                poker_1170556246257057888_peek_hand.png
+                poker_443232925769531392_hand.png
+                poker_443232925769531392_peek_hand.png
         __pycache__/
             graphics.cpython-311.pyc
             settings.cpython-311.pyc
             __init__.cpython-311.pyc
 
 
+.\download_cards.py
+import os
+import requests
+import json
+
+# Load game settings from a JSON file
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+# Extract card values and suits from the JSON file
+CARD_VALUES = list(game_settings['blackjack']['card_values'].keys())
+SUITS = {
+    "hearts": "H",
+    "diamonds": "D",
+    "clubs": "C",
+    "spades": "S"
+}
+
+# Define the root folder where the card images will be saved
+DECK_IMAGES_FOLDER = 'utils/images/deckofcards'
+BACK_OF_CARD_URL = 'https://deckofcardsapi.com/static/img/back.png'
+BACK_OF_CARD_FILENAME = 'back.png'
+
+# Ensure the root directory exists
+if not os.path.exists(DECK_IMAGES_FOLDER):
+    os.makedirs(DECK_IMAGES_FOLDER)
+
+# Function to download an image from a URL
+def download_image(url, file_path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        print(f'Downloaded {file_path}')
+    else:
+        print(f'Failed to download {file_path}')
+
+# Check if '10' folder exists and download the card images
+value = '10'
+value_folder = os.path.join(DECK_IMAGES_FOLDER, value)
+if not os.path.exists(value_folder):
+    os.makedirs(value_folder)
+
+# Manually construct the URLs for the '10' cards
+suit_urls = {
+    "H": 'https://deckofcardsapi.com/static/img/0H.png',
+    "D": 'https://deckofcardsapi.com/static/img/0D.png',
+    "C": 'https://deckofcardsapi.com/static/img/0C.png',
+    "S": 'https://deckofcardsapi.com/static/img/0S.png'
+}
+
+for suit_abbr, url in suit_urls.items():
+    card_code = f'{value}{suit_abbr}'
+    file_path = os.path.join(value_folder, f'{card_code}.png')
+    download_image(url, file_path)
+
+# Download the back of card image to the root folder (if not already there)
+back_file_path = os.path.join(DECK_IMAGES_FOLDER, BACK_OF_CARD_FILENAME)
+if not os.path.exists(back_file_path):
+    download_image(BACK_OF_CARD_URL, back_file_path)
+
+
 .\main.py
 import discord
 from discord.ext import commands
 import os
+import subprocess
+import sys
+import signal
+from settings.settings import load_settings
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path='settings/.env')
@@ -423,6 +625,23 @@ TOKEN = os.getenv('TOKEN')
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+def update_status_offline():
+    script_path = os.path.join('bot', 'status', 'offline.py')
+    process = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
+
+    if process.returncode == 0:
+        print("Bot status updated to OFFLINE.")
+    else:
+        print(f"Failed to update bot status. Error: {process.stderr}")
+
+def signal_handler(signal, frame):
+    print("Signal received, updating status to OFFLINE...")
+    update_status_offline()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
@@ -430,6 +649,17 @@ async def on_ready():
     await bot.load_extension('bot.commands')
     await bot.load_extension('bot.games')
     await bot.load_extension('bot.shop')
+    await bot.load_extension('bot.effects')
+    print("Extensions loaded")
+
+    # Update the bot status to ONLINE
+    script_path = os.path.join('bot', 'status', 'online.py')
+    process = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
+
+    if process.returncode == 0:
+        print("Bot status updated to ONLINE.")
+    else:
+        print(f"Failed to update bot status. Error: {process.stderr}")
 
 bot.run(TOKEN)
 
@@ -731,6 +961,9 @@ from datetime import datetime, timedelta
 import random
 import pytz
 from settings.settings import load_settings
+import subprocess
+import sys
+import os
 
 TESTING = False
 settings = load_settings()
@@ -739,6 +972,24 @@ coin_icon = settings['coin_icon']
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    @commands.command(name='update_notes')
+    async def update_notes(self, ctx, *, notes):
+        try:
+            # Determine if the bot is online or offline
+            online_status = True  # Replace with your logic to determine the status
+
+            script_path = os.path.join('bot', 'status', 'online.py' if online_status else 'offline.py')
+
+            # Run the update_additional_notes method in the respective script
+            process = subprocess.run([sys.executable, script_path, notes], capture_output=True, text=True)
+
+            if process.returncode == 0:
+                print("Successful Notes Change")
+            else:
+                await ctx.send(f"Failed to update additional notes. Error: {process.stderr}")
+        except Exception as e:
+            await ctx.send(f"An error occurred: {str(e)}")
 
     @commands.command(name='daily')
     async def daily(self, ctx):
@@ -913,6 +1164,60 @@ class LevelUI(commands.Cog):
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
 
+.\bot\effects.py
+import discord
+from discord.ext import commands
+
+class Effects(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.user_levels = {}
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+
+        user_id = message.author.id
+        user_name = message.author.name
+
+        # Increment user level (simple example, you can implement your own logic)
+        if user_id in self.user_levels:
+            self.user_levels[user_id] += 1
+        else:
+            self.user_levels[user_id] = 1
+
+        # Get the highest role of the user (excluding @everyone)
+        roles = [role for role in message.author.roles if role.name != "@everyone"]
+        highest_role = max(roles, key=lambda role: role.position, default=None)
+
+        # Format the nickname
+        level = self.user_levels[user_id]
+        if highest_role:
+            new_nick = f'[{level}] [{highest_role.name}] {user_name}'
+        else:
+            new_nick = f'[{level}] {user_name}'
+
+        try:
+            await message.author.edit(nick=new_nick)
+        except discord.Forbidden:
+            print(f"Cannot change nickname for {user_name}")
+
+        await self.bot.process_commands(message)
+
+    @commands.command()
+    async def level(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+
+        user_id = member.id
+        level = self.user_levels.get(user_id, 0)
+        await ctx.send(f'{member.display_name} is at level {level}')
+
+async def setup(bot):
+    await bot.add_cog(Effects(bot))
+
+
 .\bot\games.py
 # bot/games.py
 
@@ -930,7 +1235,9 @@ import io
 from io import BytesIO  # Importing BytesIO for handling image data in memory
 import asyncio
 from discord.ext import commands
+from discord import app_commands
 from settings.settings import load_settings
+import itertools
 
 # Load game settings from a JSON file
 with open('settings/json/game_settings.json', 'r') as f:
@@ -940,11 +1247,25 @@ with open('settings/json/game_settings.json', 'r') as f:
 CARD_VALUES = game_settings['blackjack']['card_values']  # Dictionary of card values
 SUITS = game_settings['blackjack']['suits']  # List of suits
 DECK = [f'{value}_of_{suit}' for suit in SUITS for value in CARD_VALUES.keys()]  # List of all cards in the deck
+DECK_IMAGES_FOLDER = 'utils/images/deckofcards'
+DUMP_IMAGES_FOLDER = 'utils/images/blackjackdump'
 
 # Duel settings
 DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
 DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
-BOT_TESTING_MODE = game_settings['duel']['bot_testing_mode']  # Whether bot testing mode is enabled
+
+# Poker settings
+POKER_WIN_POINTS = game_settings['poker']['win_points']
+POKER_PREFLOP_MAX_BET = game_settings['poker']['preflop_max_bet']
+POKER_MIN_PLAYERS = game_settings['poker']['min_players']
+POKER_MAX_PLAYERS = game_settings['poker']['max_players']
+DUMP_IMAGES_FOLDER_POKER = 'utils/images/pokerdump'
+
+# Game Settings
+BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
+if BOT_TESTING_MODE:
+    POKER_MIN_PLAYERS = 1
+    POKER_MAX_PLAYERS = 1
 
 settings = load_settings()
 coin_icon = settings['coin_icon']
@@ -985,7 +1306,9 @@ class Duel:
 # Class for handling blackjack game logic
 class BlackjackGame:
     def __init__(self, player, bot):
-        self.deck = []
+        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
+        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
+        random.shuffle(self.deck)
         self.player = player
         self.bot = bot
         self.player_hand = []
@@ -993,25 +1316,10 @@ class BlackjackGame:
         self.player_points = 0
         self.dealer_points = 0
         self.bet = 0
-        self.deck_id = None
-
-    async def initialize_deck(self):
-        url = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                data = await resp.json()
-                self.deck_id = data['deck_id']
-
-    async def draw_card(self):
-        url = f"https://deckofcardsapi.com/api/deck/{self.deck_id}/draw/?count=1"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                data = await resp.json()
-                return data['cards'][0]
 
     async def deal_initial_cards(self):
-        self.player_hand = [await self.draw_card(), await self.draw_card()]
-        self.dealer_hand = [await self.draw_card(), await self.draw_card()]
+        self.player_hand = [self.deck.pop(), self.deck.pop()]
+        self.dealer_hand = [self.deck.pop(), self.deck.pop()]
         self.player_points = self.calculate_hand_value(self.player_hand)
         self.dealer_points = self.calculate_hand_value(self.dealer_hand)
 
@@ -1019,10 +1327,10 @@ class BlackjackGame:
         value = 0
         aces = 0
         for card in hand:
-            card_value = card['value']
+            card_value = card[:-1]  # Get the card value without the suit
             if card_value.isdigit():
                 value += int(card_value)
-            elif card_value in ['JACK', 'QUEEN', 'KING']:
+            elif card_value in ['J', 'Q', 'K']:
                 value += 10
             else:
                 value += 11
@@ -1034,18 +1342,20 @@ class BlackjackGame:
 
     async def start_game(self, bet):
         self.bet = bet
-        await self.initialize_deck()
+        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
+        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
+        random.shuffle(self.deck)
         await self.deal_initial_cards()
 
     async def player_hit(self):
-        card = await self.draw_card()
+        card = self.deck.pop()
         self.player_hand.append(card)
         self.player_points = self.calculate_hand_value(self.player_hand)
         return card
 
     async def dealer_play(self):
         while self.dealer_points < 17:
-            card = await self.draw_card()
+            card = self.deck.pop()
             self.dealer_hand.append(card)
             self.dealer_points = self.calculate_hand_value(self.dealer_hand)
         return self.dealer_hand
@@ -1063,11 +1373,20 @@ class BlackjackGame:
     async def create_hand_image(self, hand, reveal_dealer=False):
         card_images = []
         for card in hand:
-            if isinstance(card, str) and card == 'back.png':
-                card_images.append('https://deckofcardsapi.com/static/img/back.png')
+            if isinstance(card, dict) and card.get('value') == 'back':
+                card_image_path = os.path.join(DECK_IMAGES_FOLDER, 'back.png')
             else:
-                card_images.append(card['image'])
+                card_value = card[:-1]  # Extract the value part of the card string
+                card_suit = card[-1].upper()  # Extract the suit part of the card string
+                if card_value == '10':  # Check for '10' separately
+                    card_image_path = os.path.join(DECK_IMAGES_FOLDER, '10', f'10{card_suit}.png')
+                else:
+                    card_value = card_value[0].upper()
+                    card_image_path = os.path.join(DECK_IMAGES_FOLDER, card_value, f'{card_value}{card_suit}.png')
+            card_images.append(card_image_path)
         return card_images
+
+
 
     async def concatenate_images(self, image_paths, filename):
         images = [Image.open(path) for path in image_paths]
@@ -1081,8 +1400,11 @@ class BlackjackGame:
             new_image.paste(img, (x_offset, 0))
             x_offset += img.size[0]
 
-        new_image.save(filename)
-        return filename
+        output_path = os.path.join(DUMP_IMAGES_FOLDER, filename)
+        new_image.save(output_path)
+
+        return output_path
+
 
     async def hit(self, ctx):
         card = await self.player_hit()
@@ -1114,115 +1436,228 @@ class BlackjackGame:
             await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
             await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
-        del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
 
-    async def download_image(self, url):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                data = await resp.read()
-                filename = f'temp_{url.split("/")[-1]}'
-                with open(filename, 'wb') as f:
-                    f.write(data)
-                return filename
+        await self.cleanup_images()
+        del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
 
     async def send_hand(self, ctx, reveal_dealer=False):
         player_images = await self.create_hand_image(self.player_hand)
-        dealer_images = await self.create_hand_image(self.dealer_hand if reveal_dealer else self.dealer_hand[:1] + ['back.png'])
+        dealer_hand = self.dealer_hand if reveal_dealer else self.dealer_hand[:1] + [{'value': 'back', 'suit': ''}]
+        dealer_images = await self.create_hand_image(dealer_hand)
 
-        resized_player_images = [await self.download_image(url) for url in player_images]
-        resized_dealer_images = [await self.download_image(url) for url in dealer_images]
-
-        concatenated_player_image = await self.concatenate_images(resized_player_images, f'blackjack_{ctx.author.id}_player_hand.png')
-        concatenated_dealer_image = await self.concatenate_images(resized_dealer_images, f'blackjack_{ctx.author.id}_dealer_hand.png')
+        concatenated_player_image = await self.concatenate_images(player_images, f'blackjack_{ctx.author.id}_player_hand.png')
+        concatenated_dealer_image = await self.concatenate_images(dealer_images, f'blackjack_{ctx.author.id}_dealer_hand.png')
 
         player_hand_embed = discord.File(concatenated_player_image, filename="player_hand.png")
         dealer_hand_embed = discord.File(concatenated_dealer_image, filename="dealer_hand.png")
 
-        embed = discord.Embed(title="Blackjack Game")
-        embed.add_field(name="Your hand", value=f"Points: {self.player_points}", inline=True)
-        embed.add_field(name="Dealer's hand", value=f"Points: {self.dealer_points if reveal_dealer else '?'}", inline=True)
+        embed = discord.Embed(title="Blackjack")
+        embed.add_field(name="Your Hand", value=f"Points: {self.player_points}", inline=True)
+        embed.add_field(name="Dealer's Hand", value=f"Points: {self.dealer_points if reveal_dealer else '?'}", inline=True)
         embed.set_image(url=f"attachment://player_hand.png")
         embed.set_thumbnail(url=f"attachment://dealer_hand.png")
 
         await ctx.send(embed=embed, files=[player_hand_embed, dealer_hand_embed])
 
+
+    async def cleanup_images(self):
+        for filename in os.listdir(DUMP_IMAGES_FOLDER):
+            file_path = os.path.join(DUMP_IMAGES_FOLDER, filename)
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+
 class PokerGame:
-
-    DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'
-
-    def __init__(self, ctx, bot):
-        self.bot = bot
-        self.ctx = ctx
-        self.players = []
-        self.betting_order = []
-        self.current_bet = 0
-        self.pot = 0
-        self.current_player_index = 0
-        self.community_cards = []
-        self.player_hands = {}
-        self.player_balances = {}
-        self.all_in_players = set()
+    def __init__(self, ctx, bot, buy_in):
+        self.bot = bot  # The bot instance
+        self.ctx = ctx  # The context from Discord
+        self.buy_in = buy_in  # The buy-in amount for the game
+        self.players = []  # List to store players
+        self.betting_order = []  # Order in which players will bet
+        self.current_bet = 0  # Current bet amount
+        self.pot = 0  # Total pot amount
+        self.current_player_index = 0  # Index to track the current player
+        self.community_cards = []  # List to store community cards
+        self.player_hands = {}  # Dictionary to store each player's hand
+        self.player_balances = {}  # Dictionary to store each player's balance
+        self.all_in_players = set()  # Set to track players who are all-in
+        self.DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'  # Folder for card images
+        self.DUMP_IMAGES_FOLDER = 'utils/images/pokerdump'  # Folder for dumping images
+        self.game_cancelled = False  # Flag to check if the game is cancelled
 
     async def start_game(self):
-        await self.collect_players()
-        if len(self.players) < 1:
-            await self.ctx.send("Not enough players to start the game.")
+        await self.collect_players()  # Collect players for the game
+        if len(self.players) < POKER_MIN_PLAYERS:  # Check if there are enough players
+            await self.ctx.send("Not enough players to start the game. Refunding buy-ins.")
+            await self.refund_buy_ins()  # Refund the buy-ins if not enough players
             return
 
-        self.betting_order = self.players[:]
-        random.shuffle(self.betting_order)
-        await self.deal_cards()
-        await self.betting_round(pre_flop=True)
-        await self.reveal_community_cards(3)  # Flop
-        await self.betting_round()
-        await self.reveal_community_cards(1)  # Turn
-        await self.betting_round()
-        await self.reveal_community_cards(1)  # River
-        await self.betting_round()
-        await self.showdown()
+        self.betting_order = self.players[:]  # Set the betting order to the list of players
+        random.shuffle(self.betting_order)  # Shuffle the betting order
+        await self.deal_cards()  # Deal the initial cards to the players
+        await self.betting_round(pre_flop=True)  # Run the first betting round (pre-flop)
+        await self.reveal_community_cards(3)  # Reveal the flop (3 community cards)
+        await self.betting_round()  # Run the second betting round
+        await self.reveal_community_cards(1)  # Reveal the turn (1 community card)
+        await self.betting_round()  # Run the third betting round
+        await self.reveal_community_cards(1)  # Reveal the river (1 community card)
+        await self.betting_round()  # Run the final betting round
+        await self.showdown()  # Determine the winner and show the final hands
 
     async def collect_players(self):
-        await self.ctx.send("A new poker game is starting! Type `!join poker` to join. You have 2 minutes to join.")
-        
-        if self.ctx.author not in self.players:
-            self.players.append(self.ctx.author)
-            self.player_balances[self.ctx.author] = 20000  # Starting balance
-            await self.display_player_list()
-    
-        def check(m):
+        await self.ctx.send(f"A new poker game is starting with a buy-in of {self.buy_in} coins! Type `!join poker` to join. You have 2 minutes to join. The host can type `!cancel poker` to cancel the game or `!forcestart` to start the game if the minimum player requirements are met.")
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        player_coins = activity_tracker.get_statistics(str(self.ctx.author.id)).get('coins', 0)
+        if player_coins < self.buy_in:
+            await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough coins to start the game.")
+            return
+
+        self.players.append(self.ctx.author)
+        self.player_balances[self.ctx.author] = self.buy_in
+        activity_tracker.update_user_activity(self.ctx.author, coins=-(self.buy_in))
+        await self.display_player_list()
+
+        def join_check(m):
             return m.content.lower() == "!join poker" and m.channel == self.ctx.channel
-    
+
+        def cancel_check(m):
+            return m.content.lower() == "!cancel poker" and m.channel == self.ctx.channel and m.author == self.ctx.author
+
+        def forcestart_check(m):
+            return m.content.lower() == "!forcestart" and m.channel == self.ctx.channel and m.author == self.ctx.author
+
         end_time = discord.utils.utcnow() + timedelta(minutes=2)
-        
-        while discord.utils.utcnow() < end_time:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=(end_time - discord.utils.utcnow()).total_seconds())
-                if msg.author not in self.players:
-                    self.players.append(msg.author)
-                    self.player_balances[msg.author] = 20000  # Starting balance
-                    await self.ctx.send(f"{msg.author.mention} has joined the game!")
-                    await self.display_player_list()
-            except asyncio.TimeoutError:
+        warning_times = [60, 30, 10]  # Times to send warnings in seconds
+        sent_warnings = set()
+
+        while True:
+            remaining_time = (end_time - discord.utils.utcnow()).total_seconds()
+
+            # Send warning messages
+            for warning in warning_times:
+                if remaining_time <= warning and warning not in sent_warnings:
+                    await self.ctx.send(f"{int(warning)} seconds remaining to join the game!")
+                    sent_warnings.add(warning)
+
+            if remaining_time <= 0:
                 break
 
+            try:
+                done, pending = await asyncio.wait(
+                    [asyncio.create_task(self.bot.wait_for('message', check=join_check)), 
+                    asyncio.create_task(self.bot.wait_for('message', check=cancel_check)),
+                    asyncio.create_task(self.bot.wait_for('message', check=forcestart_check))],
+                    timeout=1,
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+
+                if not done:
+                    continue
+
+                msg = done.pop().result()
+
+                if msg.content.lower() == "!cancel poker":
+                    await self.cancel_game()
+                    return
+
+                if msg.content.lower() == "!forcestart":
+                    if len(self.players) >= 2:
+                        await self.ctx.send("Minimum player requirements met. Starting the game now!")
+                        break
+                    else:
+                        await self.ctx.send(f"Not enough players to start the game. Minimum required is 2.")
+                        continue
+
+                if msg.author in self.players:
+                    await self.ctx.send(f"{msg.author.mention}, you are already in the game!")
+                    continue
+
+                player_coins = activity_tracker.get_statistics(str(msg.author.id)).get('coins', 0)
+                if player_coins < self.buy_in:
+                    await self.ctx.send(f"{msg.author.mention}, you do not have enough coins to join the game.")
+                    continue
+
+                self.players.append(msg.author)
+                self.player_balances[msg.author] = self.buy_in
+                activity_tracker.update_user_activity(msg.author, coins=-self.buy_in)
+                await self.ctx.send(f"{msg.author.mention} has joined the Poker session!")
+                await self.display_player_list()
+
+                if len(self.players) > 8:
+                    await self.ctx.send(f"MAX PLAYER EXCEEDED ERROR! The game has been cancelled.")
+                    await self.cancel_game()
+                    return
+
+                if len(self.players) == 8:
+                    await self.ctx.send("Maximum number of players reached. Starting the game now!")
+                    break
+            except asyncio.TimeoutError:
+                continue
+
+        if len(self.players) < 2:
+            await self.ctx.send("Not enough players to start the game. Refunding buy-ins.")
+            for player in self.players:
+                activity_tracker.update_user_activity(player, coins=self.buy_in)
+                await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} coins.")
+            return
+
+        await self.deal_cards()
+
+    async def cancel_game(self):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        for player in self.players:
+            activity_tracker.update_user_activity(player, coins=self.buy_in)
+            await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} coins.")
+        await self.ctx.send("The poker game has been cancelled by the host.")
+
     async def deal_cards(self):
-        self.deck = [f'{value}{suit}' for value in '23456789TJQKA' for suit in 'CDHS']
+        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
+        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
         random.shuffle(self.deck)
         for player in self.players:
             self.player_hands[player] = [self.deck.pop(), self.deck.pop()]
-            await self.send_hand(player)
-
-    async def send_hand(self, player):
+            await self.send_hand(self.ctx, player)
+    
+    async def send_hand(self, ctx, player, reveal=False):
         hand = self.player_hands[player]
-        cards = [await self.get_card_image(card) for card in hand]
-        embed = discord.Embed(title="Your Hand")
-        for i, card in enumerate(cards):
-            embed.add_field(name=f"Card {i+1}", value=f"[{card}]({card})")
-        await player.send(embed=embed)
+        card_images = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(card_images, f'poker_{player.id}_hand.png')
+        file = discord.File(concatenated_image_path, filename="hand.png")
+
+        if reveal:
+            embed = discord.Embed(title=f"{player.display_name}'s Hand")
+        else:
+            embed = discord.Embed(title="Your Hand")
+        
+        embed.set_image(url="attachment://hand.png")
+        await ctx.send(file=file, embed=embed, ephemeral=True)
 
     async def get_card_image(self, card):
-        card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, f"{card}.png")
-        return card_image_path
+            card_value = card[:-1]
+            card_suit = card[-1].upper()
+            if card_value == '10':
+                card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, '10', f'10{card_suit}.png')
+            else:
+                card_value = card_value[0].upper()
+                card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, card_value, f'{card_value}{card_suit}.png')
+            return card_image_path
+    
+    async def concatenate_images(self, image_paths, filename):
+        images = [Image.open(path) for path in image_paths]
+        widths, heights = zip(*(img.size for img in images))
+        total_width = sum(widths)
+        max_height = max(heights)
+        new_image = Image.new('RGB', (total_width, max_height))
+
+        x_offset = 0
+        for img in images:
+            new_image.paste(img, (x_offset, 0))
+            x_offset += img.size[0]
+
+        output_path = os.path.join(self.DUMP_IMAGES_FOLDER, filename)
+        new_image.save(output_path)
+
+        return output_path
 
     async def betting_round(self, pre_flop=False):
         self.current_bet = 0 if pre_flop else self.current_bet
@@ -1232,22 +1667,43 @@ class PokerGame:
             await self.prompt_player_action(player)
 
     async def prompt_player_action(self, player):
-        await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `!fold`, `!raise`, or `!allin`. Your balance: {self.player_balances[player]} {coin_icon}.")
+        if self.current_bet == 0:
+            await self.ctx.send(f"{player.mention}, it's your turn. You can `!check`, `check`, `!fold`, `fold`, `!raise`, `raise`, or `!allin`, `allin`. Your balance: {self.player_balances[player]} {coin_icon}. Pot: {self.pot} {coin_icon}.")
+            valid_actions = ['!check', 'check', '!fold', 'fold', '!raise', 'raise', '!allin', 'allin']
+        else:
+            await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `call`, `!fold`, `fold`, `!raise`, `raise`, or `!allin`, `allin`. Your balance: {self.player_balances[player]} {coin_icon}. Pot: {self.pot} {coin_icon}.")
+            valid_actions = ['!call', 'call', '!fold', 'fold', '!raise', 'raise', '!allin', 'allin']
+
         def check(m):
-            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in ['!call', '!fold', '!raise', '!allin']
+            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in valid_actions
+
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=120)
-            action = msg.content.lower()
-            if action == '!call':
+            action = msg.content.lower().lstrip('!')
+            if action == 'check':
+                await self.check(player)
+            elif action == 'call':
                 await self.call(player)
-            elif action == '!fold':
+            elif action == 'fold':
                 await self.fold(player)
-            elif action == '!raise':
+            elif action == 'raise':
                 await self.raise_bet(player)
-            elif action == '!allin':
+            elif action == 'allin':
                 await self.allin(player)
         except asyncio.TimeoutError:
             await self.fold(player)
+
+    @app_commands.command(name="peek", description="Peek at your hand in the current poker game")
+    async def peek(self, interaction: discord.Interaction):
+        player = interaction.user
+        if player not in self.players:
+            await interaction.response.send_message(f"{player.mention}, you are not part of this game!", ephemeral=True)
+            return
+
+        await self.send_hand(self.ctx, player)
+
+    async def check(self, player):
+        await self.ctx.send(f"{player.mention} checks.")
 
     async def call(self, player):
         call_amount = self.current_bet - self.player_balances[player]
@@ -1263,24 +1719,29 @@ class PokerGame:
         await self.ctx.send(f"{player.mention} folds.")
 
     async def raise_bet(self, player):
-        await self.ctx.send(f"{player.mention}, how much would you like to raise? Type an amount or `!allin`.")
+        await self.ctx.send(f"{player.mention}, how much would you like to raise? Type an amount or `!allin` or `allin`.")
         def check(m):
             return m.author == player and m.channel == self.ctx.channel
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=120)
-            if msg.content.lower() == '!allin':
+            if msg.content.lower().lstrip('!') == 'allin':
                 await self.allin(player)
             else:
-                raise_amount = int(msg.content)
-                if raise_amount > self.player_balances[player]:
-                    await self.ctx.send(f"You don't have enough {coin_icon} to raise that amount.")
+                try:
+                    raise_amount = int(msg.content)
+                    if raise_amount > self.player_balances[player]:
+                        await self.ctx.send(f"You don't have enough {coin_icon} to raise that amount.")
+                        await self.raise_bet(player)
+                    else:
+                        self.current_bet += raise_amount
+                        self.player_balances[player] -= raise_amount
+                        self.pot += raise_amount
+                        await self.ctx.send(f"{player.mention} raises by {raise_amount} {coin_icon}. Current bet is now {self.current_bet} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
+                except ValueError:
+                    await self.ctx.send(f"{msg.content} is not a valid amount. Please enter a valid number or type `!allin` or `allin`.")
                     await self.raise_bet(player)
-                else:
-                    self.current_bet += raise_amount
-                    self.player_balances[player] -= raise_amount
-                    self.pot += raise_amount
-                    await self.ctx.send(f"{player.mention} raises by {raise_amount} {coin_icon}. Current bet is now {self.current_bet} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
         except asyncio.TimeoutError:
+            await self.fold(player)
             await self.fold(player)
 
     async def allin(self, player):
@@ -1292,12 +1753,15 @@ class PokerGame:
 
     async def reveal_community_cards(self, num):
         for _ in range(num):
+            self.deck.pop()  # Burn card
             self.community_cards.append(self.deck.pop())
         cards = [await self.get_card_image(card) for card in self.community_cards]
+        concatenated_image_path = await self.concatenate_images(cards, 'community_cards.png')
+        file = discord.File(concatenated_image_path, filename="community_cards.png")
+
         embed = discord.Embed(title="Community Cards")
-        card_str = " ".join([f"[{i+1}]({card})" for i, card in enumerate(cards)])
-        embed.add_field(name="Cards", value=card_str, inline=False)
-        await self.ctx.send(embed=embed)
+        embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=file, embed=embed)
 
     async def showdown(self):
         await self.ctx.send("Showdown! Revealing hands...")
@@ -1307,6 +1771,11 @@ class PokerGame:
             best_hand = self.get_best_hand(hand)
             hands.append((player, best_hand))
             await self.reveal_hand(player, best_hand)
+
+        if not hands:
+            await self.ctx.send("No hands to compare, ending showdown.")
+            return
+
         winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
         await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} {coin_icon}!")
 
@@ -1318,13 +1787,66 @@ class PokerGame:
         else:
             await self.ctx.send("No players have joined yet.")
 
-    def get_best_hand(self, hand):
-        # Implement poker hand ranking logic to return the best 5-card hand
-        pass
-
     def hand_rank(self, hand):
-        # Implement hand ranking comparison
-        pass
+        """
+        Determine the rank of a given poker hand.
+
+        :param hand: List of 5 card strings (e.g., ['2H', '3D', '5S', '9C', 'KD'])
+        :return: Tuple representing the hand rank and its components for comparison
+        """
+
+        # Define card ranks and their corresponding values
+        ranks = '2345678910JQKA'
+        values = {r: i for i, r in enumerate(ranks.split(), start=2)}
+
+        # Get the numeric value of each card in the hand
+        hand_ranks = sorted(
+            [values['10'] if card[:-1] == '10' else values[card[0]] for card in hand],
+            reverse=True
+        )
+
+        # Check for flush (all cards have the same suit)
+        is_flush = len(set(card[-1] for card in hand)) == 1
+
+        # Check for straight (consecutive card values)
+        is_straight = len(set(hand_ranks)) == 5 and (hand_ranks[0] - hand_ranks[-1] == 4)
+
+        # Special case: A-5 straight
+        if hand_ranks == [14, 5, 4, 3, 2]:
+            hand_ranks = [5, 4, 3, 2, 1]
+            is_straight = True
+
+        # Count the occurrences of each rank in the hand
+        rank_counter = {r: hand_ranks.count(r) for r in hand_ranks}
+        rank_values = sorted(((count, rank) for rank, count in rank_counter.items()), reverse=True)
+
+        # Determine the rank of the hand
+        if is_straight and is_flush:
+            return (8, hand_ranks[0])  # Straight flush
+        elif rank_values[0][0] == 4:
+            return (7, rank_values[0][1], rank_values[1][1])  # Four of a kind
+        elif rank_values[0][0] == 3 and rank_values[1][0] == 2:
+            return (6, rank_values[0][1], rank_values[1][1])  # Full house
+        elif is_flush:
+            return (5, hand_ranks)  # Flush
+        elif is_straight:
+            return (4, hand_ranks[0])  # Straight
+        elif rank_values[0][0] == 3:
+            return (3, rank_values[0][1], hand_ranks)  # Three of a kind
+        elif rank_values[0][0] == 2 and rank_values[1][0] == 2:
+            return (2, rank_values[0][1], rank_values[1][1], hand_ranks)  # Two pair
+        elif rank_values[0][0] == 2:
+            return (1, rank_values[0][1], hand_ranks)  # One pair
+        else:
+            return (0, hand_ranks)  # High card
+        
+    def get_best_hand(self, hand):
+        """
+        From the 7 cards, choose the best 5-card hand.
+        """
+        all_combinations = itertools.combinations(hand, 5)
+        best_hand = max(all_combinations, key=self.hand_rank)
+        return best_hand
 
     async def reveal_hand(self, player, hand):
         cards = [await self.get_card_image(card) for card in hand]
@@ -1456,6 +1978,15 @@ class CommandHandler(commands.Cog):
         if game:
             await game.stand(ctx)
 
+    @commands.command(name='peek')
+    async def peek(self, ctx):
+        # Ensure the author is part of an active poker game
+        for game in self.poker_games.values():
+            if ctx.author in game.players:
+                await game.peek(ctx)
+                return
+        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
+
     def find_member(self, guild, name):
         members = [member for member in guild.members if member.display_name.lower() == name.lower()]
         if len(members) == 1:
@@ -1467,17 +1998,65 @@ class CommandHandler(commands.Cog):
         if ctx.author.id in self.poker_games:
             await ctx.send("You are already in a game!")
             return
-        game = PokerGame(ctx, self.bot)
-        self.poker_games[ctx.author.id] = game
-        await game.start_game()
 
-    @commands.command(name='join poker')
-    async def join_poker(self, ctx):
-        if ctx.author.id not in self.poker_games:
-            await ctx.send("You need to start a game first using !poker.")
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(ctx.author.id))
+        current_coins = stats.get('coins', 0)
+
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+        while True:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
+                buy_in = int(msg.content)
+                if buy_in > 0 and buy_in <= current_coins:
+                    break
+                else:
+                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond! Please use !poker again.")
+                return
+
+        game = PokerGame(ctx, self.bot, buy_in)
+        self.poker_games[ctx.author.id] = game
+        try:
+            await game.start_game()
+        finally:
+            del self.poker_games[ctx.author.id]
+
+        @commands.command(name='join poker')
+        async def join_poker(self, ctx):
+            if ctx.author.id not in self.poker_games:
+                await ctx.send("You need to start a game first using !poker.")
+                return
+            game = self.poker_games[ctx.author.id]
+            await game.collect_players()
+
+    @commands.command(name='peek')
+    async def peek(self, ctx):
+        # Ensure the author is part of an active poker game
+        for game in self.poker_games.values():
+            if ctx.author in game.players:
+                await game.peek(ctx)
+                return
+        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
+
+    @commands.command(name='forcestart')
+    async def forcestart(self, ctx):
+        # Ensure the author is part of an active poker game
+        game = self.poker_games.get(ctx.author.id)
+        if not game:
+            await ctx.send(f"{ctx.author.mention}, you are not hosting any poker game!")
             return
-        game = self.poker_games[ctx.author.id]
-        await game.collect_players()
+
+        if len(game.players) >= game.POKER_MIN_PLAYERS:
+            await ctx.send("Minimum player requirements met. Starting the game now!")
+            await game.start_game()
+        else:
+            await ctx.send(f"Not enough players to start the game. Minimum required is {game.POKER_MIN_PLAYERS}.")
 
 async def setup(bot):
     await bot.add_cog(CommandHandler(bot))
@@ -1562,6 +2141,165 @@ async def setup(bot):
 
 
 .\bot\__init__.py
+
+
+.\bot\status\offline.py
+import aiohttp
+import asyncio
+import pytz
+from datetime import datetime, timedelta
+import os
+import sys
+
+class StatusUpdater:
+    def __init__(self):
+        self.channel_id = 1261247614167285780  # Replace with your actual channel ID
+        self.status_message_id = 1262292296104411258  # Replace with your actual message ID
+        self.bot_token = os.getenv('TOKEN')
+        self.additional_notes = "N/A"
+
+    def get_current_time(self):
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        hour = now.hour if now.hour <= 12 else now.hour - 12
+        period = "AM" if now.hour < 12 else "PM"
+        formatted_time = f"{hour}:{now.strftime('%M')} {period} EST"
+        return now.strftime("%m/%d/%Y"), formatted_time
+
+    def get_estimated_time_back_up(self):
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        estimated_time = now + timedelta(hours=16)
+        hour = estimated_time.hour if estimated_time.hour <= 12 else estimated_time.hour - 12
+        period = "AM" if estimated_time.hour < 12 else "PM"
+        formatted_time = f"{hour}:{estimated_time.strftime('%M')} {period} EST"
+        return estimated_time.strftime("%m/%d/%Y"), formatted_time
+
+    def get_most_recent_script(self):
+        scripts_directory = 'bot'
+        scripts = [os.path.join(root, file) for root, _, files in os.walk(scripts_directory) for file in files if file.endswith('.py')]
+        if not scripts:
+            return "Unknown Script", "No recent updates detected"
+
+        most_recent_script = max(scripts, key=lambda x: os.path.getmtime(x))
+        script_name = os.path.basename(most_recent_script).replace('.py', '').capitalize()
+        return script_name, f"Developing/Fixing the {script_name} feature"
+
+    async def update_status_offline(self):
+        current_date, current_time = self.get_current_time()
+        estimated_date, estimated_time_back_up = self.get_estimated_time_back_up()
+        script_name, reasoning = self.get_most_recent_script()
+
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(
+                f'https://discord.com/api/v9/channels/{self.channel_id}/messages/{self.status_message_id}',
+                headers={"Authorization": f"Bot {self.bot_token}"},
+                json={
+                    "content": f'''**Bot Status Report**
+
+**Date:** {current_date}
+**Time:** {current_time}
+
+**Bot:** Fred
+**Status:** OFFLINE
+
+**Reasoning:** {reasoning}
+**Estimated Date Back Up:** {estimated_date}
+**Estimated Time Back Up:** {estimated_time_back_up}
+**Impact on Users:** Inability to use bot
+**Additional Notes:** {self.additional_notes}'''
+                }
+            ) as response:
+                if response.status == 200:
+                    print("Status message updated to OFFLINE.")
+                else:
+                    print(f"Failed to update status message. HTTP status: {response.status}")
+
+    async def update_additional_notes(self, notes):
+        self.additional_notes = notes
+        await self.update_status_offline()
+
+async def main():
+    updater = StatusUpdater()
+    if len(sys.argv) > 1:
+        notes = " ".join(sys.argv[1:])
+        await updater.update_additional_notes(notes)
+    else:
+        await updater.update_status_offline()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+.\bot\status\online.py
+import aiohttp
+import asyncio
+import pytz
+from datetime import datetime
+import os
+import sys
+
+class StatusUpdater:
+    def __init__(self):
+        self.channel_id = 1261247614167285780  # Replace with your actual channel ID
+        self.status_message_id = 1262292296104411258  # Replace with your actual message ID
+        self.bot_token = os.getenv('TOKEN')
+        self.additional_notes = "N/A"
+
+    def get_current_time(self):
+        now = datetime.now(pytz.timezone('US/Eastern'))
+        hour = now.hour if now.hour <= 12 else now.hour - 12
+        period = "AM" if now.hour < 12 else "PM"
+        formatted_time = f"{hour}:{now.strftime('%M')} {period} EST"
+        return now.strftime("%m/%d/%Y"), formatted_time
+
+    async def update_status_online(self):
+        current_date, current_time = self.get_current_time()
+
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(
+                f'https://discord.com/api/v9/channels/{self.channel_id}/messages/{self.status_message_id}',
+                headers={"Authorization": f"Bot {self.bot_token}"},
+                json={
+                    "content": f'''**Bot Status Report**
+
+**Date:** {current_date}
+**Time:** {current_time}
+
+**Bot:** Fred
+**Status:** ONLINE
+
+**Reasoning:** Bot started successfully
+**Estimated Date Back Up:** N/A
+**Estimated Time Back Up:** N/A
+**Impact on Users:** Fully operational
+**Additional Notes:** {self.additional_notes}'''
+                }
+            ) as response:
+                if response.status == 200:
+                    print("Status message updated to ONLINE.")
+                else:
+                    print(f"Failed to update status message. HTTP status: {response.status}")
+
+    async def update_additional_notes(self, notes):
+        self.additional_notes = notes
+        await self.update_status_online()
+
+async def main():
+    updater = StatusUpdater()
+    if len(sys.argv) > 1:
+        notes = " ".join(sys.argv[1:])
+        await updater.update_additional_notes(notes)
+    else:
+        await updater.update_status_online()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+.\bot\status\setup.py
+from . import offline, online
+
+async def setup(bot):
+    pass  # No need to add any cogs or extensions here as the status scripts are executed separately
 
 
 .\settings\settings.py
