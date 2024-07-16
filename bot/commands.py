@@ -116,13 +116,16 @@ class LevelUI(commands.Cog):
         next_level = current_level + 1
         progress_percentage = (points - points_for_next_level(current_level - 1)) / remaining_points * 100
 
-        image_path = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
-        file = discord.File(image_path, filename="level_image.png")
+        image_buffer = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
+    
+        if image_buffer:
+            file = discord.File(image_buffer, filename="level_image.png")
+            embed = discord.Embed(title="Level Information", color=discord.Color.orange())
+            embed.set_image(url="attachment://level_image.png")
 
-        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
-        embed.set_image(url="attachment://level_image.png")
-
-        await ctx.send(embed=embed, file=file)
+            await ctx.send(embed=embed, file=file)
+        else:
+            await ctx.send("An error occurred while generating the level image.")
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):

@@ -98,6 +98,7 @@
                 35adae7f315f4fa7a11da8fc272aecfe63760f
                 4fc2590436195beb211b114575d3fbf9124007
             1d/
+                60a916d793bdc7813dcd3d17c1f3859a84d4d0
                 a144b195b777a5ae5f68ff83397e1689da829e
                 aa7e051967bfda1b2419928341f1ad02828c44
             1f/
@@ -122,6 +123,7 @@
                 a9764ae2b92a2568b1de03ed418881fff642b1
             29/
                 29dc7abee09e1a72fe481f9230e67565029df9
+                c852ef4cb2d24a5234305873952bc7d05cb0fe
                 cf1de7e08c8d787cbbfd95ea730c77d1c107d5
             2b/
                 15136c0c7963e417c0d6ba59a470626b2c7435
@@ -131,6 +133,7 @@
                 b03fcb717ce4c62a1e8d2a8b40cb8d8b372aaf
             2d/
                 7194f4869d904a806ad19870414f4548b21896
+                c016616d7741acce3a77685e676d22eb27dd93
             2f/
                 9ad61c2d099a8fe71cc2aada8d4d8b9100ea94
             33/
@@ -146,6 +149,7 @@
                 24068cca3992042f6a0fe41680c396470f7c41
             38/
                 272b63ff81efb3c496665d65ef22085916fc4c
+                4032c88ed628f19805db790a8c9b2a244e67f9
             39/
                 11c011e9aa4b0128910a3d3787dabf45ae18aa
             3a/
@@ -162,6 +166,7 @@
             46/
                 5fdb3554f473fb3d1a5c32e6427e833105a0df
                 9b4b0ba77605ce7c1126648486553096e72280
+                b66c0f148e44a079dd4dc50c4dde878988c49f
             47/
                 8dc2c929bc1881ff957e41df71f23a34670a3f
             49/
@@ -222,6 +227,8 @@
             7b/
                 25b3ea7e377ceeaa36fabf12fdf7f78010d825
                 39594207bdebea8fcd9c4b8191a83f890cfe0b
+            7d/
+                83d8482a890e65f1ca5297020c52fd557eaf9c
             7e/
                 380d81861063d9b3e656831e94ee42a22ebefc
                 b55341ae360d563111a3ad6c4f297dda01a94b
@@ -257,6 +264,7 @@
             91/
                 48e5aa004df91473a567d81e4c97f23b81305f
                 aa74f94b8e5ec27fdabde2f405af25aae692cc
+                ebf91fd8f8e18b92c0a54b0810e9262d1256e7
                 f2d0034730026165cef77a3f4c2a0449b455a8
             93/
                 e1e972e8e5a77d69a4bce299cd52637265bbfb
@@ -266,6 +274,7 @@
                 1bdc18943e953dbd6d7772d6c4cf1545df8eec
                 e5036e868c0d6b589d76938d7075201c3a4855
             9a/
+                5f4fa1f3afedb87072413440163571d1a79dd6
                 fcc1442d272b26bbd520f4573cdb170f156d65
             9b/
                 96a90259354e12e04a684f15582a0788b8e691
@@ -300,6 +309,7 @@
                 3d14020048b54d75ca6856c354e49aa7f3c744
                 5142cf78e860c8372560ea8f7ad7aae485e589
             ae/
+                6c355070b8507f31d4f07d53a1a1474ada6c14
                 d1aeca1e9d5d12786538e43994929979758706
             af/
                 10b6c860a16d81b9086cc14c5bffa89c325358
@@ -316,6 +326,7 @@
                 d7b03c5e02cee04333c7b3141d19710c1bca9f
             b4/
                 650aac71698ab50eb7d04586013154247f6ea6
+                7d7e7265bc954b611109af52ad0f61da64a56e
             b5/
                 2dbf760e9db4fb6ebaa4c0b4528798554bce60
             b6/
@@ -330,6 +341,7 @@
                 a174956ad862484368c23376e18e0b95b55f65
                 a5f0c9dd7d635cc32436861cfdb29961b71b01
             bb/
+                d9051c268b60d6822147df2456d48e7f81ffe5
                 e04e2b54cc369f9a19c3fa105017a19b0fcf14
                 f00277b3a5b74171ea48f629124540937baecd
             bc/
@@ -356,8 +368,10 @@
                 8edbc61c4b3b4eb19c228199e7a09e3fbbe9ff
             cb/
                 068df27bcf8da7c7e6bb8af262d139e7535311
+                194b87e3563a3e0df4ebf12aa4bce28f2e24c5
             cc/
                 93c042bd1bd0a5229b15ea0bfb1654725b2ca2
+                a3a4458f88b8518f3b2092dda273b026c36f8e
                 e944d334f28250ac656ee7067bc9af6cfff189
             cd/
                 03693d10f59e2484e80cdae21b196c94d958e2
@@ -404,16 +418,19 @@
             e6/
                 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
             e7/
+                815f79780c9bb0d6c1e4671590a81cd0be5e58
                 a70cbd176cf1e309d9342c75e4e73dea925ffe
             e9/
                 9b56c0be3d423031eca34ed90add0c72db1ee4
             eb/
                 fb09960429532dc26c4bd9abb86585c18ad6aa
             ec/
+                4212eb354bd40488e26426cfde8ca1fce6cb8e
                 b2ea6fc3fbd92761a9f620bd8002a9b1927c4c
             ef/
                 a71b893ad305ac0818fedf0ecfa3d5edd17acf
             f0/
+                566f81c9ec7b41007cdaa5bc73e4f5a8c8ed05
                 b64f526cb7fadc3a35f309d68bc0874956ed10
             f1/
                 2629aa1829132e4c4ce7da9ccb1bca771eb257
@@ -501,9 +518,7 @@
         graphics.py
         __init__.py
         images/
-            level_bar.png
             level_image.png
-            statistics_visualization.png
             blackjackdump/
             deckofcards/
                 back.png
@@ -572,6 +587,7 @@
                     QD.png
                     QH.png
                     QS.png
+            levelimages/
             pokerdump/
                 community_cards.png
                 poker_1170556246257057888_hand.png
@@ -776,6 +792,7 @@ for level, points in points_per_level:
 
 
 .\bot\activity_tracker.py
+# activity_tracker.py
 import discord
 from discord.ext import commands, tasks
 import json
@@ -901,22 +918,16 @@ def get_current_level(points):
         level += 1
     return level, points_for_next_level(level) - points_for_next_level(level - 1)
 
-
-
 async def setup(bot):
     await bot.add_cog(ActivityTracker(bot))
 
 
 .\bot\commands.py
-# bot/commands.py
+# commands.py
 from discord.ext import commands
 import discord
 from utils.graphics import generate_level_image, generate_statistics_visualization
-from discord.ui import View
 import pandas as pd
-from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
-import asyncio
-import aiohttp
 from datetime import datetime, timedelta
 import random
 import pytz
@@ -924,7 +935,9 @@ from settings.settings import load_settings
 import subprocess
 import sys
 import os
-from activity_tracker import points_for_level_transition
+import asyncio
+from discord.ui import View
+from bot.activity_tracker import get_current_level, points_for_next_level
 
 TESTING = False
 settings = load_settings()
@@ -1006,7 +1019,6 @@ class LevelUIView(View):
         self.progress_percentage = progress_percentage
         self.remaining_points = remaining_points
 
-
 class LevelUI(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -1017,35 +1029,32 @@ class LevelUI(commands.Cog):
             member = ctx.author
 
         activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(member.id))
-        if not stats:
+        user_stats = activity_tracker.get_statistics(str(member.id))
+        if not user_stats:
             await ctx.send("No statistics available for this user.")
             return
 
         username = member.display_name
         avatar_url = member.avatar.url
-        points = stats.get('points', 0)
-        current_level = stats.get('level', 1)
-        points_to_next_level = stats.get('points_to_next_level', 10000)
-        progress_percentage = (points_to_next_level / points_for_level_transition(current_level)) * 100
+        points = user_stats.get("points", 0)
+        current_level, remaining_points = get_current_level(points)
         next_level = current_level + 1
+        progress_percentage = (points - points_for_next_level(current_level - 1)) / remaining_points * 100
 
-        # Generate the level image
         image_path = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
-        if image_path:
-            file = discord.File(image_path, filename="level_image.png")
-            embed = discord.Embed(title=f"{username}'s Profile")
-            embed.set_image(url="attachment://level_image.png")
-            await ctx.send(file=file, embed=embed)
-        else:
-            await ctx.send("An error occurred while generating the level image.")
+        file = discord.File(image_path, filename="level_image.png")
+
+        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
+        embed.set_image(url="attachment://level_image.png")
+
+        await ctx.send(embed=embed, file=file)
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):
         activity_tracker = self.bot.get_cog('ActivityTracker')
         stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
         sorted_stats = sorted(stats.items(), key=lambda x: x[1]['points'], reverse=True)[:20]
-
+        
         df = pd.DataFrame(columns=["Rank", "Username", "Level", "Points"])
         for idx, (user_id, data) in enumerate(sorted_stats, start=1):
             member = ctx.guild.get_member(int(user_id))
@@ -1076,10 +1085,6 @@ class LevelUI(commands.Cog):
 
         await ctx.send(embed=embed)
 
-class Statistics(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
     @commands.command(name='statistics')
     async def statistics(self, ctx, *, member: discord.Member = None):
         if member is None:
@@ -1090,7 +1095,7 @@ class Statistics(commands.Cog):
             embed.add_field(name="Username", value=member.display_name, inline=True)
             embed.add_field(name="Total Points", value=stats.get('points', 0), inline=True)
             embed.add_field(name="Level", value=stats.get('level', 1), inline=True)
-            embed.add_field(name="XP to Next Level", value=stats.get('points_to_next_level', 0), inline=True)
+            embed.add_field(name="XP to Next Level", value=stats.get('xp_to_next_level', 0), inline=True)
             embed.add_field(name="Minutes in Voice", value=stats.get('minutes_in_voice', 0), inline=True)
             embed.add_field(name="Minutes Online", value=stats.get('minutes_online', 0), inline=True)
             embed.add_field(name="Messages Sent", value=stats.get('messages_sent', 0), inline=True)
@@ -1105,7 +1110,22 @@ class Statistics(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("No statistics available for this user.")
-                        
+
+    @commands.command(name='statistics_visualization')
+    async def statistics_visualization(self, ctx, *, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        stats = self.bot.get_cog('ActivityTracker').get_statistics(str(member.id))
+        if stats:
+            # Generate the visualization
+            visualization_path = generate_statistics_visualization(stats)
+            embed = discord.Embed(title="Statistics Visualization", color=discord.Color.purple())
+            file = discord.File(visualization_path, filename="statistics_visualization.png")
+            embed.set_image(url=f"attachment://statistics_visualization.png")
+            await member.send(embed=embed, file=file)
+        else:
+            await ctx.send("No statistics available for this user.")
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -1118,7 +1138,8 @@ class Statistics(commands.Cog):
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
     await bot.add_cog(LevelUI(bot))
-    await bot.add_cog(Statistics(bot))
+
+
 
 .\bot\games.py
 # bot/games.py
@@ -2219,107 +2240,116 @@ def load_settings():
     return settings
 
 .\utils\graphics.py
-# utils/graphics.py
-import matplotlib.pyplot as plt  # Importing the Matplotlib library for creating visualizations
-import matplotlib.patches as patches  # Importing patches to draw shapes
-import requests  # Importing requests to download images from the web
-from PIL import Image  # Importing Pillow to handle image processing
-from io import BytesIO  # Importing BytesIO to handle image data in memory
-import numpy as np
-import os  # Importing os to handle file paths
+import matplotlib.pyplot as plt  # Import Matplotlib for creating visualizations
+import matplotlib.patches as patches  # Import patches to draw shapes
+import requests  # Import requests to download images from the web
+from PIL import Image  # Import Pillow to handle image processing
+from io import BytesIO  # Import BytesIO to handle image data in memory
+import numpy as np  # Import NumPy for numerical operations
+import os  # Import os to handle file paths
 
-# This function generates an image showing the user's level information.
-# utils/graphics.py
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import requests
-from PIL import Image
-from io import BytesIO
-import os
-
+# Function to generate an image showing the user's level information.
 def generate_level_image(username, level, progress, points, next_level, avatar_url):
     try:
         # Download the avatar image from the provided URL
         response = requests.get(avatar_url)
-        avatar = Image.open(BytesIO(response.content)).resize((225, 225))
+        avatar = Image.open(BytesIO(response.content)).resize((250, 225))  # Resize avatar to 225x225 pixels
 
-        # Create a new figure
-        fig, ax = plt.subplots(figsize=(7, 2))
+        shadow_offset = 2  # Offset for the shadow
+        font_name = 'Verdana'
 
-        # Set background color
-        fig.patch.set_facecolor((255/255, 127/255, 80/255))  # Light Pink
-        ax.set_facecolor((173/255, 216/255, 230/255))  # Light Blue 
+        # Create a new figure (canvas)
+        fig, ax = plt.subplots(figsize=(7, 2))  # Set figure size
+        fig.patch.set_facecolor((255/255, 127/255, 80/255))  # Set figure background color (light pink)
+        ax.set_facecolor((173/255, 216/255, 230/255))  # Set axis background color (light blue)
 
-        ax.set_xlim(0, 1000)
-        ax.set_ylim(0, 250)
-        ax.axis('off')
+        ax.set_xlim(0, 1000)  # Set x-axis limit
+        ax.set_ylim(0, 250)  # Set y-axis limit
+        ax.axis('off')  # Hide axes
 
-        # Draw the avatar image
+        # Draw the avatar image on the canvas
         plt.imshow(avatar, aspect='auto', extent=(10, 10 + avatar.size[0], 12.5, 12.5 + avatar.size[1]))
 
-        font_properties1 = {'family': 'Comic Sans MS', 'weight': 'bold', 'size': 25}
-        font_properties2 = {'family': 'Comic Sans MS', 'size': 18}
+        font_properties1 = {'family': font_name, 'weight': 'extra bold', 'size': 25}  # Font properties for username
+        font_properties2 = {'family': font_name, 'weight': 'bold', 'size': 15}  # Font properties for points text
+        font_properties3 = {'family': font_name, 'weight': 'extra bold', 'size': 20}
 
-        # Draw the username and points text
-        plt.text(250, 200, username, fontdict=font_properties1, color='white', ha='left', va='center')
-        plt.text(250, 135, f"{points} points", fontdict=font_properties2, color='white', ha='left', va='center')
+        # Draw the username text next to the avatar
+        plt.text(275 + shadow_offset, 200 - shadow_offset, username, fontdict=font_properties1, color='black', ha='left', va='center')
+        plt.text(275, 200, username, fontdict=font_properties1, color='white', ha='left', va='center')
+        # Draw the points text
+        plt.text(275 + shadow_offset, 150 - shadow_offset, f"Points: {points}", fontdict=font_properties2, color='black', ha='left', va='center')
+        plt.text(275, 150, f"Points: {points}", fontdict=font_properties2, color='white', ha='left', va='center')
 
-        # Define progress bar
-        bar_width = 350
-        bar_height = 60
-        bar_x = (1000 - bar_width + 225) / 2
-        bar_y = 20
+        # Define the position and size of the progress bar
+        canvas_width = 1000  # Width of the canvas
+        bar_width = 450  # Width of the progress bar
+        bar_height = 70  # Height of the progress bar
+        bar_x = ((canvas_width - bar_width + 225) / 2) + 10  # X-coordinate of the progress bar (centered horizontally)
+        bar_y = 20  # Y-coordinate of the progress bar
 
-        # Draw progress bar background
+        # Draw the background of the progress bar
         ax.add_patch(patches.Rectangle((bar_x, bar_y), bar_width, bar_height, color=(255/255, 255/255, 255/255), alpha=0.3))
 
-        # Draw filled part of progress bar
-        fill_width = progress * 3.5
+        # Calculate the width of the filled part of the progress bar
+        fill_width = (progress / 100) * bar_width
+        # Draw the filled part of the progress bar
         ax.add_patch(patches.Rectangle((bar_x, bar_y), fill_width, bar_height, color=(76/255, 175/255, 80/255)))
 
-        # Draw level and progress percentage
-        plt.text(bar_x - 15, (bar_y + bar_height / 2) - 12.5, f"{level}", fontdict=font_properties1, color='white', ha='right', va='center')
-        plt.text(bar_x + bar_width / 2, bar_y + bar_height / 2, f"{progress:.2f}%", fontsize=15, color='white', ha='center', va='center')
-        plt.text(bar_x + bar_width + 15, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
+        # Draw the current level text
+        plt.text(bar_x - 10 + shadow_offset, (bar_y + bar_height / 2) - 12.5 - shadow_offset, f"{level}", fontdict=font_properties1, color='black', ha='right', va='center')
+        plt.text(bar_x - 10, (bar_y + bar_height / 2) - 12.5, f"{level}", fontdict=font_properties1, color='white', ha='right', va='center')
 
-        # Save image
-        image_path = 'level_image.png'
-        plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)
-        plt.close()
+        plt.text((bar_x + (bar_width / 2))  + shadow_offset, (bar_y + (bar_height / 2)) - shadow_offset, f"{progress:.2f}%", fontdict=font_properties3, color='black', ha='center', va='center')
+        plt.text((bar_x + (bar_width / 2)), (bar_y + (bar_height / 2)), f"{progress:.2f}%", fontdict=font_properties3, color='white', ha='center', va='center')
 
+        # Draw the next level text
+        plt.text(bar_x + bar_width + 10 + shadow_offset, (bar_y + bar_height / 2) - 12.5 - shadow_offset, f"{next_level}", fontdict=font_properties1, color='black', ha='left', va='center')
+        plt.text(bar_x + bar_width + 10, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
+
+        # Define the file path to save the generated image
+        image_dir = 'utils/images'
+        if not os.path.exists(image_dir):
+            os.makedirs(image_dir)
+        image_path = os.path.join(image_dir, 'level_image.png')
+        plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)  # Save the figure to a file
+        plt.close()  # Close the figure to free up memory
+
+        # Check if the image file was created and exists
         if os.path.exists(image_path):
-            return image_path
+            return image_path  # Return the path to the generated image
         else:
-            print("Error: Image file was not created.")
-            return None
-
+            print("Error: Image file was not created.")  # Print an error message if the image file was not created
+            return None  # Return None if the image file was not created
     except Exception as e:
-        print(f"Error in generate_level_image: {e}")
-        return None
+        print(f"Error in generate_level_image: {e}")  # Print the exception message if an error occurs
+        return None  # Return None if an error occurs
 
 def generate_statistics_visualization(stats):
-    labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']
-    user_values = [stats.get('messages_sent', 0), stats.get('minutes_in_voice', 0), stats.get('minutes_online', 0)]
-    server_averages = [100, 50, 300]  # These values should be calculated based on your server's data
+    labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']  # Labels for the bars
+    user_values = [stats.get('messages_sent', 0), stats.get('minutes_in_voice', 0), stats.get('minutes_online', 0)]  # User's stats
+    server_averages = [100, 50, 300]  # Server average stats (dummy values, should be replaced with real data)
 
-    x = np.arange(len(labels))
+    x = np.arange(len(labels))  # X-axis positions for the bars
 
-    fig, ax = plt.subplots()
-    ax.bar(x - 0.2, user_values, width=0.4, label='User')
-    ax.bar(x + 0.2, server_averages, width=0.4, label='Server Average')
+    fig, ax = plt.subplots()  # Create a new figure and axis
+    ax.bar(x - 0.2, user_values, width=0.4, label='User')  # Draw user bars
+    ax.bar(x + 0.2, server_averages, width=0.4, label='Server Average')  # Draw server average bars
 
-    ax.set_xlabel('Activity')
-    ax.set_ylabel('Count')
-    ax.set_title('User Activity vs Server Average')
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels)
-    ax.legend()
+    ax.set_xlabel('Activity')  # Set x-axis label
+    ax.set_ylabel('Count')  # Set y-axis label
+    ax.set_title('User Activity vs Server Average')  # Set title
+    ax.set_xticks(x)  # Set x-axis ticks
+    ax.set_xticklabels(labels)  # Set x-axis labels
+    ax.legend()  # Add legend
 
-    plt.tight_layout()
-    plt.savefig('utils/images/statistics_visualization.png')
-    plt.close()
+    plt.tight_layout()  # Adjust layout to fit everything
+    image_path = 'utils/images/statistics_visualization.png'  # Define the file path to save the image
+    plt.savefig(image_path)  # Save the figure to a file
+    plt.close()  # Close the figure to free up memory
 
-    return 'utils/images/statistics_visualization.png'
+    return image_path  # Return the path to the generated image
+
 
 .\utils\__init__.py
 

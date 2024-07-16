@@ -65,20 +65,17 @@ def generate_level_image(username, level, progress, points, next_level, avatar_u
         plt.text(bar_x + bar_width + 10 + shadow_offset, (bar_y + bar_height / 2) - 12.5 - shadow_offset, f"{next_level}", fontdict=font_properties1, color='black', ha='left', va='center')
         plt.text(bar_x + bar_width + 10, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
 
-        # Define the file path to save the generated image
-        image_path = 'level_image.png'
-        plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)  # Save the figure to a file
-        plt.close()  # Close the figure to free up memory
+        # Save the figure to a BytesIO object
+        image_buffer = BytesIO()
+        plt.savefig(image_buffer, format='png', bbox_inches='tight', pad_inches=0, dpi=100)
+        plt.close()
+        image_buffer.seek(0)  # Move the cursor to the start of the BytesIO object
 
-        # Check if the image file was created and exists
-        if os.path.exists(image_path):
-            return image_path  # Return the path to the generated image
-        else:
-            print("Error: Image file was not created.")  # Print an error message if the image file was not created
-            return None  # Return None if the image file was not created
+        return image_buffer
+
     except Exception as e:
-        print(f"Error in generate_level_image: {e}")  # Print the exception message if an error occurs
-        return None  # Return None if an error occurs
+        print(f"Error in generate_level_image: {e}")
+        return None
 
 def generate_statistics_visualization(stats):
     labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']  # Labels for the bars
