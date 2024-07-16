@@ -1,3 +1,4 @@
+# activity_tracker.py
 import discord
 from discord.ext import commands, tasks
 import json
@@ -107,6 +108,21 @@ class ActivityTracker(commands.Cog):
 
     def get_statistics(self, user_id):
         return self.activity_data.get(user_id, {})
+    
+def points_for_level_transition(level):
+    return 10000 if level == 1 else (level + 1) * 5000
+
+def points_for_next_level(current_level):
+    total_points = 0
+    for level in range(1, current_level + 1):
+        total_points += points_for_level_transition(level)
+    return total_points
+
+def get_current_level(points):
+    level = 1
+    while points >= points_for_next_level(level):
+        level += 1
+    return level, points_for_next_level(level) - points_for_next_level(level - 1)
 
 async def setup(bot):
     await bot.add_cog(ActivityTracker(bot))

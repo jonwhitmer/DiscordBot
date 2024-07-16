@@ -1,12 +1,8 @@
-# bot/commands.py
+# commands.py
 from discord.ext import commands
 import discord
 from utils.graphics import generate_level_image, generate_statistics_visualization
-from discord.ui import View, Button
 import pandas as pd
-from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
-import asyncio
-import aiohttp
 from datetime import datetime, timedelta
 import random
 import pytz
@@ -14,6 +10,9 @@ from settings.settings import load_settings
 import subprocess
 import sys
 import os
+import asyncio
+from discord.ui import View
+from bot.activity_tracker import get_current_level, points_for_next_level
 
 TESTING = False
 settings = load_settings()
@@ -103,27 +102,27 @@ class LevelUI(commands.Cog):
     async def level(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        
-        # Dummy data for illustration
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_stats = activity_tracker.get_statistics(str(member.id))
+        if not user_stats:
+            await ctx.send("No statistics available for this user.")
+            return
+
         username = member.display_name
         avatar_url = member.avatar.url
-        points = 20
-        current_level = 1
-        next_level = 2
-        progress_percentage = 1.00
-        remaining_points = 100  # Calculate the remaining points needed to reach the next level
-        
-        # Create the embed with initial information
-        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
-        embed.set_thumbnail(url=avatar_url)
-        embed.add_field(name=f"{username}", value=f"Points: {points}", inline=False)
-        embed.add_field(name=f"Level {current_level}", value=f"{progress_percentage:.2f}%", inline=True)
-        embed.add_field(name=f"Next Level {next_level}", value=f"{progress_percentage:.2f}%", inline=True)
+        points = user_stats.get("points", 0)
+        current_level, remaining_points = get_current_level(points)
+        next_level = current_level + 1
+        progress_percentage = (points - points_for_next_level(current_level - 1)) / remaining_points * 100
 
-        # Create the view with the button
-        view = LevelUIView(username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points)
-        
-        await ctx.send(embed=embed, view=view)
+        image_path = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
+        file = discord.File(image_path, filename="level_image.png")
+
+        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
+        embed.set_image(url="attachment://level_image.png")
+
+        await ctx.send(embed=embed, file=file)
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):
@@ -213,3 +212,5 @@ class LevelUI(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
+    await bot.add_cog(LevelUI(bot))
+

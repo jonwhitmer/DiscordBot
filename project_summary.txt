@@ -1,7 +1,5 @@
 ./
-    download_cards.py
     main.py
-    nullbytes.py
     project_summary.txt
     requirements.txt
     resetdata.py
@@ -57,16 +55,22 @@
             01/
                 2f0c5d49647e67d74331189a6fa7f816cb07c0
                 e2314bc19a410bf73c2247c77b443f6fc42aa2
+            04/
+                5ef1c35d3a664f0fad826f985bcf38d7204a76
             05/
                 f497cf944da16db531e09a29aa0016b0dd3d72
             06/
+                80a8c755d2ff3a9548617ddd4ae114bd792316
                 d3fc6d20426aa058f1065fb56329fe1874e722
             07/
                 786fefc5f4c2f048c2a93c1afd608b40b6035a
                 bca2acaeee93d1a9fe435c77f626a928cf530f
+            0b/
+                b0493e15fd4499c8c11a4951c342333b1d9fe4
             0d/
                 f50f1fc2836db88454109c3962b5a4a249f5a8
             0e/
+                596347052abd34c50a6d7ef92be4a23d9bccb8
                 638cdf6588bd8af5664efdc11363104c3c5b3d
             0f/
                 094f627622511f772310d5043d85ccac4550f2
@@ -76,8 +80,11 @@
             11/
                 8c33fc6979dd8b56201dd72be4c994e695597a
                 fac4b565f33ba735764383f2045ab77bc5756b
+            13/
+                f8eed83dcf6b60f03bac4b44e94374ac7a195e
             17/
                 63b6038f3e5d6e9b51b186a5c45635c70a6363
+                b56164f577324fee2526c767ed71d95d4fdb84
                 bbfc7795d0a35514c43603afb9457d174a22ba
                 dfae167ce9b7bdd32908b9abcd8a8725fcd00b
             18/
@@ -104,12 +111,14 @@
             24/
                 201748e13db38855599d98c451c459dc57b8ab
             25/
+                503c542e67467cab44f6d2f42f507eb8ec18dc
                 99fa09dea639b6d84d7a6ace65d0d98f038681
             26/
                 59a36846cbd3ec3ebb3865f1107cdf65628c23
             27/
                 4b1aafbfa1d735b6996a51e013e59ea174c038
             28/
+                482cdf116d34ee307fbfc6e9073699958d9969
                 a9764ae2b92a2568b1de03ed418881fff642b1
             29/
                 29dc7abee09e1a72fe481f9230e67565029df9
@@ -122,7 +131,10 @@
                 b03fcb717ce4c62a1e8d2a8b40cb8d8b372aaf
             2d/
                 7194f4869d904a806ad19870414f4548b21896
+            2f/
+                9ad61c2d099a8fe71cc2aada8d4d8b9100ea94
             33/
+                03769dee0f778c661c26276175942006452519
                 8b331a971faca76a2ac629e9d75246f672536f
                 a894560ea4769885afa8a4f379d3ea4d7ae24d
             34/
@@ -159,11 +171,16 @@
             51/
                 a286c151ea61336b78a043397994adfe780592
             53/
+                a5e26cb15fc5bc0b4f3ccf17b6ec1b7af26cc0
                 e68b90921ae48743e7e128ec7e24b8365b0c09
             55/
                 a4af7e3fa35d64bb795041ffe338c163f3c677
             56/
                 71fdc65cd5ca543aae6e34f0060c03567d1f57
+            57/
+                0c5b5c4099d96f8b4c7623d57b017f0fa5d728
+            58/
+                f9cb8c87f593c2b8eed96c64cfb6e780bf5c1a
             59/
                 eb7fe4c8a9eca34a2d89b95aa987c71d02d309
             5a/
@@ -172,10 +189,13 @@
                 56f47bd393eea0f6a01f8a1e8fd787afda84d7
             5c/
                 646fbdc571f2e42d8fd91bbfcac8c6c1fa56b6
+                b5bd30211f93faf50d130492b3a87729a2159d
             5d/
                 a7712095a7b1d7f461c965446726173e96806f
             60/
                 a984edc5ef13ab53f985e8437ca250c0613253
+            61/
+                7950bbfd683819af1b0db90b5417e1169dbce0
             68/
                 7bdeeadfd4a43fafdf39fd35c337aac38b8469
                 c01f04d9ed1af5efed86b6928731b3f536d805
@@ -200,6 +220,7 @@
             7a/
                 af9971d4e13ce08f6143074b082c9f57d8596c
             7b/
+                25b3ea7e377ceeaa36fabf12fdf7f78010d825
                 39594207bdebea8fcd9c4b8191a83f890cfe0b
             7e/
                 380d81861063d9b3e656831e94ee42a22ebefc
@@ -220,9 +241,13 @@
                 2ec021ab9f8bc0e1a7254ea27cea0d44784b5e
             8a/
                 25d115419db98997bb2318921eb5374c0a2f94
+                62b2781437ba047c1519ba2ec3215818b90a18
                 aa44f4a887ffdac788312f373b4db71cf35f21
             8c/
                 28e4db2dbcc1de3d88c38486304a12a75b1c79
+                88bf4de43a1c4824e3dd310684601f0954fcdb
+            8d/
+                bad6c95aca06811c099aeb3e417d802d49ce8d
             8e/
                 084cb600cc6ff2e57c2a77fb44791eb73a12c8
                 4fcfa9e88c2794a4732d519c13c1c4f309a6d7
@@ -239,6 +264,7 @@
                 46ff1a4de74defe3b8122b7fc0ac851fb427f4
             96/
                 1bdc18943e953dbd6d7772d6c4cf1545df8eec
+                e5036e868c0d6b589d76938d7075201c3a4855
             9a/
                 fcc1442d272b26bbd520f4573cdb170f156d65
             9b/
@@ -259,6 +285,8 @@
             a4/
                 953b3238a4cc0483da6622a1cf9c9fc8e09db3
                 f7ce594fd6003e28c2315f6cdd59744a9a4c40
+            a6/
+                d7782b913712d5d65c1c2c46d414cca8f4730c
             a7/
                 0e0853d4badd2b97c23b0a2bed420186882423
             a9/
@@ -279,6 +307,7 @@
                 42e102255d390215a0c370f63141715434313d
                 574b92661853a6be73dfd63e8f9d1765427e26
             b1/
+                23dab174df785b4b90533dcbde550bb6a00a86
                 752727d2170396de18642d7743d02afae6ee68
                 f5323b2ca9940202a7100c1ec2e50292da4cbb
             b2/
@@ -306,6 +335,7 @@
             bc/
                 efe79b75f5394384261e4f679b12650af8e392
             bd/
+                8c85456e4adf078ab12fc3221419cca43840f4
                 b949c074b5bb070d72cde558493f47f7e78248
             be/
                 10f7c1e3ea54b665ac6e20f2025bbc382faad9
@@ -316,6 +346,7 @@
             c0/
                 b92d630f4f8c6f497b8209fe00b9d14632318b
             c1/
+                ab58d8a4b1bf6dbf6d3cbd81159a62d83e23d4
                 e38a7214ee9a452e1366fc439eb073bc1c37ab
             c3/
                 f2a17145dc99e27b72c1a96773254577ce28c7
@@ -342,6 +373,7 @@
                 045af2167d1263afb2e6897e29422a719106b0
             d4/
                 5852426aacbe54353b93cdb43e976eef24df71
+                ce646f5138976df4b15a165f0f8c401f500c2a
             d5/
                 050a9179c94ca7ae3d8997da4382be07f726ed
                 6f0c79453891c7e20f85b8295505a705d495c0
@@ -358,6 +390,7 @@
                 c6367fe8759b2f528011209c66b83bc8d02977
             dc/
                 219253508ef68c380c4e91fcf7401a194f4d18
+                b4850c15fa513d0666a6a8aee167896a4318e8
             de/
                 25f74a7485f7bf6ffd12198117c823d93341ae
             df/
@@ -380,6 +413,8 @@
                 b2ea6fc3fbd92761a9f620bd8002a9b1927c4c
             ef/
                 a71b893ad305ac0818fedf0ecfa3d5edd17acf
+            f0/
+                b64f526cb7fadc3a35f309d68bc0874956ed10
             f1/
                 2629aa1829132e4c4ce7da9ccb1bca771eb257
                 9e7374dd261796b83208c2f1bcaf590a2f0dc7
@@ -398,10 +433,13 @@
                 9f714ea1b84947a752f7426673e5a34920817d
             fa/
                 1015b0d461417a4f1a2e1ad41d34a373c793e2
+            fc/
+                fcb7368e6cd43d4ab89ffea4031e011ae573fa
             fd/
                 032ad9b6792684c99934bf5782b8c02050e3d3
             fe/
                 5649ccd213e8825ab06d9f2fef8dc73dc3764c
+                cbe4333e6b420fa2a5f910d2a0e087312b92f8
                 fb94f1b6600d66d1ecb31b50b28962dad862d4
             ff/
                 38f0280d6886cf358afb712fe5ff2c68793e3d
@@ -426,7 +464,6 @@
     bot/
         activity_tracker.py
         commands.py
-        effects.py
         games.py
         level_widget.py
         shop.py
@@ -547,68 +584,6 @@
             __init__.cpython-311.pyc
 
 
-.\download_cards.py
-import os
-import requests
-import json
-
-# Load game settings from a JSON file
-with open('settings/json/game_settings.json', 'r') as f:
-    game_settings = json.load(f)
-
-# Extract card values and suits from the JSON file
-CARD_VALUES = list(game_settings['blackjack']['card_values'].keys())
-SUITS = {
-    "hearts": "H",
-    "diamonds": "D",
-    "clubs": "C",
-    "spades": "S"
-}
-
-# Define the root folder where the card images will be saved
-DECK_IMAGES_FOLDER = 'utils/images/deckofcards'
-BACK_OF_CARD_URL = 'https://deckofcardsapi.com/static/img/back.png'
-BACK_OF_CARD_FILENAME = 'back.png'
-
-# Ensure the root directory exists
-if not os.path.exists(DECK_IMAGES_FOLDER):
-    os.makedirs(DECK_IMAGES_FOLDER)
-
-# Function to download an image from a URL
-def download_image(url, file_path):
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-        print(f'Downloaded {file_path}')
-    else:
-        print(f'Failed to download {file_path}')
-
-# Check if '10' folder exists and download the card images
-value = '10'
-value_folder = os.path.join(DECK_IMAGES_FOLDER, value)
-if not os.path.exists(value_folder):
-    os.makedirs(value_folder)
-
-# Manually construct the URLs for the '10' cards
-suit_urls = {
-    "H": 'https://deckofcardsapi.com/static/img/0H.png',
-    "D": 'https://deckofcardsapi.com/static/img/0D.png',
-    "C": 'https://deckofcardsapi.com/static/img/0C.png',
-    "S": 'https://deckofcardsapi.com/static/img/0S.png'
-}
-
-for suit_abbr, url in suit_urls.items():
-    card_code = f'{value}{suit_abbr}'
-    file_path = os.path.join(value_folder, f'{card_code}.png')
-    download_image(url, file_path)
-
-# Download the back of card image to the root folder (if not already there)
-back_file_path = os.path.join(DECK_IMAGES_FOLDER, BACK_OF_CARD_FILENAME)
-if not os.path.exists(back_file_path):
-    download_image(BACK_OF_CARD_URL, back_file_path)
-
-
 .\main.py
 import discord
 from discord.ext import commands
@@ -649,7 +624,6 @@ async def on_ready():
     await bot.load_extension('bot.commands')
     await bot.load_extension('bot.games')
     await bot.load_extension('bot.shop')
-    await bot.load_extension('bot.effects')
     print("Extensions loaded")
 
     # Update the bot status to ONLINE
@@ -662,37 +636,6 @@ async def on_ready():
         print(f"Failed to update bot status. Error: {process.stderr}")
 
 bot.run(TOKEN)
-
-
-.\nullbytes.py
-import os
-
-def scan_file_for_null_bytes(file_path):
-    with open(file_path, 'rb') as file:
-        content = file.read()
-        if b'\x00' in content:
-            return True
-    return False
-
-def scan_directory_for_null_bytes(directory):
-    null_byte_files = []
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            if scan_file_for_null_bytes(file_path):
-                null_byte_files.append(file_path)
-    return null_byte_files
-
-if __name__ == "__main__":
-    directory_to_scan = '.'  # Current directory
-    null_byte_files = scan_directory_for_null_bytes(directory_to_scan)
-    
-    if null_byte_files:
-        print("Files containing null bytes:")
-        for file in null_byte_files:
-            print(file)
-    else:
-        print("No files containing null bytes found.")
 
 
 .\resetdata.py
@@ -942,6 +885,23 @@ class ActivityTracker(commands.Cog):
 
     def get_statistics(self, user_id):
         return self.activity_data.get(user_id, {})
+    
+def points_for_level_transition(level):
+    return 10000 if level == 1 else (level + 1) * 5000
+
+def points_for_next_level(current_level):
+    total_points = 0
+    for level in range(1, current_level + 1):
+        total_points += points_for_level_transition(level)
+    return total_points
+
+def get_current_level(points):
+    level = 1
+    while points >= points_for_next_level(level):
+        level += 1
+    return level, points_for_next_level(level) - points_for_next_level(level - 1)
+
+
 
 async def setup(bot):
     await bot.add_cog(ActivityTracker(bot))
@@ -952,7 +912,7 @@ async def setup(bot):
 from discord.ext import commands
 import discord
 from utils.graphics import generate_level_image, generate_statistics_visualization
-from discord.ui import View, Button
+from discord.ui import View
 import pandas as pd
 from bot.games import Duel, BlackjackGame, DUEL_WIN_POINTS, DUEL_WIN_COINS, BOT_TESTING_MODE
 import asyncio
@@ -964,6 +924,7 @@ from settings.settings import load_settings
 import subprocess
 import sys
 import os
+from activity_tracker import points_for_level_transition
 
 TESTING = False
 settings = load_settings()
@@ -1045,6 +1006,7 @@ class LevelUIView(View):
         self.progress_percentage = progress_percentage
         self.remaining_points = remaining_points
 
+
 class LevelUI(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -1053,34 +1015,37 @@ class LevelUI(commands.Cog):
     async def level(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        
-        # Dummy data for illustration
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(member.id))
+        if not stats:
+            await ctx.send("No statistics available for this user.")
+            return
+
         username = member.display_name
         avatar_url = member.avatar.url
-        points = 20
-        current_level = 1
-        next_level = 2
-        progress_percentage = 1.00
-        remaining_points = 100  # Calculate the remaining points needed to reach the next level
-        
-        # Create the embed with initial information
-        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
-        embed.set_thumbnail(url=avatar_url)
-        embed.add_field(name=f"{username}", value=f"Points: {points}", inline=False)
-        embed.add_field(name=f"Level {current_level}", value=f"{progress_percentage:.2f}%", inline=True)
-        embed.add_field(name=f"Next Level {next_level}", value=f"{progress_percentage:.2f}%", inline=True)
+        points = stats.get('points', 0)
+        current_level = stats.get('level', 1)
+        points_to_next_level = stats.get('points_to_next_level', 10000)
+        progress_percentage = (points_to_next_level / points_for_level_transition(current_level)) * 100
+        next_level = current_level + 1
 
-        # Create the view with the button
-        view = LevelUIView(username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points)
-        
-        await ctx.send(embed=embed, view=view)
+        # Generate the level image
+        image_path = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
+        if image_path:
+            file = discord.File(image_path, filename="level_image.png")
+            embed = discord.Embed(title=f"{username}'s Profile")
+            embed.set_image(url="attachment://level_image.png")
+            await ctx.send(file=file, embed=embed)
+        else:
+            await ctx.send("An error occurred while generating the level image.")
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):
         activity_tracker = self.bot.get_cog('ActivityTracker')
         stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
         sorted_stats = sorted(stats.items(), key=lambda x: x[1]['points'], reverse=True)[:20]
-        
+
         df = pd.DataFrame(columns=["Rank", "Username", "Level", "Points"])
         for idx, (user_id, data) in enumerate(sorted_stats, start=1):
             member = ctx.guild.get_member(int(user_id))
@@ -1111,6 +1076,10 @@ class LevelUI(commands.Cog):
 
         await ctx.send(embed=embed)
 
+class Statistics(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(name='statistics')
     async def statistics(self, ctx, *, member: discord.Member = None):
         if member is None:
@@ -1121,7 +1090,7 @@ class LevelUI(commands.Cog):
             embed.add_field(name="Username", value=member.display_name, inline=True)
             embed.add_field(name="Total Points", value=stats.get('points', 0), inline=True)
             embed.add_field(name="Level", value=stats.get('level', 1), inline=True)
-            embed.add_field(name="XP to Next Level", value=stats.get('xp_to_next_level', 0), inline=True)
+            embed.add_field(name="XP to Next Level", value=stats.get('points_to_next_level', 0), inline=True)
             embed.add_field(name="Minutes in Voice", value=stats.get('minutes_in_voice', 0), inline=True)
             embed.add_field(name="Minutes Online", value=stats.get('minutes_online', 0), inline=True)
             embed.add_field(name="Messages Sent", value=stats.get('messages_sent', 0), inline=True)
@@ -1136,22 +1105,7 @@ class LevelUI(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("No statistics available for this user.")
-
-    @commands.command(name='statistics_visualization')
-    async def statistics_visualization(self, ctx, *, member: discord.Member = None):
-        if member is None:
-            member = ctx.author
-        stats = self.bot.get_cog('ActivityTracker').get_statistics(str(member.id))
-        if stats:
-            # Generate the visualization
-            visualization_path = generate_statistics_visualization(stats)
-            embed = discord.Embed(title="Statistics Visualization", color=discord.Color.purple())
-            file = discord.File(visualization_path, filename="statistics_visualization.png")
-            embed.set_image(url=f"attachment://statistics_visualization.png")
-            await member.send(embed=embed, file=file)
-        else:
-            await ctx.send("No statistics available for this user.")
-
+                        
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
@@ -1163,60 +1117,8 @@ class LevelUI(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
-
-.\bot\effects.py
-import discord
-from discord.ext import commands
-
-class Effects(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.user_levels = {}
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.bot:
-            return
-
-        user_id = message.author.id
-        user_name = message.author.name
-
-        # Increment user level (simple example, you can implement your own logic)
-        if user_id in self.user_levels:
-            self.user_levels[user_id] += 1
-        else:
-            self.user_levels[user_id] = 1
-
-        # Get the highest role of the user (excluding @everyone)
-        roles = [role for role in message.author.roles if role.name != "@everyone"]
-        highest_role = max(roles, key=lambda role: role.position, default=None)
-
-        # Format the nickname
-        level = self.user_levels[user_id]
-        if highest_role:
-            new_nick = f'[{level}] [{highest_role.name}] {user_name}'
-        else:
-            new_nick = f'[{level}] {user_name}'
-
-        try:
-            await message.author.edit(nick=new_nick)
-        except discord.Forbidden:
-            print(f"Cannot change nickname for {user_name}")
-
-        await self.bot.process_commands(message)
-
-    @commands.command()
-    async def level(self, ctx, member: discord.Member = None):
-        if member is None:
-            member = ctx.author
-
-        user_id = member.id
-        level = self.user_levels.get(user_id, 0)
-        await ctx.send(f'{member.display_name} is at level {level}')
-
-async def setup(bot):
-    await bot.add_cog(Effects(bot))
-
+    await bot.add_cog(LevelUI(bot))
+    await bot.add_cog(Statistics(bot))
 
 .\bot\games.py
 # bot/games.py
@@ -2327,77 +2229,73 @@ import numpy as np
 import os  # Importing os to handle file paths
 
 # This function generates an image showing the user's level information.
+# utils/graphics.py
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import requests
+from PIL import Image
+from io import BytesIO
+import os
+
 def generate_level_image(username, level, progress, points, next_level, avatar_url):
     try:
         # Download the avatar image from the provided URL
         response = requests.get(avatar_url)
-        # Open the downloaded image and resize it to 100x100 pixels
         avatar = Image.open(BytesIO(response.content)).resize((225, 225))
 
-        # Create a new "figure" which is basically a blank canvas where we draw everything.
+        # Create a new figure
         fig, ax = plt.subplots(figsize=(7, 2))
 
-        # Set the background color of the figure and the axis to a gradient-like effect
+        # Set background color
         fig.patch.set_facecolor((255/255, 127/255, 80/255))  # Light Pink
         ax.set_facecolor((173/255, 216/255, 230/255))  # Light Blue 
 
         ax.set_xlim(0, 1000)
         ax.set_ylim(0, 250)
+        ax.axis('off')
 
-        # Hide the axes to make the image look clean
-        ax.axis('on')
-
-        # Draw the avatar image at a specific location on the figure
+        # Draw the avatar image
         plt.imshow(avatar, aspect='auto', extent=(10, 10 + avatar.size[0], 12.5, 12.5 + avatar.size[1]))
 
         font_properties1 = {'family': 'Comic Sans MS', 'weight': 'bold', 'size': 25}
         font_properties2 = {'family': 'Comic Sans MS', 'size': 18}
 
-        # Draw the username text next to the avatar
-        plt.text(250, 200, "Calvinaustinfan6969fortnitefan", fontdict=font_properties1, color='white', ha='left', va='center')
-        plt.text(250, 135, f"{points}", fontdict=font_properties2, color='white', ha='left', va='center')
+        # Draw the username and points text
+        plt.text(250, 200, username, fontdict=font_properties1, color='white', ha='left', va='center')
+        plt.text(250, 135, f"{points} points", fontdict=font_properties2, color='white', ha='left', va='center')
 
-        # Define the position and size of the progress bar
-        canvas_width = 1000  # Width of the canvas
-        bar_width = 350  # Width of the progress bar
-        bar_height = 60  # Height of the progress bar
-        bar_x = (canvas_width - bar_width + 225) / 2  # X-coordinate of the progress bar (centered horizontally)
-        bar_y = 20  # Y-coordinate of the progress bar
+        # Define progress bar
+        bar_width = 350
+        bar_height = 60
+        bar_x = (1000 - bar_width + 225) / 2
+        bar_y = 20
 
-        # Draw the background of the progress bar (a white rectangle with transparency)
+        # Draw progress bar background
         ax.add_patch(patches.Rectangle((bar_x, bar_y), bar_width, bar_height, color=(255/255, 255/255, 255/255), alpha=0.3))
 
-        # Calculate the width of the filled part of the progress bar based on the progress percentage
+        # Draw filled part of progress bar
         fill_width = progress * 3.5
-        # Draw the filled part of the progress bar (a green rectangle)
         ax.add_patch(patches.Rectangle((bar_x, bar_y), fill_width, bar_height, color=(76/255, 175/255, 80/255)))
 
-        # Draw the current level text to the left of the progress bar
+        # Draw level and progress percentage
         plt.text(bar_x - 15, (bar_y + bar_height / 2) - 12.5, f"{level}", fontdict=font_properties1, color='white', ha='right', va='center')
-
-        # Draw the progress percentage text in the middle of the progress bar
         plt.text(bar_x + bar_width / 2, bar_y + bar_height / 2, f"{progress:.2f}%", fontsize=15, color='white', ha='center', va='center')
-
-        # Draw the next level text to the right of the progress bar
         plt.text(bar_x + bar_width + 15, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
 
-        # Define the file path to save the generated image
+        # Save image
         image_path = 'level_image.png'
-        # Save the figure (canvas) to a file with no extra padding and a resolution of 100 DPI
         plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)
-        # Close the figure to free memory
         plt.close()
 
-        # Check if the image file was created and exists
         if os.path.exists(image_path):
-            return image_path  # Return the path to the generated image
+            return image_path
         else:
-            print("Error: Image file was not created.")  # Print an error message if the image file was not created
-            return None  # Return None if the image file was not created
+            print("Error: Image file was not created.")
+            return None
 
     except Exception as e:
-        print(f"Error in generate_level_image: {e}")  # Print the exception message if an error occurs
-        return None  # Return None if an error occurs
+        print(f"Error in generate_level_image: {e}")
+        return None
 
 def generate_statistics_visualization(stats):
     labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']
