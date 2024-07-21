@@ -13,6 +13,21 @@ import os
 import asyncio
 from discord.ui import View
 from bot.activity_tracker import get_current_level, points_for_next_level
+import yt_dlp as youtube_dl
+from pydub import AudioSegment
+from dotenv import load_dotenv
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+
+# Load the .env file
+load_dotenv()
+
+# Set the path to ffmpeg from .env file
+ffmpeg_path = os.getenv('FFMPEG_PATH')
+os.environ["PATH"] += os.pathsep + ffmpeg_path
+AudioSegment.converter = os.path.join(ffmpeg_path, 'ffmpeg.exe')
+AudioSegment.ffmpeg = os.path.join(ffmpeg_path, 'ffmpeg.exe')
+AudioSegment.ffprobe = os.path.join(ffmpeg_path, 'ffprobe.exe')
 
 TESTING = False
 settings = load_settings()
@@ -21,7 +36,73 @@ coin_icon = settings['coin_icon']
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    @commands.command(name='gift')
+    async def gift(self, ctx, recipient: discord.Member, amount: int, *, reason: str):
+        if amount <= 0:
+            await ctx.send("Gift amount must be positive.")
+            return
+
+        if ctx.author == recipient:
+            await ctx.send(f"You cannot gift {coin_icon} to yourself.")
+            return
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        success, message = activity_tracker.transfer_coins(ctx.author, recipient, amount)
         
+        if success:
+            await ctx.send(f"{ctx.author.mention} gifted {amount} {coin_icon} to {recipient.mention} for: {reason}")
+        else:
+            await ctx.send(f"Failed to gift {coin_icon}: {message}")
+
+    @commands.command(name='forbeslist')
+    async def forbeslist(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        all_data = activity_tracker.activity_data
+
+        # Convert data to a list of tuples and sort by coins
+        coin_list = [(user_id, data['coins']) for user_id, data in all_data.items() if 'coins' in data]
+        sorted_coin_list = sorted(coin_list, key=lambda x: x[1], reverse=True)[:10]
+
+        # Create DataFrame
+        data = {
+            "Rank": list(range(1, len(sorted_coin_list) + 1)),
+            "Player Name": [self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User" for user_id, _ in sorted_coin_list],
+            f"Coins": [coins for _, coins in sorted_coin_list]
+        }
+        df = pd.DataFrame(data)
+
+        # Plot the table with a cleaner style
+        fig, ax = plt.subplots(figsize=(5, 2))  # Adjusted figsize for better appearance
+        ax.axis('tight')
+        ax.axis('off')
+
+        # Create table
+        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', edges='horizontal')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1.2, 1.2)  # Scale up the table for better readability
+
+        # Customize header row
+        for key, cell in table.get_celld().items():
+            cell.set_edgecolor('black')
+            cell.set_linewidth(1)
+            if key[0] == 0:
+                cell.set_text_props(weight='bold', color='black') # This should work for the background color
+
+        # Save the table as an image
+        image_path = 'utils/images/forbes_list.png'
+        plt.savefig(image_path, bbox_inches='tight', dpi=300)
+
+        # Send the image in Discord
+        file = discord.File(image_path, filename='forbes_list.png')
+        embed = discord.Embed(title="Forbes List")
+        embed.set_image(url="attachment://forbes_list.png")
+        await ctx.send(embed=embed, file=file)
+
+        # Clean up the saved image file
+        os.remove(image_path)
+
     @commands.command(name='update_notes')
     async def update_notes(self, ctx, *, notes):
         try:
@@ -82,6 +163,26 @@ class GeneralCommands(commands.Cog):
         activity_tracker.save_activity_data()
 
         await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
+
+    @commands.command(name='coinbalance')
+    async def coinbalance(self, ctx, mentioned_user: discord.Member = None):
+        if mentioned_user:
+            user_id = str(mentioned_user.id)
+            user_name = mentioned_user.display_name
+        else:
+            mentioned_user = ctx.author
+            user_id = str(ctx.author.id)
+            user_name = ctx.author.display_name
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.activity_data.get(user_id, {})
+        coins = user_data.get('coins', 0)
+        coin_icon = load_settings()['coin_icon']
+
+        if mentioned_user == ctx.author:
+            await ctx.send(f"{ctx.author.mention}, you have {coins} {coin_icon} in your account.")
+        else:
+            await ctx.send(f"{ctx.author.mention}, {user_name} has {coins} {coin_icon} in their account.")
 
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
@@ -212,8 +313,163 @@ class LevelUI(commands.Cog):
                 await botlog_channel.send("Invalid Command Called.")
         else:
             raise error
+        
+class Music(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.current_player = None
+        self.voice_channel = None
+        self.votes_to_skip = set()
+        self.song_queue = asyncio.Queue()
+        self.playing_song = None
+        self.current_volume = 0.2
+
+    @commands.command(name='play')
+    async def play(self, ctx, url):
+        user = ctx.author
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.get_statistics(str(user.id))
+        user_coins = user_data.get('coins', 0)
+        settings = load_settings()
+        coin_icon = settings['coin_icon']
+
+        try:
+            video_info = await self.get_video_info(url)
+            video_length = video_info['duration']  # Duration in seconds
+            video_title = video_info['title']
+            cost = video_length * 4
+
+            if user_coins < cost:
+                await ctx.send(f"{user.mention}, the cost is {cost} {coin_icon}, but you do not have enough {coin_icon}.")
+                return
+
+            await ctx.send(f"{user.mention}, the cost to play '{video_title}' is {cost} {coin_icon}. Type `!accept` to proceed.")
+            
+            def check(m):
+                return m.author == user and m.content.lower() == '!accept'
+            
+            try:
+                await self.bot.wait_for('message', check=check, timeout=30.0)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond!")
+                return
+
+            activity_tracker.update_user_activity(user, coins=-cost)
+            await ctx.send(f"{user.mention} has paid {cost} {coin_icon} to play '{video_title}'.")
+
+            self.voice_channel = ctx.author.voice.channel
+            if not self.voice_channel:
+                await ctx.send("You are not connected to a voice channel.")
+                return
+
+            audio_file = await self.download_audio(url, video_title)
+            await self.song_queue.put((ctx, audio_file, video_title, user))
+            if not self.current_player:
+                await self.play_next_song()
+
+        except Exception as e:
+            await ctx.send(f"An error occurred: {str(e)}")
+
+    async def play_next_song(self):
+        if not self.song_queue.empty():
+            ctx, audio_file, video_title, user = await self.song_queue.get()
+            self.voice_channel = ctx.author.voice.channel
+            voice = await self.voice_channel.connect()
+
+            source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audio_file), volume=self.current_volume)
+            self.current_player = voice.play(source, after=lambda e: self.bot.loop.create_task(self.play_next_song()))
+
+            self.playing_song = (ctx, video_title, user)
+            await ctx.send(f"Now playing: '{video_title}'")
+
+            while voice.is_playing():
+                await asyncio.sleep(1)
+            await voice.disconnect()
+            os.remove(audio_file)
+            await ctx.send(f"Finished playing: '{video_title}' and removed the file from the system.")
+            self.playing_song = None
+            self.current_player = None
+
+    @commands.command(name='skip')
+    async def skip(self, ctx):
+        if not self.current_player:
+            await ctx.send("No audio is currently playing.")
+            return
+
+        user = ctx.author
+        if user == self.playing_song[2]:  # The user who requested the song
+            self.current_player.source.cleanup()
+            self.current_player.stop()
+            await ctx.send(f"{user.mention} has skipped their own song.")
+            self.votes_to_skip.clear()
+        else:
+            if user not in self.voice_channel.members:
+                await ctx.send("You must be in the voice channel to vote to skip.")
+                return
+
+            self.votes_to_skip.add(user)
+            total_members = len(self.voice_channel.members)
+            if len(self.votes_to_skip) / total_members >= 0.5:
+                self.current_player.source.cleanup()
+                self.current_player.stop()
+                await ctx.send("Vote passed! Skipping the current song.")
+                self.votes_to_skip.clear()
+            else:
+                await ctx.send(f"{user.mention} has voted to skip. {len(self.votes_to_skip)}/{total_members} votes.")
+
+    @commands.command(name='volume')
+    async def volume(self, ctx, volume: float):
+        user = ctx.author
+        if user != self.playing_song[2]:
+            await ctx.send(f"{user.mention}, only the song requester can change the volume.")
+            return
+
+        if volume < 0 or volume > 5:
+            await ctx.send(f"{user.mention}, volume must be between 0 and 5.")
+            return
+
+        self.current_volume = volume * 0.1
+        if self.current_player and self.current_player.source:
+            self.current_player.source.volume = self.current_volume
+        await ctx.send(f"{user.mention}, the volume has been set to {volume}.")
+
+    async def get_video_info(self, url):
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            }
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+        return {
+            'duration': info['duration'],
+            'title': info['title']
+        }
+
+    async def download_audio(self, url, title):
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': f'utils/sounds/musicdump/{title}.%(ext)s',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'ffmpeg_location': os.getenv('FFMPEG_PATH'),
+            'headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            }
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url)
+            filename = ydl.prepare_filename(info)
+            mp3_filename = filename.replace('.webm', '.mp3')
+        
+        return mp3_filename
 
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
     await bot.add_cog(LevelUI(bot))
+    await bot.add_cog(Music(bot))
 

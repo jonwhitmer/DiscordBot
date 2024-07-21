@@ -35,8 +35,9 @@ async def on_ready():
     print(f'Logged in as {bot.user.name}')
     await bot.load_extension('bot.activity_tracker')
     await bot.load_extension('bot.commands')
-    await bot.load_extension('bot.games')
     await bot.load_extension('bot.shop')
+    await bot.load_extension('bot.games.game_manager')
+    await bot.load_extension('bot.misc.referral')
     print("Extensions loaded")
 
     # Update the bot status to ONLINE

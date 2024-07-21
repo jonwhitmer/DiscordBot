@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt  # Import Matplotlib for creating visualizations
 import matplotlib.patches as patches  # Import patches to draw shapes
 import requests  # Import requests to download images from the web
-from PIL import Image  # Import Pillow to handle image processing
+from PIL import Image, ImageDraw, ImageOps  # Import Pillow to handle image processing
 from io import BytesIO  # Import BytesIO to handle image data in memory
 import numpy as np  # Import NumPy for numerical operations
 import os  # Import os to handle file paths

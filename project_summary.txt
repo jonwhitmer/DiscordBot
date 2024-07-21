@@ -1,603 +1,58 @@
 ./
     main.py
-    project_summary.txt
-    requirements.txt
     resetdata.py
     summary.py
     test.py
-    .git/
-        COMMIT_EDITMSG
-        config
-        description
-        FETCH_HEAD
-        HEAD
-        index
-        ORIG_HEAD
-        packed-refs
-        hooks/
-            applypatch-msg.sample
-            commit-msg.sample
-            fsmonitor-watchman.sample
-            post-update.sample
-            pre-applypatch.sample
-            pre-commit.sample
-            pre-merge-commit.sample
-            pre-push.sample
-            pre-rebase.sample
-            pre-receive.sample
-            prepare-commit-msg.sample
-            push-to-checkout.sample
-            sendemail-validate.sample
-            update.sample
-        info/
-            exclude
-        logs/
-            HEAD
-            refs/
-                heads/
-                    dev
-                    main
-                    testing
-                    wip
-                remotes/
-                    origin/
-                        dev
-                        features
-                        main
-                        Source-Code-Implementation
-                        testing
-                        wip
-        objects/
-            00/
-                4de6c8f192f0ddc15b3acc4a7fa25b6b6fa488
-                9355b168b69030b3502769523fa85741b3f26c
-                f109da7e9a586aea31ad808949b0d190c21cd6
-            01/
-                2f0c5d49647e67d74331189a6fa7f816cb07c0
-                e2314bc19a410bf73c2247c77b443f6fc42aa2
-            04/
-                5ef1c35d3a664f0fad826f985bcf38d7204a76
-            05/
-                f497cf944da16db531e09a29aa0016b0dd3d72
-            06/
-                80a8c755d2ff3a9548617ddd4ae114bd792316
-                d3fc6d20426aa058f1065fb56329fe1874e722
-            07/
-                786fefc5f4c2f048c2a93c1afd608b40b6035a
-                bca2acaeee93d1a9fe435c77f626a928cf530f
-            0b/
-                b0493e15fd4499c8c11a4951c342333b1d9fe4
-            0d/
-                f50f1fc2836db88454109c3962b5a4a249f5a8
-            0e/
-                596347052abd34c50a6d7ef92be4a23d9bccb8
-                638cdf6588bd8af5664efdc11363104c3c5b3d
-            0f/
-                094f627622511f772310d5043d85ccac4550f2
-            10/
-                779b8aa8cb957354d4bdf7570db43973152f60
-                a805bf4381c6268bed15ab939eb1845ba0cc92
-            11/
-                8c33fc6979dd8b56201dd72be4c994e695597a
-                fac4b565f33ba735764383f2045ab77bc5756b
-            13/
-                f8eed83dcf6b60f03bac4b44e94374ac7a195e
-            17/
-                63b6038f3e5d6e9b51b186a5c45635c70a6363
-                b56164f577324fee2526c767ed71d95d4fdb84
-                bbfc7795d0a35514c43603afb9457d174a22ba
-                dfae167ce9b7bdd32908b9abcd8a8725fcd00b
-            18/
-                14e84bf9ee23517f3d235b09e24a247305c6df
-            19/
-                3aa697c4df9ff6f803e64e67be2af20a9b0914
-            1a/
-                b08272ab73deb481521b30ac5519395a516def
-                faee21ce500e46e17297ab43eb2649a21d31f2
-            1c/
-                35adae7f315f4fa7a11da8fc272aecfe63760f
-                4fc2590436195beb211b114575d3fbf9124007
-            1d/
-                60a916d793bdc7813dcd3d17c1f3859a84d4d0
-                a144b195b777a5ae5f68ff83397e1689da829e
-                aa7e051967bfda1b2419928341f1ad02828c44
-            1f/
-                edcad9519ad8dbd3b56f50aff3656f8fd91fca
-            20/
-                7491a555eb6ef65b85c9525314b00242fe02e8
-                dcc1020e0a5737ddc3415dcadf5bf3394c4761
-            21/
-                0a60c6add0dbf391f52b3788150effc9674a81
-                c0c63d634926abb2bb5d554f24e98c58b4c1e4
-            24/
-                201748e13db38855599d98c451c459dc57b8ab
-            25/
-                503c542e67467cab44f6d2f42f507eb8ec18dc
-                99fa09dea639b6d84d7a6ace65d0d98f038681
-            26/
-                59a36846cbd3ec3ebb3865f1107cdf65628c23
-            27/
-                4b1aafbfa1d735b6996a51e013e59ea174c038
-            28/
-                482cdf116d34ee307fbfc6e9073699958d9969
-                a9764ae2b92a2568b1de03ed418881fff642b1
-            29/
-                29dc7abee09e1a72fe481f9230e67565029df9
-                c852ef4cb2d24a5234305873952bc7d05cb0fe
-                cf1de7e08c8d787cbbfd95ea730c77d1c107d5
-            2b/
-                15136c0c7963e417c0d6ba59a470626b2c7435
-                3092c052d31720dde786222a14952643ffd1b6
-            2c/
-                7dd95cf6271aa0a9440e5fab700493a61dd665
-                b03fcb717ce4c62a1e8d2a8b40cb8d8b372aaf
-            2d/
-                7194f4869d904a806ad19870414f4548b21896
-                c016616d7741acce3a77685e676d22eb27dd93
-            2f/
-                9ad61c2d099a8fe71cc2aada8d4d8b9100ea94
-            33/
-                03769dee0f778c661c26276175942006452519
-                8b331a971faca76a2ac629e9d75246f672536f
-                a894560ea4769885afa8a4f379d3ea4d7ae24d
-            34/
-                623dc3cb192afdaa6664a4a5714e210960d1ce
-            35/
-                200a2371ab7f328a6a646bfc37f74b0ba33718
-                856c24a06e7967c2708c950c4ae9016f0c060e
-            36/
-                24068cca3992042f6a0fe41680c396470f7c41
-            38/
-                272b63ff81efb3c496665d65ef22085916fc4c
-                4032c88ed628f19805db790a8c9b2a244e67f9
-            39/
-                11c011e9aa4b0128910a3d3787dabf45ae18aa
-            3a/
-                feb9b41007a1346769613cc7391d0cf42cf8f8
-            3b/
-                6b70b57aea35ff01ee029542a93025a4f9ebad
-                9594f72b8d6908a1180e953ff1c3b4a4cedd73
-                b37d29c930f566df143517c7122f42de1a9f01
-            3c/
-                475b65a5235f333e980385e74d1b482f14edf1
-            43/
-                3a124cd0fd8c3da58a2dfd3a8577a5e09f90c5
-                7a5fc67113854863fb6dbdb1eaec9b0e724f60
-            46/
-                5fdb3554f473fb3d1a5c32e6427e833105a0df
-                9b4b0ba77605ce7c1126648486553096e72280
-                b66c0f148e44a079dd4dc50c4dde878988c49f
-            47/
-                8dc2c929bc1881ff957e41df71f23a34670a3f
-            49/
-                1b2e297e4a5032b3b3b630fdda6b53c4bf1b51
-            4f/
-                724a051e591e12f44cd513f12322f3c5a57caa
-            51/
-                a286c151ea61336b78a043397994adfe780592
-            53/
-                a5e26cb15fc5bc0b4f3ccf17b6ec1b7af26cc0
-                e68b90921ae48743e7e128ec7e24b8365b0c09
-            55/
-                a4af7e3fa35d64bb795041ffe338c163f3c677
-            56/
-                71fdc65cd5ca543aae6e34f0060c03567d1f57
-            57/
-                0c5b5c4099d96f8b4c7623d57b017f0fa5d728
-            58/
-                f9cb8c87f593c2b8eed96c64cfb6e780bf5c1a
-            59/
-                eb7fe4c8a9eca34a2d89b95aa987c71d02d309
-            5a/
-                12c5f193b05890020a1192bb505928ed1dbdc3
-                15deee73ff44fbea12b59a0d67fdbf5ed7923b
-                56f47bd393eea0f6a01f8a1e8fd787afda84d7
-            5c/
-                646fbdc571f2e42d8fd91bbfcac8c6c1fa56b6
-                b5bd30211f93faf50d130492b3a87729a2159d
-            5d/
-                a7712095a7b1d7f461c965446726173e96806f
-            60/
-                a984edc5ef13ab53f985e8437ca250c0613253
-            61/
-                7950bbfd683819af1b0db90b5417e1169dbce0
-            68/
-                7bdeeadfd4a43fafdf39fd35c337aac38b8469
-                c01f04d9ed1af5efed86b6928731b3f536d805
-            69/
-                977903855f47180d6436a19c6907559031b02a
-            6a/
-                3251469fd54a7687f04e5d9c0e1473edbc9811
-            6d/
-                26a252a549b151bf4a906f3f21f9e2380e4498
-            6e/
-                13bdcdb856312deeddadb7c00b361beca77cb1
-                93e3c0e1a5120f717b3d0877ac81b2d1d8fce1
-                fc3dc9d7976ece1105ea9b4b10e35e9a50c644
-            6f/
-                d6f0ffebe5d4bc187493a98e9ca2017715bc9b
-            72/
-                f71743aed80939d3e3b7cfad66dc9c842a7dec
-            75/
-                1f11e1f04f651e6c368f5d7d1cb15ddc941ce2
-            78/
-                eaa8267d19d8c8515f74bef3207311753a77ca
-            7a/
-                af9971d4e13ce08f6143074b082c9f57d8596c
-            7b/
-                25b3ea7e377ceeaa36fabf12fdf7f78010d825
-                39594207bdebea8fcd9c4b8191a83f890cfe0b
-            7d/
-                83d8482a890e65f1ca5297020c52fd557eaf9c
-            7e/
-                380d81861063d9b3e656831e94ee42a22ebefc
-                b55341ae360d563111a3ad6c4f297dda01a94b
-            7f/
-                54bff2aafcaab9940218d2ab445907ce9d9e7c
-            82/
-                f70657a820252f37f5b3291e4ed1fd8e3ca7cb
-            84/
-                ff2eb89b0c7e4b2e19a57a8dcfd47e67013b9b
-            86/
-                5d547134439ee0b1b02475453b263881eeeac1
-                9afde63c3e872cf06417e67c12aad2e32b9fac
-            88/
-                191737933e9b47cd5386c880b97d8c1817d3d7
-                86341471938f6c3fcc779426ef55b6b83838d8
-            89/
-                2ec021ab9f8bc0e1a7254ea27cea0d44784b5e
-            8a/
-                25d115419db98997bb2318921eb5374c0a2f94
-                62b2781437ba047c1519ba2ec3215818b90a18
-                aa44f4a887ffdac788312f373b4db71cf35f21
-            8c/
-                28e4db2dbcc1de3d88c38486304a12a75b1c79
-                88bf4de43a1c4824e3dd310684601f0954fcdb
-            8d/
-                bad6c95aca06811c099aeb3e417d802d49ce8d
-            8e/
-                084cb600cc6ff2e57c2a77fb44791eb73a12c8
-                4fcfa9e88c2794a4732d519c13c1c4f309a6d7
-                c4d8cd7547e23146c84d445e7b98992ace571d
-            8f/
-                3274712ed24adbe4c159927495470fd3f8bb3b
-            91/
-                48e5aa004df91473a567d81e4c97f23b81305f
-                aa74f94b8e5ec27fdabde2f405af25aae692cc
-                ebf91fd8f8e18b92c0a54b0810e9262d1256e7
-                f2d0034730026165cef77a3f4c2a0449b455a8
-            93/
-                e1e972e8e5a77d69a4bce299cd52637265bbfb
-            95/
-                46ff1a4de74defe3b8122b7fc0ac851fb427f4
-            96/
-                1bdc18943e953dbd6d7772d6c4cf1545df8eec
-                e5036e868c0d6b589d76938d7075201c3a4855
-            9a/
-                5f4fa1f3afedb87072413440163571d1a79dd6
-                fcc1442d272b26bbd520f4573cdb170f156d65
-            9b/
-                96a90259354e12e04a684f15582a0788b8e691
-            9c/
-                acfc490b2ec0847b50f8b046ccf6b5315d21eb
-                f33fdb46a6f3bfbb3f7c76283b776960a9dd17
-            9d/
-                372f06b19933407304f06e7f6e63754a6bbad0
-                7c7aca062f3798921789867418d638bc6c8b2a
-            9e/
-                ed8d57a75333376cc610c4bb5f0061c3a3912d
-                f0f7506b0935cf4ba0411798bfb6e353844b82
-            a2/
-                3e2f7732ad44e802c733b9f0072bd9b908c422
-            a3/
-                01ead626ed055378d05c0399ee60170548426d
-            a4/
-                953b3238a4cc0483da6622a1cf9c9fc8e09db3
-                f7ce594fd6003e28c2315f6cdd59744a9a4c40
-            a6/
-                d7782b913712d5d65c1c2c46d414cca8f4730c
-            a7/
-                0e0853d4badd2b97c23b0a2bed420186882423
-            a9/
-                41c70f77c18712ba6d4535cb96b06ff82fc7e8
-            ab/
-                2b48f2f5bc492b230dbf768d44eb65ed393bee
-            ac/
-                0f8a9fc2f69097b36160643781a17682419078
-            ad/
-                2b55eae03cc8a8abbcace0cae3e37e46d57cdd
-                3d14020048b54d75ca6856c354e49aa7f3c744
-                5142cf78e860c8372560ea8f7ad7aae485e589
-            ae/
-                6c355070b8507f31d4f07d53a1a1474ada6c14
-                d1aeca1e9d5d12786538e43994929979758706
-            af/
-                10b6c860a16d81b9086cc14c5bffa89c325358
-            b0/
-                42e102255d390215a0c370f63141715434313d
-                574b92661853a6be73dfd63e8f9d1765427e26
-            b1/
-                23dab174df785b4b90533dcbde550bb6a00a86
-                752727d2170396de18642d7743d02afae6ee68
-                f5323b2ca9940202a7100c1ec2e50292da4cbb
-            b2/
-                31dfd9a923bfc7a957efaa998de3d195774b1e
-            b3/
-                d7b03c5e02cee04333c7b3141d19710c1bca9f
-            b4/
-                650aac71698ab50eb7d04586013154247f6ea6
-                7d7e7265bc954b611109af52ad0f61da64a56e
-            b5/
-                2dbf760e9db4fb6ebaa4c0b4528798554bce60
-            b6/
-                04a42196ac9e4bec6587d8ada871e4dae359cd
-                89ad328244fbfc2df9461a053859f8c83e00b0
-            b7/
-                53ae962310ebde0d621e16d3da02ccfe52b5c5
-            b8/
-                096ba7329f1760c5d9c8909255d1dedd14bb52
-            ba/
-                546fa4b5685b8271f6a4e5dcd12c3ec1786294
-                a174956ad862484368c23376e18e0b95b55f65
-                a5f0c9dd7d635cc32436861cfdb29961b71b01
-            bb/
-                d9051c268b60d6822147df2456d48e7f81ffe5
-                e04e2b54cc369f9a19c3fa105017a19b0fcf14
-                f00277b3a5b74171ea48f629124540937baecd
-            bc/
-                efe79b75f5394384261e4f679b12650af8e392
-            bd/
-                8c85456e4adf078ab12fc3221419cca43840f4
-                b949c074b5bb070d72cde558493f47f7e78248
-            be/
-                10f7c1e3ea54b665ac6e20f2025bbc382faad9
-                8c12dbe24782a94df4c3cc9e3d50d17f17ef5e
-                c9e58e95ac14f002cd23fc82d87d420b92709f
-            bf/
-                ba1df1b1be57d6e686358684c54cdd31c8dbe3
-            c0/
-                b92d630f4f8c6f497b8209fe00b9d14632318b
-            c1/
-                ab58d8a4b1bf6dbf6d3cbd81159a62d83e23d4
-                e38a7214ee9a452e1366fc439eb073bc1c37ab
-            c3/
-                f2a17145dc99e27b72c1a96773254577ce28c7
-            c6/
-                dacbd903a178e8f090146e9ba24895900bd234
-            c9/
-                8edbc61c4b3b4eb19c228199e7a09e3fbbe9ff
-            cb/
-                068df27bcf8da7c7e6bb8af262d139e7535311
-                194b87e3563a3e0df4ebf12aa4bce28f2e24c5
-            cc/
-                93c042bd1bd0a5229b15ea0bfb1654725b2ca2
-                a3a4458f88b8518f3b2092dda273b026c36f8e
-                e944d334f28250ac656ee7067bc9af6cfff189
-            cd/
-                03693d10f59e2484e80cdae21b196c94d958e2
-                bcb31bfbe79eaa5584bd7e8132aa8c0c6ddb67
-            ce/
-                b411db85572f721f572704915c44bc8e8e7f35
-            d1/
-                52de4a57e862ec118c29a6ba27b2c0c6534645
-            d2/
-                dc88e04586acf5ae1913356d13e8b7cf63e586
-                eb7486ab81d361e70eade4fab3433da67a89b5
-            d3/
-                045af2167d1263afb2e6897e29422a719106b0
-            d4/
-                5852426aacbe54353b93cdb43e976eef24df71
-                ce646f5138976df4b15a165f0f8c401f500c2a
-            d5/
-                050a9179c94ca7ae3d8997da4382be07f726ed
-                6f0c79453891c7e20f85b8295505a705d495c0
-                cbff5dde6e03addc22c71314b8b8553856df43
-            d7/
-                bc4a17bf1c994eeea2555c06c2c4a897c238d3
-            d8/
-                827f64dd5c6b06177c343f3364c87efa6aecef
-                990a7ae3b2c6661ee0c4b1293e5c96392b052f
-            d9/
-                151d6e14b6bc74896de1d2f61ef1571be2613e
-            db/
-                1845ea27cea38c8c5d48e9527cb1505a2797b3
-                c6367fe8759b2f528011209c66b83bc8d02977
-            dc/
-                219253508ef68c380c4e91fcf7401a194f4d18
-                b4850c15fa513d0666a6a8aee167896a4318e8
-            de/
-                25f74a7485f7bf6ffd12198117c823d93341ae
-            df/
-                66c5081d2f7cdee1683a5bdcaea34371025260
-            e0/
-                b185c1ca58ab1d62a65d985f28676d6908a196
-            e2/
-                6bdfc3ec84cee5c85d2731d9b9699a5dfb139e
-            e4/
-                658f134747d3c15fb2304eda100090bd114192
-            e6/
-                9de29bb2d1d6434b8b29ae775ad8c2e48c5391
-            e7/
-                815f79780c9bb0d6c1e4671590a81cd0be5e58
-                a70cbd176cf1e309d9342c75e4e73dea925ffe
-            e9/
-                9b56c0be3d423031eca34ed90add0c72db1ee4
-            eb/
-                fb09960429532dc26c4bd9abb86585c18ad6aa
-            ec/
-                4212eb354bd40488e26426cfde8ca1fce6cb8e
-                b2ea6fc3fbd92761a9f620bd8002a9b1927c4c
-            ef/
-                a71b893ad305ac0818fedf0ecfa3d5edd17acf
-            f0/
-                566f81c9ec7b41007cdaa5bc73e4f5a8c8ed05
-                b64f526cb7fadc3a35f309d68bc0874956ed10
-            f1/
-                2629aa1829132e4c4ce7da9ccb1bca771eb257
-                9e7374dd261796b83208c2f1bcaf590a2f0dc7
-                b04f043e38a6a7c4c3fe9928cf43f0c9c1b0d8
-            f2/
-                703bae16ae459aa906008d2cba389cf98e0194
-            f3/
-                456da972c902706d268c04a26d96f193e4901f
-                c45f461a6a76e98759af3ef6acc425e41cf48d
-            f5/
-                a8332bc15a1778337fa2ba44e87c1585990568
-                f92bd5b2dccd1fae7256f952cdd3ff5ae0ebc8
-            f6/
-                e6736c3663dfa7564fd83b12b2393265955828
-            f9/
-                9f714ea1b84947a752f7426673e5a34920817d
-            fa/
-                1015b0d461417a4f1a2e1ad41d34a373c793e2
-            fc/
-                fcb7368e6cd43d4ab89ffea4031e011ae573fa
-            fd/
-                032ad9b6792684c99934bf5782b8c02050e3d3
-            fe/
-                5649ccd213e8825ab06d9f2fef8dc73dc3764c
-                cbe4333e6b420fa2a5f910d2a0e087312b92f8
-                fb94f1b6600d66d1ecb31b50b28962dad862d4
-            ff/
-                38f0280d6886cf358afb712fe5ff2c68793e3d
-                5afc1654e4ce3d55988bdbd6098b169d36dde2
-            info/
-            pack/
-        refs/
-            heads/
-                dev
-                main
-                testing
-                wip
-            remotes/
-                origin/
-                    dev
-                    features
-                    main
-                    Source-Code-Implementation
-                    testing
-                    wip
-            tags/
     bot/
         activity_tracker.py
         commands.py
-        games.py
         level_widget.py
         shop.py
         __init__.py
+        games/
+            blackjack.py
+            duel.py
+            game_manager.py
+            lottery.py
+            poker.py
         status/
             offline.py
             online.py
             setup.py
             __pycache__/
-                offline.cpython-311.pyc
-                online.cpython-311.pyc
-                setup.cpython-311.pyc
         __pycache__/
-            abilities.cpython-311.pyc
-            activity_tracker.cpython-311.pyc
-            commands.cpython-311.pyc
-            effects.cpython-311.pyc
-            games.cpython-311.pyc
-            level_widget.cpython-311.pyc
-            shop.cpython-311.pyc
-            status.cpython-311.pyc
-            __init__.cpython-311.pyc
     data/
-        game_data.json
-        player_data.json
+        games/
+            lottery/
     settings/
         .env
         settings.py
         json/
-            game_settings.json
-            settings.json
         __pycache__/
-            settings.cpython-311.pyc
     utils/
         graphics.py
         __init__.py
         images/
-            level_image.png
             blackjackdump/
             deckofcards/
-                back.png
                 10/
-                    10C.png
-                    10D.png
-                    10H.png
-                    10S.png
                 2/
-                    2C.png
-                    2D.png
-                    2H.png
-                    2S.png
                 3/
-                    3C.png
-                    3D.png
-                    3H.png
-                    3S.png
                 4/
-                    4C.png
-                    4D.png
-                    4H.png
-                    4S.png
                 5/
-                    5C.png
-                    5D.png
-                    5H.png
-                    5S.png
                 6/
-                    6C.png
-                    6D.png
-                    6H.png
-                    6S.png
                 7/
-                    7C.png
-                    7D.png
-                    7H.png
-                    7S.png
                 8/
-                    8C.png
-                    8D.png
-                    8H.png
-                    8S.png
                 9/
-                    9C.png
-                    9D.png
-                    9H.png
-                    9S.png
                 A/
-                    AC.png
-                    AD.png
-                    AH.png
-                    AS.png
                 J/
-                    JC.png
-                    JD.png
-                    JH.png
-                    JS.png
                 K/
-                    KC.png
-                    KD.png
-                    KH.png
-                    KS.png
                 Q/
-                    QC.png
-                    QD.png
-                    QH.png
-                    QS.png
             levelimages/
             pokerdump/
-                community_cards.png
-                poker_1170556246257057888_hand.png
-                poker_1170556246257057888_peek_hand.png
-                poker_443232925769531392_hand.png
-                poker_443232925769531392_peek_hand.png
+        sounds/
+            musicdump/
         __pycache__/
-            graphics.cpython-311.pyc
-            settings.cpython-311.pyc
-            __init__.cpython-311.pyc
 
 
 .\main.py
@@ -638,7 +93,7 @@ async def on_ready():
     print(f'Logged in as {bot.user.name}')
     await bot.load_extension('bot.activity_tracker')
     await bot.load_extension('bot.commands')
-    await bot.load_extension('bot.games')
+    await bot.load_extension('bot.games.game_manager')
     await bot.load_extension('bot.shop')
     print("Extensions loaded")
 
@@ -671,8 +126,8 @@ def generate_directory_tree(directory, exceptions):
     tree = []
     for root, dirs, files in os.walk(directory):
         relative_root = os.path.relpath(root, directory)
-        # Check if the current root is in the exceptions list
-        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions):
+        # Check if the current root is in the exceptions list or is a .git directory
+        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions) or '.git' in relative_root:
             continue
         level = root.replace(directory, '').count(os.sep)
         indent = ' ' * 4 * (level)
@@ -680,22 +135,23 @@ def generate_directory_tree(directory, exceptions):
         subindent = ' ' * 4 * (level + 1)
         for file in files:
             file_relative_path = os.path.join(relative_root, file)
-            # Check if the file is in the exceptions list
-            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions):
-                tree.append(f"{subindent}{file}")
+            # Check if the file is in the exceptions list or is a git-related file
+            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions) and '.git' not in file_relative_path:
+                if any(file.endswith(ext) for ext in ['.py', '.env']):
+                    tree.append(f"{subindent}{file}")
     return tree
 
 def generate_summary(directory, exceptions, include_extensions):
     summary = []
     for root, dirs, files in os.walk(directory):
         relative_root = os.path.relpath(root, directory)
-        # Check if the current root is in the exceptions list
-        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions):
+        # Check if the current root is in the exceptions list or is a .git directory
+        if any(os.path.commonpath([relative_root, exception]) == exception for exception in exceptions) or '.git' in relative_root:
             continue
         for file in files:
             file_relative_path = os.path.join(relative_root, file)
-            # Check if the file is in the exceptions list and has an allowed extension
-            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions):
+            # Check if the file is in the exceptions list, has an allowed extension, or is a git-related file
+            if not any(os.path.commonpath([file_relative_path, exception]) == exception for exception in exceptions) and '.git' not in file_relative_path:
                 if any(file.endswith(ext) for ext in include_extensions):
                     file_path = os.path.join(root, file)
                     summary.append(file_path)
@@ -713,8 +169,8 @@ if __name__ == "__main__":
         os.path.normpath('assets/migrations')
     ]  # Add more directories to this list if needed
     include_extensions = [
-        '.html', '.css', '.scss', '.py', '.java', '.cpp', '.js', '.ts', '.jsx', '.tsx'
-    ]  # Add more file extensions to this list if needed
+        '.py'
+    ]  # Only include .py files for content
     with open('project_summary.txt', 'w', encoding='utf-8') as f:
         # Write directory tree
         directory_tree = generate_directory_tree('.', exceptions)
@@ -892,6 +348,22 @@ class ActivityTracker(commands.Cog):
         self.activity_data[user_id]['coins'] += coins
         self.save_activity_data()
 
+    def transfer_coins(self, from_user, to_user, amount):
+        from_user_id = str(from_user.id)
+        to_user_id = str(to_user.id)
+
+        if from_user_id not in self.activity_data or to_user_id not in self.activity_data:
+            return False, "User data not found."
+
+        if self.activity_data[from_user_id]['coins'] < amount:
+            return False, "Insufficient balance."
+
+        self.activity_data[from_user_id]['coins'] -= amount
+        self.activity_data[to_user_id]['coins'] += amount
+        self.save_activity_data()
+
+        return True, f"Transferred {amount} coins from {from_user.name} to {to_user.name}."
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
@@ -902,6 +374,12 @@ class ActivityTracker(commands.Cog):
 
     def get_statistics(self, user_id):
         return self.activity_data.get(user_id, {})
+    
+    def get_User_balance(self, user):
+        user_id = str(user.id)
+        if user_id in self.activity_data:
+            return self.activity_data[user_id].get('coins', 0)
+        return 0
     
 def points_for_level_transition(level):
     return 10000 if level == 1 else (level + 1) * 5000
@@ -917,6 +395,7 @@ def get_current_level(points):
     while points >= points_for_next_level(level):
         level += 1
     return level, points_for_next_level(level) - points_for_next_level(level - 1)
+
 
 async def setup(bot):
     await bot.add_cog(ActivityTracker(bot))
@@ -938,6 +417,21 @@ import os
 import asyncio
 from discord.ui import View
 from bot.activity_tracker import get_current_level, points_for_next_level
+import yt_dlp as youtube_dl
+from pydub import AudioSegment
+from dotenv import load_dotenv
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+
+# Load the .env file
+load_dotenv()
+
+# Set the path to ffmpeg from .env file
+ffmpeg_path = os.getenv('FFMPEG_PATH')
+os.environ["PATH"] += os.pathsep + ffmpeg_path
+AudioSegment.converter = os.path.join(ffmpeg_path, 'ffmpeg.exe')
+AudioSegment.ffmpeg = os.path.join(ffmpeg_path, 'ffmpeg.exe')
+AudioSegment.ffprobe = os.path.join(ffmpeg_path, 'ffprobe.exe')
 
 TESTING = False
 settings = load_settings()
@@ -946,7 +440,73 @@ coin_icon = settings['coin_icon']
 class GeneralCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    @commands.command(name='gift')
+    async def gift(self, ctx, recipient: discord.Member, amount: int, *, reason: str):
+        if amount <= 0:
+            await ctx.send("Gift amount must be positive.")
+            return
+
+        if ctx.author == recipient:
+            await ctx.send(f"You cannot gift {coin_icon} to yourself.")
+            return
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        success, message = activity_tracker.transfer_coins(ctx.author, recipient, amount)
         
+        if success:
+            await ctx.send(f"{ctx.author.mention} gifted {amount} {coin_icon} to {recipient.mention} for: {reason}")
+        else:
+            await ctx.send(f"Failed to gift {coin_icon}: {message}")
+
+    @commands.command(name='forbeslist')
+    async def forbeslist(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        all_data = activity_tracker.activity_data
+
+        # Convert data to a list of tuples and sort by coins
+        coin_list = [(user_id, data['coins']) for user_id, data in all_data.items() if 'coins' in data]
+        sorted_coin_list = sorted(coin_list, key=lambda x: x[1], reverse=True)[:10]
+
+        # Create DataFrame
+        data = {
+            "Rank": list(range(1, len(sorted_coin_list) + 1)),
+            "Player Name": [self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User" for user_id, _ in sorted_coin_list],
+            f"Coins": [coins for _, coins in sorted_coin_list]
+        }
+        df = pd.DataFrame(data)
+
+        # Plot the table with a cleaner style
+        fig, ax = plt.subplots(figsize=(5, 2))  # Adjusted figsize for better appearance
+        ax.axis('tight')
+        ax.axis('off')
+
+        # Create table
+        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', edges='horizontal')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1.2, 1.2)  # Scale up the table for better readability
+
+        # Customize header row
+        for key, cell in table.get_celld().items():
+            cell.set_edgecolor('black')
+            cell.set_linewidth(1)
+            if key[0] == 0:
+                cell.set_text_props(weight='bold', color='black') # This should work for the background color
+
+        # Save the table as an image
+        image_path = 'utils/images/forbes_list.png'
+        plt.savefig(image_path, bbox_inches='tight', dpi=300)
+
+        # Send the image in Discord
+        file = discord.File(image_path, filename='forbes_list.png')
+        embed = discord.Embed(title="Forbes List")
+        embed.set_image(url="attachment://forbes_list.png")
+        await ctx.send(embed=embed, file=file)
+
+        # Clean up the saved image file
+        os.remove(image_path)
+
     @commands.command(name='update_notes')
     async def update_notes(self, ctx, *, notes):
         try:
@@ -1008,6 +568,26 @@ class GeneralCommands(commands.Cog):
 
         await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
 
+    @commands.command(name='coinbalance')
+    async def coinbalance(self, ctx, mentioned_user: discord.Member = None):
+        if mentioned_user:
+            user_id = str(mentioned_user.id)
+            user_name = mentioned_user.display_name
+        else:
+            mentioned_user = ctx.author
+            user_id = str(ctx.author.id)
+            user_name = ctx.author.display_name
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.activity_data.get(user_id, {})
+        coins = user_data.get('coins', 0)
+        coin_icon = load_settings()['coin_icon']
+
+        if mentioned_user == ctx.author:
+            await ctx.send(f"{ctx.author.mention}, you have {coins} {coin_icon} in your account.")
+        else:
+            await ctx.send(f"{ctx.author.mention}, {user_name} has {coins} {coin_icon} in their account.")
+
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
         super().__init__(timeout=60)
@@ -1041,13 +621,16 @@ class LevelUI(commands.Cog):
         next_level = current_level + 1
         progress_percentage = (points - points_for_next_level(current_level - 1)) / remaining_points * 100
 
-        image_path = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
-        file = discord.File(image_path, filename="level_image.png")
+        image_buffer = generate_level_image(username, current_level, progress_percentage, points, next_level, avatar_url)
+    
+        if image_buffer:
+            file = discord.File(image_buffer, filename="level_image.png")
+            embed = discord.Embed(title="Level Information", color=discord.Color.orange())
+            embed.set_image(url="attachment://level_image.png")
 
-        embed = discord.Embed(title="Level Information", color=discord.Color.orange())
-        embed.set_image(url="attachment://level_image.png")
-
-        await ctx.send(embed=embed, file=file)
+            await ctx.send(embed=embed, file=file)
+        else:
+            await ctx.send("An error occurred while generating the level image.")
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):
@@ -1134,99 +717,272 @@ class LevelUI(commands.Cog):
                 await botlog_channel.send("Invalid Command Called.")
         else:
             raise error
+        
+class Music(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.current_player = None
+        self.voice_channel = None
+        self.votes_to_skip = set()
+        self.song_queue = asyncio.Queue()
+        self.playing_song = None
+        self.current_volume = 0.2
+
+    @commands.command(name='play')
+    async def play(self, ctx, url):
+        user = ctx.author
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.get_statistics(str(user.id))
+        user_coins = user_data.get('coins', 0)
+        settings = load_settings()
+        coin_icon = settings['coin_icon']
+
+        try:
+            video_info = await self.get_video_info(url)
+            video_length = video_info['duration']  # Duration in seconds
+            video_title = video_info['title']
+            cost = video_length * 4
+
+            if user_coins < cost:
+                await ctx.send(f"{user.mention}, the cost is {cost} {coin_icon}, but you do not have enough {coin_icon}.")
+                return
+
+            await ctx.send(f"{user.mention}, the cost to play '{video_title}' is {cost} {coin_icon}. Type `!accept` to proceed.")
+            
+            def check(m):
+                return m.author == user and m.content.lower() == '!accept'
+            
+            try:
+                await self.bot.wait_for('message', check=check, timeout=30.0)
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond!")
+                return
+
+            activity_tracker.update_user_activity(user, coins=-cost)
+            await ctx.send(f"{user.mention} has paid {cost} {coin_icon} to play '{video_title}'.")
+
+            self.voice_channel = ctx.author.voice.channel
+            if not self.voice_channel:
+                await ctx.send("You are not connected to a voice channel.")
+                return
+
+            audio_file = await self.download_audio(url, video_title)
+            await self.song_queue.put((ctx, audio_file, video_title, user))
+            if not self.current_player:
+                await self.play_next_song()
+
+        except Exception as e:
+            await ctx.send(f"An error occurred: {str(e)}")
+
+    async def play_next_song(self):
+        if not self.song_queue.empty():
+            ctx, audio_file, video_title, user = await self.song_queue.get()
+            self.voice_channel = ctx.author.voice.channel
+            voice = await self.voice_channel.connect()
+
+            source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audio_file), volume=self.current_volume)
+            self.current_player = voice.play(source, after=lambda e: self.bot.loop.create_task(self.play_next_song()))
+
+            self.playing_song = (ctx, video_title, user)
+            await ctx.send(f"Now playing: '{video_title}'")
+
+            while voice.is_playing():
+                await asyncio.sleep(1)
+            await voice.disconnect()
+            os.remove(audio_file)
+            await ctx.send(f"Finished playing: '{video_title}' and removed the file from the system.")
+            self.playing_song = None
+            self.current_player = None
+
+    @commands.command(name='skip')
+    async def skip(self, ctx):
+        if not self.current_player:
+            await ctx.send("No audio is currently playing.")
+            return
+
+        user = ctx.author
+        if user == self.playing_song[2]:  # The user who requested the song
+            self.current_player.source.cleanup()
+            self.current_player.stop()
+            await ctx.send(f"{user.mention} has skipped their own song.")
+            self.votes_to_skip.clear()
+        else:
+            if user not in self.voice_channel.members:
+                await ctx.send("You must be in the voice channel to vote to skip.")
+                return
+
+            self.votes_to_skip.add(user)
+            total_members = len(self.voice_channel.members)
+            if len(self.votes_to_skip) / total_members >= 0.5:
+                self.current_player.source.cleanup()
+                self.current_player.stop()
+                await ctx.send("Vote passed! Skipping the current song.")
+                self.votes_to_skip.clear()
+            else:
+                await ctx.send(f"{user.mention} has voted to skip. {len(self.votes_to_skip)}/{total_members} votes.")
+
+    @commands.command(name='volume')
+    async def volume(self, ctx, volume: float):
+        user = ctx.author
+        if user != self.playing_song[2]:
+            await ctx.send(f"{user.mention}, only the song requester can change the volume.")
+            return
+
+        if volume < 0 or volume > 5:
+            await ctx.send(f"{user.mention}, volume must be between 0 and 5.")
+            return
+
+        self.current_volume = volume * 0.1
+        if self.current_player and self.current_player.source:
+            self.current_player.source.volume = self.current_volume
+        await ctx.send(f"{user.mention}, the volume has been set to {volume}.")
+
+    async def get_video_info(self, url):
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            }
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+        return {
+            'duration': info['duration'],
+            'title': info['title']
+        }
+
+    async def download_audio(self, url, title):
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': f'utils/sounds/musicdump/{title}.%(ext)s',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'ffmpeg_location': os.getenv('FFMPEG_PATH'),
+            'headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            }
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url)
+            filename = ydl.prepare_filename(info)
+            mp3_filename = filename.replace('.webm', '.mp3')
+        
+        return mp3_filename
 
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
     await bot.add_cog(LevelUI(bot))
+    await bot.add_cog(Music(bot))
 
 
 
-.\bot\games.py
-# bot/games.py
-
-# Games played in the discord server from bot
-
-from datetime import timedelta
-import random  # Importing the random module to use for shuffling and generating random letters
-import aiohttp  # Importing aiohttp for making asynchronous HTTP requests
-import os  # Importing os for file operations
-from PIL import Image  # Importing PIL (Pillow) for image processing
-import json  # Importing json to read configuration settings from a file
+.\bot\level_widget.py
 import discord
-import shutil
-import io
-from io import BytesIO  # Importing BytesIO for handling image data in memory
-import asyncio
 from discord.ext import commands
-from discord import app_commands
-from settings.settings import load_settings
-import itertools
 
-# Load game settings from a JSON file
+class LevelWidget(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        print("LevelWidget initialized")
+
+async def setup(bot):
+    print("Setting up LevelWidget")
+    await bot.add_cog(LevelWidget(bot))
+    print("LevelWidget added to bot")
+
+
+.\bot\shop.py
+# bot/shop.py
+import discord
+from discord.ext import commands
+from discord.ui import View, Button
+import os
+
+class PaginatedShopView(View):
+    def __init__(self, items, per_page=5):
+        super().__init__(timeout=60)
+        self.items = items
+        self.per_page = per_page
+        self.current_page = 0
+        self.add_item(Button(label="Previous", style=discord.ButtonStyle.secondary, custom_id="previous_page"))
+        self.add_item(Button(label="Next", style=discord.ButtonStyle.secondary, custom_id="next_page"))
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.message.author
+
+    @discord.ui.button(label='Previous', style=discord.ButtonStyle.secondary)
+    async def previous_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.current_page -= 1
+        await self.update_embed(interaction)
+
+    @discord.ui.button(label='Next', style=discord.ButtonStyle.secondary)
+    async def next_page(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.current_page += 1
+        await self.update_embed(interaction)
+
+    async def update_embed(self, interaction: discord.Interaction):
+        start = self.current_page * self.per_page
+        end = start + self.per_page
+        items = self.items[start:end]
+        
+        embed = discord.Embed(
+            title="Casino Shop",
+            description="Welcome to the Casino Shop! Here are some items you can purchase:",
+            color=discord.Color.blue()
+        )
+        
+        for item in items:
+            embed.add_field(name=item['name'], value=f"{item['description']} - {item['price']} {item['icon']}", inline=False)
+        
+        await interaction.response.edit_message(embed=embed, view=self)
+
+class Shop(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='shop')
+    async def shop(self, ctx):
+        items = [
+            {'name': 'Virtual Pet', 'description': 'A cute virtual pet.', 'price': 100, 'icon': "<:coin:>"},
+            {'name': 'Badge', 'description': 'A collectible badge.', 'price': 50, 'icon': "<:coin:>"},
+            {'name': 'Game Tokens', 'description': 'Tokens for playing games.', 'price': 20, 'icon': "<:coin:>"}
+        ]
+        view = PaginatedShopView(items)
+        await ctx.send(embed=view.create_embed(), view=view)
+
+
+async def setup(bot):
+    await bot.add_cog(Shop(bot))
+
+
+.\bot\__init__.py
+
+
+.\bot\games\blackjack.py
+import random, os, discord, asyncio, json
+from PIL import Image
+from discord.ext import commands
+from settings.settings import load_settings
+
 with open('settings/json/game_settings.json', 'r') as f:
     game_settings = json.load(f)
 
-# Blackjack settings
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
 CARD_VALUES = game_settings['blackjack']['card_values']  # Dictionary of card values
 SUITS = game_settings['blackjack']['suits']  # List of suits
 DECK = [f'{value}_of_{suit}' for suit in SUITS for value in CARD_VALUES.keys()]  # List of all cards in the deck
 DECK_IMAGES_FOLDER = 'utils/images/deckofcards'
 DUMP_IMAGES_FOLDER = 'utils/images/blackjackdump'
 
-# Duel settings
-DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
-DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
+BLACKJACK_WIN_POINTS = 100
+BLACKJACK_LOSS_POINTS = 20
+BLACKJACK_PUSH_POINTS = 45
 
-# Poker settings
-POKER_WIN_POINTS = game_settings['poker']['win_points']
-POKER_PREFLOP_MAX_BET = game_settings['poker']['preflop_max_bet']
-POKER_MIN_PLAYERS = game_settings['poker']['min_players']
-POKER_MAX_PLAYERS = game_settings['poker']['max_players']
-DUMP_IMAGES_FOLDER_POKER = 'utils/images/pokerdump'
-
-# Game Settings
-BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
-if BOT_TESTING_MODE:
-    POKER_MIN_PLAYERS = 1
-    POKER_MAX_PLAYERS = 1
-
-settings = load_settings()
-coin_icon = settings['coin_icon']
-
-# Class for handling duel game logic
-class Duel:
-    def __init__(self, player1, player2):
-        self.player1 = player1  # ID of player 1
-        self.player2 = player2  # ID of player 2
-        self.health = {player1: 100, player2: 100}  # Initial health for both players
-        self.letter = None  # The current letter for the duel
-        self.used_words = set()  # Set of words that have already been used
-
-    def generate_letter(self):
-        self.letter = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # Generate a random letter
-
-    async def is_valid_word(self, word):
-        url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word.lower()}"  # URL to check if the word is valid
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                return resp.status == 200  # Return True if the word is valid
-
-    def calculate_damage(self, words):
-        valid_words = [word for word in words if word.lower().startswith(self.letter.lower()) and word.lower() not in self.used_words]
-        self.used_words.update(word.lower() for word in valid_words)  # Add valid words to the set of used words
-        return sum(len(word) for word in valid_words)  # Calculate damage as the sum of the lengths of valid words
-
-    def get_winner(self):
-        if self.health[self.player1] <= 0:
-            return self.player2  # Player 2 wins if player 1's health is 0 or less
-        elif self.health[self.player2] <= 0:
-            return self.player1  # Player 1 wins if player 2's health is 0 or less
-        return None  # No winner if both players have health above 0
-
-    def adjust_health(self, player_id, damage):
-        self.health[player_id] = max(self.health[player_id] - damage, 0)  # Reduce health by the damage amount, but not below 0
-
-# Class for handling blackjack game logic
 class BlackjackGame:
     def __init__(self, player, bot):
         self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
@@ -1309,8 +1065,6 @@ class BlackjackGame:
             card_images.append(card_image_path)
         return card_images
 
-
-
     async def concatenate_images(self, image_paths, filename):
         images = [Image.open(path) for path in image_paths]
         widths, heights = zip(*(img.size for img in images))
@@ -1327,7 +1081,6 @@ class BlackjackGame:
         new_image.save(output_path)
 
         return output_path
-
 
     async def hit(self, ctx):
         card = await self.player_hit()
@@ -1347,17 +1100,18 @@ class BlackjackGame:
         activity_tracker = self.bot.get_cog('ActivityTracker')
         if result == "win":
             payout = self.bet * 2
-            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=self.bet)
-            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {DUEL_WIN_POINTS} points and {payout} {coin_icon}.")
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_WIN_POINTS, coins=self.bet)
+            await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {BLACKJACK_WIN_POINTS} points and {payout} {coin_icon}.")
         elif result == "bust":
             payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
             await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} {coin_icon}.")
         elif result == "lose":
             payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=DUEL_WIN_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
             await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_PUSH_POINTS, coins=0)
             await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
 
         await self.cleanup_images()
@@ -1382,12 +1136,486 @@ class BlackjackGame:
 
         await ctx.send(embed=embed, files=[player_hand_embed, dealer_hand_embed])
 
-
     async def cleanup_images(self):
         for filename in os.listdir(DUMP_IMAGES_FOLDER):
             file_path = os.path.join(DUMP_IMAGES_FOLDER, filename)
             if os.path.isfile(file_path):
                 os.unlink(file_path)
+
+.\bot\games\duel.py
+import random, aiohttp, discord, json
+from settings.settings import load_settings
+
+
+# Load game settings from a JSON file
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+DUEL_WIN_POINTS = game_settings['duel']['win_points']  # Points awarded for winning a duel
+DUEL_WIN_COINS = game_settings['duel']['win_coins']  # Coins awarded for winning a duel
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+class Duel:
+    def __init__(self, player1, player2):
+        self.player1 = player1  # ID of player 1
+        self.player2 = player2  # ID of player 2
+        self.health = {player1: 100, player2: 100}  # Initial health for both players
+        self.letter = None  # The current letter for the duel
+        self.used_words = set()  # Set of words that have already been used
+
+    def generate_letter(self):
+        self.letter = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # Generate a random letter
+
+    async def is_valid_word(self, word):
+        url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word.lower()}"  # URL to check if the word is valid
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                return resp.status == 200  # Return True if the word is valid
+
+    def calculate_damage(self, words):
+        valid_words = [word for word in words if word.lower().startswith(self.letter.lower()) and word.lower() not in self.used_words]
+        self.used_words.update(word.lower() for word in valid_words)  # Add valid words to the set of used words
+        return sum(len(word) for word in valid_words)  # Calculate damage as the sum of the lengths of valid words
+
+    def get_winner(self):
+        if self.health[self.player1] <= 0:
+            return self.player2  # Player 2 wins if player 1's health is 0 or less
+        elif self.health[self.player2] <= 0:
+            return self.player1  # Player 1 wins if player 2's health is 0 or less
+        return None  # No winner if both players have health above 0
+
+    def adjust_health(self, player_id, damage):
+        self.health[player_id] = max(self.health[player_id] - damage, 0)  # Reduce health by the damage amount, but not below 0
+
+    async def handle_duel(self, ctx, duel):
+        def check(m):
+            return m.channel == ctx.channel and m.author.id in [duel.player1, duel.player2]
+
+        while True:
+            msg = await self.bot.wait_for('message', check=check)
+            damage = await self.process_message(msg, duel)
+            opponent_id = duel.player1 if msg.author.id == duel.player2 else duel.player2
+            duel.adjust_health(opponent_id, damage)
+
+            embed = discord.Embed(
+                title="Duel Status",
+                description=f"{self.bot.get_user(duel.player1).mention} vs {self.bot.get_user(duel.player2).mention}",
+                color=discord.Color.red()
+            )
+            embed.add_field(name=f"{self.bot.get_user(duel.player1).display_name} HP", value=duel.health[duel.player1])
+            embed.add_field(name=f"{self.bot.get_user(duel.player2).display_name} HP", value=duel.health[duel.player2])
+            await ctx.send(embed=embed)
+
+            winner_id = duel.get_winner()
+            if winner_id:
+                winner = self.bot.get_user(winner_id)
+                await ctx.send(f"{winner.mention} wins the duel!")
+                activity_tracker = self.bot.get_cog('ActivityTracker')
+                activity_tracker.update_user_activity(winner, points=DUEL_WIN_POINTS, coins=DUEL_WIN_COINS)
+                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} {coin_icon}! Total {coin_icon}: {activity_tracker.activity_data[str(winner.id)]['coins']}")
+                
+                del self.duels[duel.player1]
+                del self.duels[duel.player2]
+                return
+
+    async def process_message(self, msg, duel):
+        words = msg.content.split()
+        valid_words = []
+        for word in words:
+            if await duel.is_valid_word(word):
+                if word.lower() not in duel.used_words:
+                    valid_words.append(word)
+                else:
+                    await msg.channel.send(f"The word '{word}' has already been used.")
+            else:
+                await msg.channel.send(f"The word '{word}' is not a valid word.")
+        return duel.calculate_damage(valid_words)
+
+
+.\bot\games\game_manager.py
+import discord, asyncio, json, logging
+from discord.ext import commands
+from duel import Duel
+from blackjack import BlackjackGame
+from lottery import Lottery
+from poker import PokerGame
+from settings.settings import load_settings
+
+logging.basicConfig(level=logging.INFO)
+
+# Load game settings from a JSON file
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
+if BOT_TESTING_MODE:
+    POKER_MIN_PLAYERS = 1
+    POKER_MAX_PLAYERS = 1
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+TICKET_COST = 100
+
+class CommandHandler(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.duels = {}
+        self.blackjack_games = {}
+        self.poker_games = {}
+        self.lottery = Lottery(bot)
+
+    @commands.command(name='challenge')
+    async def challenge(self, ctx, opponent_name: str):
+        opponent = self.find_member(ctx.guild, opponent_name)
+        if opponent is None:
+            await ctx.send(f"Could not find a unique member with the name '{opponent_name}'. Please specify a more exact name or use mention.")
+            return
+
+        if ctx.author.id in self.duels or opponent.id in self.duels:
+            await ctx.send("One of the players is already in a duel!")
+            return
+
+        self.duels[ctx.author.id] = Duel(ctx.author.id, opponent.id)
+        self.duels[opponent.id] = self.duels[ctx.author.id]
+
+        if opponent == self.bot.user and BOT_TESTING_MODE:
+            await self.accept_duel(ctx)
+        else:
+            await ctx.send(f"{ctx.author.mention} has challenged {opponent.mention} to a duel! Use `!accept` to accept the challenge.")
+
+    @commands.command(name='accept')
+    async def accept_duel(self, ctx):
+        if ctx.author.id not in self.duels:
+            return
+
+        duel = self.duels[ctx.author.id]
+        duel.generate_letter()
+        await ctx.send(f"The duel between {self.bot.get_user(duel.player1).mention} and {self.bot.get_user(duel.player2).mention} has begun! The challenge is to type as many words as you can that start with '{duel.letter}'. The duel will continue until one player's health reaches zero. Type your words separated by spaces.")
+
+        await self.handle_duel(ctx, duel)
+
+    @commands.command(name='blackjack')
+    async def blackjack(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(ctx.author.id))
+        current_coins = stats.get('coins', 0)
+
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to bet?")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+        while True:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
+                bet = int(msg.content)
+                if bet > 0 and bet <= current_coins:
+                    break
+                else:
+                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond! Please use !blackjack again.")
+                return
+
+        game = BlackjackGame(ctx.author, self.bot)
+        await game.start_game(bet)
+        self.blackjack_games[ctx.author.id] = game
+
+        await game.send_hand(ctx)
+
+    @commands.command(name='hit')
+    async def hit(self, ctx):
+        game = self.blackjack_games.get(ctx.author.id)
+        if game:
+            await game.hit(ctx)
+
+    @commands.command(name='stand')
+    async def stand(self, ctx):
+        game = self.blackjack_games.get(ctx.author.id)
+        if game:
+            await game.stand(ctx)
+
+    @commands.command(name='peek')
+    async def peek(self, ctx):
+        # Ensure the author is part of an active poker game
+        for game in self.poker_games.values():
+            if ctx.author in game.players:
+                await game.peek(ctx)
+                return
+        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
+
+    def find_member(self, guild, name):
+        members = [member for member in guild.members if member.display_name.lower() == name.lower()]
+        if len(members) == 1:
+            return members[0]
+        return None
+    
+    @commands.command(name='poker')
+    async def start_poker(self, ctx):
+        if ctx.author.id in self.poker_games:
+            await ctx.send("You are already in a game!")
+            return
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        stats = activity_tracker.get_statistics(str(ctx.author.id))
+        current_coins = stats.get('coins', 0)
+
+        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+
+        while True:
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
+                buy_in = int(msg.content)
+                if buy_in > 0 and buy_in <= current_coins:
+                    break
+                else:
+                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond! Please use !poker again.")
+                return
+
+        game = PokerGame(ctx, self.bot, buy_in)
+        self.poker_games[ctx.author.id] = game
+        try:
+            await game.start_game()
+        finally:
+            del self.poker_games[ctx.author.id]
+
+        @commands.command(name='join poker')
+        async def join_poker(self, ctx):
+            if ctx.author.id not in self.poker_games:
+                await ctx.send("You need to start a game first using !poker.")
+                return
+            game = self.poker_games[ctx.author.id]
+            await game.collect_players()
+
+    @commands.command(name='peek')
+    async def peek(self, ctx):
+        # Ensure the author is part of an active poker game
+        for game in self.poker_games.values():
+            if ctx.author in game.players:
+                await game.peek(ctx)
+                return
+        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
+
+    @commands.command(name='forcestart')
+    async def forcestart(self, ctx):
+        # Ensure the author is part of an active poker game
+        game = self.poker_games.get(ctx.author.id)
+        if not game:
+            await ctx.send(f"{ctx.author.mention}, you are not hosting any poker game!")
+            return
+
+        if len(game.players) >= game.POKER_MIN_PLAYERS:
+            await ctx.send("Minimum player requirements met. Starting the game now!")
+            await game.start_game()
+        else:
+            await ctx.send(f"Not enough players to start the game. Minimum required is {game.POKER_MIN_PLAYERS}.")
+
+    # Command to enter the lottery
+    @commands.command(name='enterlottery')
+    async def enter_lottery(self, ctx):
+        user_id = str(ctx.author.id)
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        current_lottery_pot = self.lottery.get_current_lottery_pot()
+        await ctx.send(f"Each ticket is worth {TICKET_COST} {coin_icon}. How many tickets would you like to buy? Current Lottery Pot: {current_lottery_pot} {coin_icon}")
+
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=50.0)
+            num_tickets = int(msg.content)
+            cost = num_tickets * TICKET_COST
+
+            await ctx.send(f"Are you sure you want to purchase {num_tickets} tickets for {cost} {coin_icon}? Say `!accept` if you wish to proceed.")
+
+            msg = await self.bot.wait_for('message', check=check, timeout=50.0)
+            if msg.content.lower() == '!accept':
+                activity_tracker = self.bot.get_cog('ActivityTracker')
+                user_data = activity_tracker.get_statistics(user_id)
+                user_balance = user_data.get('coins', 0)
+
+                if user_balance < cost:
+                    await ctx.send(f"{ctx.author.mention}, you do not have enough {coin_icon} to buy {num_tickets} tickets. Your current balance is {user_balance} {coin_icon}.")
+                    return
+
+                activity_tracker.update_user_activity(ctx.author, coins=-cost)
+                self.lottery.add_tickets(user_id, num_tickets)
+                total_tickets = self.lottery.load_lottery_data()['participants'][user_id]
+
+                current_lottery_pot = self.lottery.get_current_lottery_pot()
+                await ctx.send(f"Purchase Successful. Check back at 11 PM EST for the lottery results. You now have a total of {total_tickets} tickets in the lottery. \nYour {coin_icon} Balance: {user_balance - cost} {coin_icon}, Current Lottery Pot: {current_lottery_pot} {coin_icon}")
+            else:
+                await ctx.send("Purchase canceled.")
+        except ValueError:
+            await ctx.send("Invalid number of tickets.")
+        except asyncio.TimeoutError:
+            await ctx.send("You took too long to respond.")
+
+    @commands.command(name='lotterystatus')
+    async def lottery_status(self, ctx):
+        data = self.lottery.load_lottery_data()
+        total_tickets = data['total_tickets']
+        participants = len(data['participants'])
+        current_lottery_pot = self.lottery.get_current_lottery_pot()
+        await ctx.send(f"__**Current Lottery Status:**__\nTotal Tickets Sold: {total_tickets}\nNumber of Participants: {participants}\nCurrent Lottery Pot: {current_lottery_pot} {coin_icon}")
+
+
+async def setup(bot):
+    await bot.add_cog(CommandHandler(bot))
+
+
+.\bot\games\lottery.py
+import os, random, json, math, asyncio, logging
+from datetime import datetime, timedelta, timezone
+from discord.ext import commands, tasks
+from settings.settings import load_settings
+
+logging.basicConfig(level=logging.INFO)
+
+TICKET_COST = 100
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+class Lottery:
+    def __init__(self, bot):
+        self.bot = bot  # Set the bot for the lottery.
+        self.check_lottery_draw.start()  # Starting the task that checks the lottery draw time.
+        self.initial_pot = 5000  # Initial pot amount
+        self.LOTTERY_FILE = 'data/games/lottery/lottery.json'
+
+    def load_lottery_data(self):
+        if not os.path.exists(self.LOTTERY_FILE):
+            data = {'total_tickets': 0, 'participants': {}, 'current_pot': self.initial_pot}
+            self.save_lottery_data(data)
+        else:
+            with open(self.LOTTERY_FILE, 'r') as file:
+                data = json.load(file)
+                if 'total_tickets' not in data:
+                    data['total_tickets'] = 0
+                if 'participants' not in data:
+                    data['participants'] = {}
+                if 'current_pot' not in data:
+                    data['current_pot'] = self.initial_pot
+        return data
+
+    def save_lottery_data(self, data):
+        with open(self.LOTTERY_FILE, 'w') as file:
+            json.dump(data, file, indent=4)
+
+    def get_current_lottery_pot(self):
+        data = self.load_lottery_data()
+        return data.get('current_pot', self.initial_pot)
+
+    def add_tickets(self, user_id, ticket_count):
+        data = self.load_lottery_data()
+        if user_id not in data['participants']:
+            data['participants'][user_id] = 0
+        data['participants'][user_id] += ticket_count
+        data['total_tickets'] += ticket_count
+        data['current_pot'] += ticket_count * TICKET_COST
+        self.save_lottery_data(data)
+
+    def draw_winner(self):
+        data = self.load_lottery_data()
+        if data['total_tickets'] > 0:
+            tickets = [user_id for user_id, count in data['participants'].items() for _ in range(count)]
+            winner = random.choice(tickets)
+            current_pot = data['current_pot']
+            data['participants'] = {}
+            data['total_tickets'] = 0
+            data['current_pot'] = self.initial_pot
+            self.save_lottery_data(data)
+            return winner, current_pot
+        return None, 0
+
+    @tasks.loop(minutes=1)
+    async def check_lottery_draw(self):
+        channel = self.bot.get_channel(1252055670778368013)
+        now = datetime.now(timezone.utc)
+        logging.info(f"Current UTC time: {now}")
+        if now.hour == 3 and now.minute == 0:
+            logging.info("It's time to announce the winner!")
+            await self.announce_winner()
+        elif (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
+            await channel.send(f"Remember that 11 PM, the lottery will be drawn!  Type `!enterlottery` to buy tickets.")
+            await channel.send(f"Current Pot: {self.initial_plot} {coin_icon}")
+
+    async def announce_winner(self):
+        data = self.load_lottery_data()
+        if not data['participants']:
+            logging.info("No participants in the lottery.")
+            return
+
+        channel = self.bot.get_channel(1252055670778368013)
+
+        message = await channel.send("Today's Lottery Winner: ...")
+
+        start_time = datetime.now(timezone.utc)
+        duration = 60
+        end_time = start_time + timedelta(seconds=duration)
+
+        initial_sleep_time = 1
+        final_sleep_time = 3
+        total_steps = 1000
+
+        current_step = 0
+        while datetime.now(timezone.utc) < end_time:
+            participant = random.choice(list(data['participants'].items()))
+            user_id, tickets = participant
+            ticket_number = random.choice(list(range(tickets)))
+            member = await self.bot.fetch_user(user_id)
+            await message.edit(content=f"Picking Lottery Winner... {member.display_name} (Ticket #{ticket_number})")
+
+            sleep_time = initial_sleep_time + (final_sleep_time - initial_sleep_time) * (1 - math.exp(-current_step / total_steps))
+            await asyncio.sleep(sleep_time)
+
+            current_step += 1
+
+        winner_id, current_pot = self.draw_winner()
+        winner = await self.bot.fetch_user(winner_id)
+        await message.edit(content=f"Today's Lottery Winner: {winner.display_name} (Ticket #{ticket_number})")
+        await channel.send(content=f"{winner.display_name} has won {current_pot} {coin_icon}!")
+
+        # Update the winner's activity
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        if winner:
+            activity_tracker.update_user_activity(winner, coins=current_pot)
+            await channel.send(content=f"Congratulations {winner.display_name}! Your new balance is {activity_tracker.get_statistics(str(winner.id)).get('coins', 0)} {coin_icon}.")
+
+.\bot\games\poker.py
+import discord, random, os, asyncio, itertools, json
+from discord.ext import commands
+from PIL import Image
+from settings.settings import load_settings
+from datetime import timedelta
+
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+# Poker settings
+POKER_WIN_POINTS = game_settings['poker']['win_points']
+POKER_PREFLOP_MAX_BET = game_settings['poker']['preflop_max_bet']
+POKER_MIN_PLAYERS = game_settings['poker']['min_players']
+POKER_MAX_PLAYERS = game_settings['poker']['max_players']
+DUMP_IMAGES_FOLDER_POKER = 'utils/images/pokerdump'
+
+# Game Settings
+BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
+if BOT_TESTING_MODE:
+    POKER_MIN_PLAYERS = 1
+    POKER_MAX_PLAYERS = 1
 
 class PokerGame:
     def __init__(self, ctx, bot, buy_in):
@@ -1616,15 +1844,6 @@ class PokerGame:
         except asyncio.TimeoutError:
             await self.fold(player)
 
-    @app_commands.command(name="peek", description="Peek at your hand in the current poker game")
-    async def peek(self, interaction: discord.Interaction):
-        player = interaction.user
-        if player not in self.players:
-            await interaction.response.send_message(f"{player.mention}, you are not part of this game!", ephemeral=True)
-            return
-
-        await self.send_hand(self.ctx, player)
-
     async def check(self, player):
         await self.ctx.send(f"{player.mention} checks.")
 
@@ -1777,294 +1996,6 @@ class PokerGame:
         for card in cards:
             embed.set_image(url=card)
         await self.ctx.send(embed=embed)
-
-class CommandHandler(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.duels = {}
-        self.blackjack_games = {}
-        self.poker_games = {}
-
-    @commands.command(name='challenge')
-    async def challenge(self, ctx, opponent_name: str):
-        opponent = self.find_member(ctx.guild, opponent_name)
-        if opponent is None:
-            await ctx.send(f"Could not find a unique member with the name '{opponent_name}'. Please specify a more exact name or use mention.")
-            return
-
-        if ctx.author.id in self.duels or opponent.id in self.duels:
-            await ctx.send("One of the players is already in a duel!")
-            return
-
-        self.duels[ctx.author.id] = Duel(ctx.author.id, opponent.id)
-        self.duels[opponent.id] = self.duels[ctx.author.id]
-
-        if opponent == self.bot.user and BOT_TESTING_MODE:
-            await self.accept_duel(ctx)
-        else:
-            await ctx.send(f"{ctx.author.mention} has challenged {opponent.mention} to a duel! Use !accept to accept the challenge.")
-
-    @commands.command(name='accept')
-    async def accept_duel(self, ctx):
-        if ctx.author.id not in self.duels:
-            await ctx.send("You have not been challenged to a duel!")
-            return
-
-        duel = self.duels[ctx.author.id]
-        duel.generate_letter()
-        await ctx.send(f"The duel between {self.bot.get_user(duel.player1).mention} and {self.bot.get_user(duel.player2).mention} has begun! The challenge is to type as many words as you can that start with '{duel.letter}'. The duel will continue until one player's health reaches zero. Type your words separated by spaces.")
-
-        await self.handle_duel(ctx, duel)
-
-    async def handle_duel(self, ctx, duel):
-        def check(m):
-            return m.channel == ctx.channel and m.author.id in [duel.player1, duel.player2]
-
-        while True:
-            msg = await self.bot.wait_for('message', check=check)
-            damage = await self.process_message(msg, duel)
-            opponent_id = duel.player1 if msg.author.id == duel.player2 else duel.player2
-            duel.adjust_health(opponent_id, damage)
-
-            embed = discord.Embed(
-                title="Duel Status",
-                description=f"{self.bot.get_user(duel.player1).mention} vs {self.bot.get_user(duel.player2).mention}",
-                color=discord.Color.red()
-            )
-            embed.add_field(name=f"{self.bot.get_user(duel.player1).display_name} HP", value=duel.health[duel.player1])
-            embed.add_field(name=f"{self.bot.get_user(duel.player2).display_name} HP", value=duel.health[duel.player2])
-            await ctx.send(embed=embed)
-
-            winner_id = duel.get_winner()
-            if winner_id:
-                winner = self.bot.get_user(winner_id)
-                await ctx.send(f"{winner.mention} wins the duel!")
-                activity_tracker = self.bot.get_cog('ActivityTracker')
-                activity_tracker.update_user_activity(winner, points=DUEL_WIN_POINTS, coins=DUEL_WIN_COINS)
-                await ctx.send(f"{winner.mention} has been awarded {DUEL_WIN_POINTS} points and {DUEL_WIN_COINS} {coin_icon}! Total {coin_icon}: {activity_tracker.activity_data[str(winner.id)]['coins']}")
-                
-                del self.duels[duel.player1]
-                del self.duels[duel.player2]
-                return
-
-    async def process_message(self, msg, duel):
-        words = msg.content.split()
-        valid_words = []
-        for word in words:
-            if await duel.is_valid_word(word):
-                if word.lower() not in duel.used_words:
-                    valid_words.append(word)
-                else:
-                    await msg.channel.send(f"The word '{word}' has already been used.")
-            else:
-                await msg.channel.send(f"The word '{word}' is not a valid word.")
-        return duel.calculate_damage(valid_words)
-
-    @commands.command(name='blackjack')
-    async def blackjack(self, ctx):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(ctx.author.id))
-        current_coins = stats.get('coins', 0)
-
-        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to bet?")
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
-
-        while True:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
-                bet = int(msg.content)
-                if bet > 0 and bet <= current_coins:
-                    break
-                else:
-                    await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
-            except asyncio.TimeoutError:
-                await ctx.send("You took too long to respond! Please use !blackjack again.")
-                return
-
-        game = BlackjackGame(ctx.author, self.bot)
-        await game.start_game(bet)
-        self.blackjack_games[ctx.author.id] = game
-
-        await game.send_hand(ctx)
-
-    @commands.command(name='hit')
-    async def hit(self, ctx):
-        game = self.blackjack_games.get(ctx.author.id)
-        if game:
-            await game.hit(ctx)
-
-    @commands.command(name='stand')
-    async def stand(self, ctx):
-        game = self.blackjack_games.get(ctx.author.id)
-        if game:
-            await game.stand(ctx)
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    def find_member(self, guild, name):
-        members = [member for member in guild.members if member.display_name.lower() == name.lower()]
-        if len(members) == 1:
-            return members[0]
-        return None
-    
-    @commands.command(name='poker')
-    async def start_poker(self, ctx):
-        if ctx.author.id in self.poker_games:
-            await ctx.send("You are already in a game!")
-            return
-
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(ctx.author.id))
-        current_coins = stats.get('coins', 0)
-
-        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
-
-        while True:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
-                buy_in = int(msg.content)
-                if buy_in > 0 and buy_in <= current_coins:
-                    break
-                else:
-                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
-            except asyncio.TimeoutError:
-                await ctx.send("You took too long to respond! Please use !poker again.")
-                return
-
-        game = PokerGame(ctx, self.bot, buy_in)
-        self.poker_games[ctx.author.id] = game
-        try:
-            await game.start_game()
-        finally:
-            del self.poker_games[ctx.author.id]
-
-        @commands.command(name='join poker')
-        async def join_poker(self, ctx):
-            if ctx.author.id not in self.poker_games:
-                await ctx.send("You need to start a game first using !poker.")
-                return
-            game = self.poker_games[ctx.author.id]
-            await game.collect_players()
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    @commands.command(name='forcestart')
-    async def forcestart(self, ctx):
-        # Ensure the author is part of an active poker game
-        game = self.poker_games.get(ctx.author.id)
-        if not game:
-            await ctx.send(f"{ctx.author.mention}, you are not hosting any poker game!")
-            return
-
-        if len(game.players) >= game.POKER_MIN_PLAYERS:
-            await ctx.send("Minimum player requirements met. Starting the game now!")
-            await game.start_game()
-        else:
-            await ctx.send(f"Not enough players to start the game. Minimum required is {game.POKER_MIN_PLAYERS}.")
-
-async def setup(bot):
-    await bot.add_cog(CommandHandler(bot))
-
-.\bot\level_widget.py
-import discord
-from discord.ext import commands
-
-class LevelWidget(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        print("LevelWidget initialized")
-
-async def setup(bot):
-    print("Setting up LevelWidget")
-    await bot.add_cog(LevelWidget(bot))
-    print("LevelWidget added to bot")
-
-
-.\bot\shop.py
-# bot/shop.py
-import discord
-from discord.ext import commands
-from discord.ui import View, Button
-import os
-
-class PaginatedShopView(View):
-    def __init__(self, items, per_page=5):
-        super().__init__(timeout=60)
-        self.items = items
-        self.per_page = per_page
-        self.current_page = 0
-        self.add_item(Button(label="Previous", style=discord.ButtonStyle.secondary, custom_id="previous_page"))
-        self.add_item(Button(label="Next", style=discord.ButtonStyle.secondary, custom_id="next_page"))
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == self.message.author
-
-    @discord.ui.button(label='Previous', style=discord.ButtonStyle.secondary)
-    async def previous_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-        self.current_page -= 1
-        await self.update_embed(interaction)
-
-    @discord.ui.button(label='Next', style=discord.ButtonStyle.secondary)
-    async def next_page(self, button: discord.ui.Button, interaction: discord.Interaction):
-        self.current_page += 1
-        await self.update_embed(interaction)
-
-    async def update_embed(self, interaction: discord.Interaction):
-        start = self.current_page * self.per_page
-        end = start + self.per_page
-        items = self.items[start:end]
-        
-        embed = discord.Embed(
-            title="Casino Shop",
-            description="Welcome to the Casino Shop! Here are some items you can purchase:",
-            color=discord.Color.blue()
-        )
-        
-        for item in items:
-            embed.add_field(name=item['name'], value=f"{item['description']} - {item['price']} {item['icon']}", inline=False)
-        
-        await interaction.response.edit_message(embed=embed, view=self)
-
-class Shop(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name='shop')
-    async def shop(self, ctx):
-        items = [
-            {'name': 'Virtual Pet', 'description': 'A cute virtual pet.', 'price': 100, 'icon': "<:coin:>"},
-            {'name': 'Badge', 'description': 'A collectible badge.', 'price': 50, 'icon': "<:coin:>"},
-            {'name': 'Game Tokens', 'description': 'Tokens for playing games.', 'price': 20, 'icon': "<:coin:>"}
-        ]
-        view = PaginatedShopView(items)
-        await ctx.send(embed=view.create_embed(), view=view)
-
-
-async def setup(bot):
-    await bot.add_cog(Shop(bot))
-
-
-.\bot\__init__.py
-
 
 .\bot\status\offline.py
 import aiohttp
@@ -2243,7 +2174,7 @@ def load_settings():
 import matplotlib.pyplot as plt  # Import Matplotlib for creating visualizations
 import matplotlib.patches as patches  # Import patches to draw shapes
 import requests  # Import requests to download images from the web
-from PIL import Image  # Import Pillow to handle image processing
+from PIL import Image, ImageDraw, ImageOps  # Import Pillow to handle image processing
 from io import BytesIO  # Import BytesIO to handle image data in memory
 import numpy as np  # Import NumPy for numerical operations
 import os  # Import os to handle file paths
@@ -2307,23 +2238,17 @@ def generate_level_image(username, level, progress, points, next_level, avatar_u
         plt.text(bar_x + bar_width + 10 + shadow_offset, (bar_y + bar_height / 2) - 12.5 - shadow_offset, f"{next_level}", fontdict=font_properties1, color='black', ha='left', va='center')
         plt.text(bar_x + bar_width + 10, (bar_y + bar_height / 2) - 12.5, f"{next_level}", fontdict=font_properties1, color='white', ha='left', va='center')
 
-        # Define the file path to save the generated image
-        image_dir = 'utils/images'
-        if not os.path.exists(image_dir):
-            os.makedirs(image_dir)
-        image_path = os.path.join(image_dir, 'level_image.png')
-        plt.savefig(image_path, bbox_inches='tight', pad_inches=0, dpi=100)  # Save the figure to a file
-        plt.close()  # Close the figure to free up memory
+        # Save the figure to a BytesIO object
+        image_buffer = BytesIO()
+        plt.savefig(image_buffer, format='png', bbox_inches='tight', pad_inches=0, dpi=100)
+        plt.close()
+        image_buffer.seek(0)  # Move the cursor to the start of the BytesIO object
 
-        # Check if the image file was created and exists
-        if os.path.exists(image_path):
-            return image_path  # Return the path to the generated image
-        else:
-            print("Error: Image file was not created.")  # Print an error message if the image file was not created
-            return None  # Return None if the image file was not created
+        return image_buffer
+
     except Exception as e:
-        print(f"Error in generate_level_image: {e}")  # Print the exception message if an error occurs
-        return None  # Return None if an error occurs
+        print(f"Error in generate_level_image: {e}")
+        return None
 
 def generate_statistics_visualization(stats):
     labels = ['Messages Sent', 'Minutes in Voice', 'Minutes Online']  # Labels for the bars

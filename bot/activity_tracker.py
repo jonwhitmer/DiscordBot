@@ -10,9 +10,6 @@ MESSAGE_POINTS = 10
 VOICE_POINTS = 5
 ONLINE_POINTS = 2
 CHARACTERS_TYPED_POINTS = 0.1
-DUEL_WIN_POINTS = 100
-DUEL_WIN_COINS = 500
-BOT_TESTING_MODE = True  # Set to False to disable bot auto-playing duels
 
 class ActivityTracker(commands.Cog):
     def __init__(self, bot):
@@ -98,6 +95,22 @@ class ActivityTracker(commands.Cog):
         self.activity_data[user_id]['coins'] += coins
         self.save_activity_data()
 
+    def transfer_coins(self, from_user, to_user, amount):
+        from_user_id = str(from_user.id)
+        to_user_id = str(to_user.id)
+
+        if from_user_id not in self.activity_data or to_user_id not in self.activity_data:
+            return False, "User data not found."
+
+        if self.activity_data[from_user_id]['coins'] < amount:
+            return False, "Insufficient balance."
+
+        self.activity_data[from_user_id]['coins'] -= amount
+        self.activity_data[to_user_id]['coins'] += amount
+        self.save_activity_data()
+
+        return True, f"Transferred {amount} coins from {from_user.name} to {to_user.name}."
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
@@ -108,6 +121,12 @@ class ActivityTracker(commands.Cog):
 
     def get_statistics(self, user_id):
         return self.activity_data.get(user_id, {})
+    
+    def get_User_balance(self, user):
+        user_id = str(user.id)
+        if user_id in self.activity_data:
+            return self.activity_data[user_id].get('coins', 0)
+        return 0
     
 def points_for_level_transition(level):
     return 10000 if level == 1 else (level + 1) * 5000
@@ -123,6 +142,7 @@ def get_current_level(points):
     while points >= points_for_next_level(level):
         level += 1
     return level, points_for_next_level(level) - points_for_next_level(level - 1)
+
 
 async def setup(bot):
     await bot.add_cog(ActivityTracker(bot))
