@@ -136,18 +136,16 @@ class BlackjackGame:
         activity_tracker = self.bot.get_cog('ActivityTracker')
         if result == "win":
             payout = self.bet * 2
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_WIN_POINTS, coins=self.bet)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_WIN_POINTS, coins=payout)
             await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {BLACKJACK_WIN_POINTS} points and {payout} {coin_icon}.")
         elif result == "bust":
-            payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS)
             await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} {coin_icon}.")
         elif result == "lose":
-            payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS)
             await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_PUSH_POINTS, coins=0)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_PUSH_POINTS, coins=self.bet)
             await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
 
         await self.cleanup_images()

@@ -3,7 +3,7 @@ from discord.ext import commands
 from .duel import Duel
 from .blackjack import BlackjackGame
 from .lottery import Lottery
-from .poker import PokerGame
+from .dealerpoker import DealerPoker
 from settings.settings import load_settings
 
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +27,7 @@ class CommandHandler(commands.Cog):
         self.bot = bot
         self.duels = {}
         self.blackjack_games = {}
-        self.poker_games = {}
+        self.dealerpoker_games = {}
         self.lottery = Lottery(bot)
 
     @commands.command(name='challenge')
@@ -83,6 +83,9 @@ class CommandHandler(commands.Cog):
                 await ctx.send("You took too long to respond! Please use !blackjack again.")
                 return
 
+        reduction_amt = -(bet)
+        activity_tracker.update_user_activity(ctx.author, coins=reduction_amt)
+
         game = BlackjackGame(ctx.author, self.bot)
         await game.start_game(bet)
         self.blackjack_games[ctx.author.id] = game
@@ -100,86 +103,6 @@ class CommandHandler(commands.Cog):
         game = self.blackjack_games.get(ctx.author.id)
         if game:
             await game.stand(ctx)
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    def find_member(self, guild, name):
-        members = [member for member in guild.members if member.display_name.lower() == name.lower()]
-        if len(members) == 1:
-            return members[0]
-        return None
-    
-    @commands.command(name='poker')
-    async def start_poker(self, ctx):
-        if ctx.author.id in self.poker_games:
-            await ctx.send("You are already in a game!")
-            return
-
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(ctx.author.id))
-        current_coins = stats.get('coins', 0)
-
-        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
-
-        while True:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
-                buy_in = int(msg.content)
-                if buy_in > 0 and buy_in <= current_coins:
-                    break
-                else:
-                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
-            except asyncio.TimeoutError:
-                await ctx.send("You took too long to respond! Please use !poker again.")
-                return
-
-        game = PokerGame(ctx, self.bot, buy_in)
-        self.poker_games[ctx.author.id] = game
-        try:
-            await game.start_game()
-        finally:
-            del self.poker_games[ctx.author.id]
-
-        @commands.command(name='join poker')
-        async def join_poker(self, ctx):
-            if ctx.author.id not in self.poker_games:
-                await ctx.send("You need to start a game first using !poker.")
-                return
-            game = self.poker_games[ctx.author.id]
-            await game.collect_players()
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    @commands.command(name='forcestart')
-    async def forcestart(self, ctx):
-        # Ensure the author is part of an active poker game
-        game = self.poker_games.get(ctx.author.id)
-        if not game:
-            await ctx.send(f"{ctx.author.mention}, you are not hosting any poker game!")
-            return
-
-        if len(game.players) >= game.POKER_MIN_PLAYERS:
-            await ctx.send("Minimum player requirements met. Starting the game now!")
-            await game.start_game()
-        else:
-            await ctx.send(f"Not enough players to start the game. Minimum required is {game.POKER_MIN_PLAYERS}.")
 
     # Command to enter the lottery
     @commands.command(name='enterlottery')
@@ -229,6 +152,20 @@ class CommandHandler(commands.Cog):
         participants = len(data['participants'])
         current_lottery_pot = self.lottery.get_current_lottery_pot()
         await ctx.send(f"__**Current Lottery Status:**__\nTotal Tickets Sold: {total_tickets}\nNumber of Participants: {participants}\nCurrent Lottery Pot: {current_lottery_pot} {coin_icon}")
+
+    @commands.command(name='dealerpoker', help='Starts a dealer vs. player poker game')
+    async def start_dealer_poker(self, ctx):
+        if ctx.channel.id in self.dealerpoker_games:
+            await ctx.send("A dealer poker game is already running in this channel!")
+            return
+
+        self.dealerpoker_games[ctx.channel.id] = True
+
+        try:
+            poker_game = DealerPoker(ctx, self.bot)
+            await poker_game.start_game()
+        finally:
+            self.dealerpoker_games.pop(ctx.channel.id, None)
 
 
 async def setup(bot):

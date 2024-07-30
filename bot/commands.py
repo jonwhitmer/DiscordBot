@@ -18,6 +18,8 @@ from pydub import AudioSegment
 from dotenv import load_dotenv
 from tabulate import tabulate
 import matplotlib.pyplot as plt
+from gtts import gTTS
+from pydub import AudioSegment
 
 # Load the .env file
 load_dotenv()
@@ -98,6 +100,62 @@ class GeneralCommands(commands.Cog):
         file = discord.File(image_path, filename='forbes_list.png')
         embed = discord.Embed(title="Forbes List")
         embed.set_image(url="attachment://forbes_list.png")
+        await ctx.send(embed=embed, file=file)
+
+        # Clean up the saved image file
+        os.remove(image_path)
+
+    @commands.command(name='leaderboard')
+    async def leaderboard(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        all_data = activity_tracker.activity_data
+
+        # Convert data to a list of tuples and sort by points
+        leaderboard_list = [
+            (user_id, data.get('level', 0), data.get('points', 0), data.get('coins', 0))
+            for user_id, data in all_data.items()
+        ]
+        sorted_leaderboard_list = sorted(leaderboard_list, key=lambda x: x[2], reverse=True)[:10]  # Sort by points
+
+        # Create DataFrame
+        data = {
+            "Rank": list(range(1, len(sorted_leaderboard_list) + 1)),
+            "Player Name": [
+                self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User"
+                for user_id, _, _, _ in sorted_leaderboard_list
+            ],
+            "Level": [level for _, level, _, _ in sorted_leaderboard_list],
+            "Points": [points for _, _, points, _ in sorted_leaderboard_list],
+            "Coins": [coins for _, _, _, coins in sorted_leaderboard_list]
+        }
+        df = pd.DataFrame(data)
+
+        # Plot the table with a cleaner style
+        fig, ax = plt.subplots(figsize=(6, 3))  # Adjusted figsize for better appearance
+        ax.axis('tight')
+        ax.axis('off')
+
+        # Create table
+        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', edges='horizontal')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1.2, 1.2)  # Scale up the table for better readability
+
+        # Customize header row
+        for key, cell in table.get_celld().items():
+            cell.set_edgecolor('black')
+            cell.set_linewidth(1)
+            if key[0] == 0:
+                cell.set_text_props(weight='bold', color='black')  # Bold headers
+
+        # Save the table as an image
+        image_path = 'utils/images/leaderboard.png'
+        plt.savefig(image_path, bbox_inches='tight', dpi=300)
+
+        # Send the image in Discord
+        file = discord.File(image_path, filename='leaderboard.png')
+        embed = discord.Embed(title="Leaderboard")
+        embed.set_image(url="attachment://leaderboard.png")
         await ctx.send(embed=embed, file=file)
 
         # Clean up the saved image file
@@ -184,6 +242,54 @@ class GeneralCommands(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.mention}, {user_name} has {coins} {coin_icon} in their account.")
 
+    @commands.command(name='fredtalk')
+    async def fredtalk(self, ctx, *, message: str = None):
+        if ctx.author.voice and ctx.author.voice.channel:
+            voice_channel = ctx.author.voice.channel
+            vc = await voice_channel.connect()
+
+            user_nicknames = [member.display_name for member in voice_channel.members if member.display_name != "Fred"]
+
+            if message:
+                tts_message = message
+            else:
+                if len(user_nicknames) == 1:
+                    tts_message = f"Hello {user_nicknames[0]}"
+                else:
+                    tts_message = " ".join([f"Hello {name}" for name in user_nicknames])
+
+            tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts.mp3')
+            tts = gTTS(tts_message, lang='en', tld='co.in')
+            tts.save(tts_file_path)
+
+            # Load the TTS file with pydub
+            sound = AudioSegment.from_file(tts_file_path)
+
+            # Deepen the pitch (lowering by 4 semitones)
+            new_sound = sound._spawn(sound.raw_data, overrides={
+                "frame_rate": int(sound.frame_rate * 0.7)
+            }).set_frame_rate(sound.frame_rate)
+
+            # Save the new sound
+            new_tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts_deep.mp3')
+            new_sound.export(new_tts_file_path, format="mp3")
+
+            vc.play(discord.FFmpegPCMAudio(source=new_tts_file_path))
+
+            while vc.is_playing():
+                await asyncio.sleep(1)
+
+            await vc.disconnect()
+
+            # Delete the TTS files after 10 seconds
+            await asyncio.sleep(5)
+            if os.path.exists(tts_file_path):
+                os.remove(tts_file_path)
+            if os.path.exists(new_tts_file_path):
+                os.remove(new_tts_file_path)
+        else:
+            await ctx.send("You aren't in a voice chat.")
+
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
         super().__init__(timeout=60)
@@ -227,24 +333,6 @@ class LevelUI(commands.Cog):
             await ctx.send(embed=embed, file=file)
         else:
             await ctx.send("An error occurred while generating the level image.")
-
-    @commands.command(name='leaderboard')
-    async def leaderboard(self, ctx):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
-        sorted_stats = sorted(stats.items(), key=lambda x: x[1]['points'], reverse=True)[:20]
-        
-        df = pd.DataFrame(columns=["Rank", "Username", "Level", "Points"])
-        for idx, (user_id, data) in enumerate(sorted_stats, start=1):
-            member = ctx.guild.get_member(int(user_id))
-            if member:
-                df = pd.concat([df, pd.DataFrame({"Rank": [idx], "Username": [member.display_name], "Level": [data['level']], "Points": [data['points']]})], ignore_index=True)
-        
-        table_str = df.to_markdown(index=False)
-        embed = discord.Embed(title="Leaderboard", color=discord.Color.green())
-        embed.add_field(name="Top 20 Users", value=f"```\n{table_str}\n```", inline=False)
-
-        await ctx.send(embed=embed)
 
     @commands.command(name='leaderboard_today')
     async def leaderboard_today(self, ctx):

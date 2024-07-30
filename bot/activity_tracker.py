@@ -3,13 +3,23 @@ import discord
 from discord.ext import commands, tasks
 import json
 import os
+import asyncio
+import random
 from datetime import datetime, timezone
+from gtts import gTTS
+from pydub import AudioSegment
+from settings.settings import load_settings
+
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
 
 # Variables for point increments and bot testing mode
-MESSAGE_POINTS = 10
-VOICE_POINTS = 5
+MESSAGE_POINTS = 15
 ONLINE_POINTS = 2
-CHARACTERS_TYPED_POINTS = 0.1
+VOICE_CHAT_POINTS = 15
 
 class ActivityTracker(commands.Cog):
     def __init__(self, bot):
@@ -34,6 +44,7 @@ class ActivityTracker(commands.Cog):
         if now.hour == 5:  # 5 AM UTC, midnight EST
             for user_id in self.activity_data:
                 self.activity_data[user_id]['points_today'] = 0
+                print(f"Reset Points Today for {user_id}")
             self.save_activity_data()
 
     @reset_daily_stats.before_loop
@@ -56,7 +67,6 @@ class ActivityTracker(commands.Cog):
                             "characters_typed": 0,
                             "minutes_in_voice": 0,
                             "minutes_online": 0,
-                            "voice_activations": 0,
                             "total_talking_time": 0,
                             "coins": 0  # Add coins attribute
                         }
@@ -75,14 +85,83 @@ class ActivityTracker(commands.Cog):
                 "characters_typed": 0,
                 "minutes_in_voice": 0,
                 "minutes_online": 0,
-                "voice_activations": 0,
                 "total_talking_time": 0,
                 "coins": 0  # Add coins attribute
             }
+        previous_level = self.activity_data[user_id]['level']
         self.activity_data[user_id]['points'] += points
         self.activity_data[user_id]['points_today'] += points
         self.activity_data[user_id]['coins'] += coins
+
+        # Check for level up
+        new_level, _ = get_current_level(self.activity_data[user_id]['points'])
+        if new_level > previous_level:
+            self.activity_data[user_id]['level'] = new_level
+            # Announce level up in main chat
+            self.bot.loop.create_task(
+                self.announce_level_up_in_main_chat(user, previous_level, new_level)
+            )
+            
+            # If user is in a voice channel, make the bot join and announce via TTS
+            if user.voice and user.voice.channel:
+                self.bot.loop.create_task(self.announce_level_up_in_voice(user, previous_level, new_level))
+
         self.save_activity_data()
+
+    async def announce_level_up_in_main_chat(self, user, previous_level, new_level):
+        main_channel = discord.utils.get(user.guild.text_channels, name='licker-talk')
+        if main_channel:
+            await main_channel.send(f"{user.mention} has leveled up from Level {previous_level} to Level {new_level}. Congratulations, Gilligano!")
+            await main_channel.send(f"To celebrate, here's a gift!  Generating..")
+
+            generated_coins = random.randint(0, 50000)
+            digits = str(generated_coins)
+        
+            accumulated_digits = ""
+
+            for digit in digits:
+                accumulated_digits += digit
+                await main_channel.send(f"{accumulated_digits}")
+                await asyncio.sleep(0.5)
+            
+            await main_channel.send(f"{digits} {coin_icon}")
+
+            user_id = str(user.id)
+            self.activity_data[user_id]['coins'] += generated_coins
+
+    async def announce_level_up_in_voice(self, user, previous_level, new_level):
+        voice_channel = user.voice.channel
+        vc = await voice_channel.connect()
+        tts_message = f"{user.display_name} has leveled up from level {previous_level} to level {new_level}. Congratulations, gilligano!"
+        
+        tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts.mp3')
+        tts = gTTS(tts_message, lang='en', tld='co.in')
+        tts.save(tts_file_path)
+
+        sound = AudioSegment.from_file(tts_file_path)
+
+        # Deepen the pitch (lowering by 4 semitones)
+        new_sound = sound._spawn(sound.raw_data, overrides={
+            "frame_rate": int(sound.frame_rate * 0.7)
+        }).set_frame_rate(sound.frame_rate)
+
+        # Save the new sound
+        new_tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts_deep.mp3')
+        new_sound.export(new_tts_file_path, format="mp3")
+
+        vc.play(discord.FFmpegPCMAudio(source=new_tts_file_path))
+
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+        # Delete the TTS files after 10 seconds
+        await asyncio.sleep(5)
+        if os.path.exists(tts_file_path):
+            os.remove(tts_file_path)
+        if os.path.exists(new_tts_file_path):
+            os.remove(new_tts_file_path)
 
     def update_user_coins(self, user, coins):
         user_id = str(user.id)
@@ -117,6 +196,27 @@ class ActivityTracker(commands.Cog):
             self.update_user_activity(message.author, points=MESSAGE_POINTS)
             self.activity_data[str(message.author.id)]['messages_sent'] += 1
             self.activity_data[str(message.author.id)]['characters_typed'] += len(message.content)
+            self.save_activity_data()
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if not member.bot:
+            user_id = str(member.id)
+            if before.channel is None and after.channel is not None:
+                # User has joined a voice channel
+                print(f"{member.name} has joined a voice channel.")
+                self.activity_data[user_id]['voice_join_time'] = datetime.now().timestamp()
+
+            elif before.channel is not None and after.channel is None:
+                # User has left a voice channel
+                if 'voice_join_time' in self.activity_data[user_id]:
+                    time_spent = datetime.now().timestamp() - self.activity_data[user_id]['voice_join_time']
+                    points_earned = int(time_spent / 60) * VOICE_CHAT_POINTS
+                    print(f"{member.name} has left the voice channel. Points earned: {points_earned}.")
+                    self.update_user_activity(member, points=points_earned)
+                    self.activity_data[user_id]['total_talking_time'] += int(time_spent / 60)
+                    del self.activity_data[user_id]['voice_join_time']
+
             self.save_activity_data()
 
     def get_statistics(self, user_id):

@@ -14,7 +14,7 @@ class Lottery:
     def __init__(self, bot):
         self.bot = bot  # Set the bot for the lottery.
         self.check_lottery_draw.start()  # Starting the task that checks the lottery draw time.
-        self.initial_pot = 5000  # Initial pot amount
+        self.initial_pot = 30000  # Initial pot amount
         self.LOTTERY_FILE = 'data/games/lottery/lottery.json'
 
     def load_lottery_data(self):
@@ -64,15 +64,16 @@ class Lottery:
 
     @tasks.loop(minutes=1)
     async def check_lottery_draw(self):
+        data = self.load_lottery_data()
         channel = self.bot.get_channel(1252055670778368013)
         now = datetime.now(timezone.utc)
         logging.info(f"Current UTC time: {now}")
         if now.hour == 3 and now.minute == 0:
             logging.info("It's time to announce the winner!")
             await self.announce_winner()
-        elif (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
+        elif (now.hour == 16 and now.minute == 0) or (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
             await channel.send(f"Remember that 11 PM, the lottery will be drawn!  Type `!enterlottery` to buy tickets.")
-            await channel.send(f"Current Pot: {self.initial_plot} {coin_icon}")
+            await channel.send(f"Current Pot: {data['current_pot']} {coin_icon}")
 
     async def announce_winner(self):
         data = self.load_lottery_data()

@@ -11,10 +11,16 @@
         __init__.py
         games/
             blackjack.py
+            dealerpoker.py
             duel.py
             game_manager.py
             lottery.py
-            poker.py
+            __init__.py
+            __pycache__/
+        misc/
+            referral.py
+            __init__.py
+            __pycache__/
         status/
             offline.py
             online.py
@@ -51,6 +57,7 @@
             levelimages/
             pokerdump/
         sounds/
+            bottalking/
             musicdump/
         __pycache__/
 
@@ -93,8 +100,9 @@ async def on_ready():
     print(f'Logged in as {bot.user.name}')
     await bot.load_extension('bot.activity_tracker')
     await bot.load_extension('bot.commands')
-    await bot.load_extension('bot.games.game_manager')
     await bot.load_extension('bot.shop')
+    await bot.load_extension('bot.games.game_manager')
+    await bot.load_extension('bot.misc.referral')
     print("Extensions loaded")
 
     # Update the bot status to ONLINE
@@ -253,16 +261,15 @@ import discord
 from discord.ext import commands, tasks
 import json
 import os
+import asyncio
 from datetime import datetime, timezone
+from gtts import gTTS
+from pydub import AudioSegment
 
 # Variables for point increments and bot testing mode
-MESSAGE_POINTS = 10
-VOICE_POINTS = 5
+MESSAGE_POINTS = 15
 ONLINE_POINTS = 2
-CHARACTERS_TYPED_POINTS = 0.1
-DUEL_WIN_POINTS = 100
-DUEL_WIN_COINS = 500
-BOT_TESTING_MODE = True  # Set to False to disable bot auto-playing duels
+VOICE_CHAT_POINTS = 15
 
 class ActivityTracker(commands.Cog):
     def __init__(self, bot):
@@ -287,6 +294,7 @@ class ActivityTracker(commands.Cog):
         if now.hour == 5:  # 5 AM UTC, midnight EST
             for user_id in self.activity_data:
                 self.activity_data[user_id]['points_today'] = 0
+                print(f"Reset Points Today for {user_id}")
             self.save_activity_data()
 
     @reset_daily_stats.before_loop
@@ -309,7 +317,6 @@ class ActivityTracker(commands.Cog):
                             "characters_typed": 0,
                             "minutes_in_voice": 0,
                             "minutes_online": 0,
-                            "voice_activations": 0,
                             "total_talking_time": 0,
                             "coins": 0  # Add coins attribute
                         }
@@ -328,14 +335,67 @@ class ActivityTracker(commands.Cog):
                 "characters_typed": 0,
                 "minutes_in_voice": 0,
                 "minutes_online": 0,
-                "voice_activations": 0,
                 "total_talking_time": 0,
                 "coins": 0  # Add coins attribute
             }
+        previous_level = self.activity_data[user_id]['level']
         self.activity_data[user_id]['points'] += points
         self.activity_data[user_id]['points_today'] += points
         self.activity_data[user_id]['coins'] += coins
+
+        # Check for level up
+        new_level, _ = get_current_level(self.activity_data[user_id]['points'])
+        if new_level > previous_level:
+            self.activity_data[user_id]['level'] = new_level
+            # Announce level up in main chat
+            self.bot.loop.create_task(
+                self.announce_level_up_in_main_chat(user, previous_level, new_level)
+            )
+            
+            # If user is in a voice channel, make the bot join and announce via TTS
+            if user.voice and user.voice.channel:
+                self.bot.loop.create_task(self.announce_level_up_in_voice(user, previous_level, new_level))
+
         self.save_activity_data()
+
+    async def announce_level_up_in_main_chat(self, user, previous_level, new_level):
+        main_channel = discord.utils.get(user.guild.text_channels, name='licker-talk')
+        if main_channel:
+            await main_channel.send(f"{user.mention} has leveled up from level {previous_level} to level {new_level}. Congratulations, gilligano!")
+
+    async def announce_level_up_in_voice(self, user, previous_level, new_level):
+        voice_channel = user.voice.channel
+        vc = await voice_channel.connect()
+        tts_message = f"{user.display_name} has leveled up from level {previous_level} to level {new_level}. Congratulations, gilligano!"
+        
+        tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts.mp3')
+        tts = gTTS(tts_message, lang='en', tld='co.in')
+        tts.save(tts_file_path)
+
+        sound = AudioSegment.from_file(tts_file_path)
+
+        # Deepen the pitch (lowering by 4 semitones)
+        new_sound = sound._spawn(sound.raw_data, overrides={
+            "frame_rate": int(sound.frame_rate * 0.7)
+        }).set_frame_rate(sound.frame_rate)
+
+        # Save the new sound
+        new_tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts_deep.mp3')
+        new_sound.export(new_tts_file_path, format="mp3")
+
+        vc.play(discord.FFmpegPCMAudio(source=new_tts_file_path))
+
+        while vc.is_playing():
+            await asyncio.sleep(1)
+
+        await vc.disconnect()
+
+        # Delete the TTS files after 10 seconds
+        await asyncio.sleep(5)
+        if os.path.exists(tts_file_path):
+            os.remove(tts_file_path)
+        if os.path.exists(new_tts_file_path):
+            os.remove(new_tts_file_path)
 
     def update_user_coins(self, user, coins):
         user_id = str(user.id)
@@ -370,6 +430,27 @@ class ActivityTracker(commands.Cog):
             self.update_user_activity(message.author, points=MESSAGE_POINTS)
             self.activity_data[str(message.author.id)]['messages_sent'] += 1
             self.activity_data[str(message.author.id)]['characters_typed'] += len(message.content)
+            self.save_activity_data()
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if not member.bot:
+            user_id = str(member.id)
+            if before.channel is None and after.channel is not None:
+                # User has joined a voice channel
+                print(f"{member.name} has joined a voice channel.")
+                self.activity_data[user_id]['voice_join_time'] = datetime.now().timestamp()
+
+            elif before.channel is not None and after.channel is None:
+                # User has left a voice channel
+                if 'voice_join_time' in self.activity_data[user_id]:
+                    time_spent = datetime.now().timestamp() - self.activity_data[user_id]['voice_join_time']
+                    points_earned = int(time_spent / 60) * VOICE_CHAT_POINTS
+                    print(f"{member.name} has left the voice channel. Points earned: {points_earned}.")
+                    self.update_user_activity(member, points=points_earned)
+                    self.activity_data[user_id]['total_talking_time'] += int(time_spent / 60)
+                    del self.activity_data[user_id]['voice_join_time']
+
             self.save_activity_data()
 
     def get_statistics(self, user_id):
@@ -422,6 +503,8 @@ from pydub import AudioSegment
 from dotenv import load_dotenv
 from tabulate import tabulate
 import matplotlib.pyplot as plt
+from gtts import gTTS
+from pydub import AudioSegment
 
 # Load the .env file
 load_dotenv()
@@ -502,6 +585,62 @@ class GeneralCommands(commands.Cog):
         file = discord.File(image_path, filename='forbes_list.png')
         embed = discord.Embed(title="Forbes List")
         embed.set_image(url="attachment://forbes_list.png")
+        await ctx.send(embed=embed, file=file)
+
+        # Clean up the saved image file
+        os.remove(image_path)
+
+    @commands.command(name='leaderboard')
+    async def leaderboard(self, ctx):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        all_data = activity_tracker.activity_data
+
+        # Convert data to a list of tuples and sort by points
+        leaderboard_list = [
+            (user_id, data.get('level', 0), data.get('points', 0), data.get('coins', 0))
+            for user_id, data in all_data.items()
+        ]
+        sorted_leaderboard_list = sorted(leaderboard_list, key=lambda x: x[2], reverse=True)[:10]  # Sort by points
+
+        # Create DataFrame
+        data = {
+            "Rank": list(range(1, len(sorted_leaderboard_list) + 1)),
+            "Player Name": [
+                self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User"
+                for user_id, _, _, _ in sorted_leaderboard_list
+            ],
+            "Level": [level for _, level, _, _ in sorted_leaderboard_list],
+            "Points": [points for _, _, points, _ in sorted_leaderboard_list],
+            "Coins": [coins for _, _, _, coins in sorted_leaderboard_list]
+        }
+        df = pd.DataFrame(data)
+
+        # Plot the table with a cleaner style
+        fig, ax = plt.subplots(figsize=(6, 3))  # Adjusted figsize for better appearance
+        ax.axis('tight')
+        ax.axis('off')
+
+        # Create table
+        table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', edges='horizontal')
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1.2, 1.2)  # Scale up the table for better readability
+
+        # Customize header row
+        for key, cell in table.get_celld().items():
+            cell.set_edgecolor('black')
+            cell.set_linewidth(1)
+            if key[0] == 0:
+                cell.set_text_props(weight='bold', color='black')  # Bold headers
+
+        # Save the table as an image
+        image_path = 'utils/images/leaderboard.png'
+        plt.savefig(image_path, bbox_inches='tight', dpi=300)
+
+        # Send the image in Discord
+        file = discord.File(image_path, filename='leaderboard.png')
+        embed = discord.Embed(title="Leaderboard")
+        embed.set_image(url="attachment://leaderboard.png")
         await ctx.send(embed=embed, file=file)
 
         # Clean up the saved image file
@@ -588,6 +727,54 @@ class GeneralCommands(commands.Cog):
         else:
             await ctx.send(f"{ctx.author.mention}, {user_name} has {coins} {coin_icon} in their account.")
 
+    @commands.command(name='fredtalk')
+    async def fredtalk(self, ctx, *, message: str = None):
+        if ctx.author.voice and ctx.author.voice.channel:
+            voice_channel = ctx.author.voice.channel
+            vc = await voice_channel.connect()
+
+            user_nicknames = [member.display_name for member in voice_channel.members if member.display_name != "Fred"]
+
+            if message:
+                tts_message = message
+            else:
+                if len(user_nicknames) == 1:
+                    tts_message = f"Hello {user_nicknames[0]}"
+                else:
+                    tts_message = " ".join([f"Hello {name}" for name in user_nicknames])
+
+            tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts.mp3')
+            tts = gTTS(tts_message, lang='en', tld='co.in')
+            tts.save(tts_file_path)
+
+            # Load the TTS file with pydub
+            sound = AudioSegment.from_file(tts_file_path)
+
+            # Deepen the pitch (lowering by 4 semitones)
+            new_sound = sound._spawn(sound.raw_data, overrides={
+                "frame_rate": int(sound.frame_rate * 0.7)
+            }).set_frame_rate(sound.frame_rate)
+
+            # Save the new sound
+            new_tts_file_path = os.path.join('utils', 'sounds', 'bottalking', 'tts_deep.mp3')
+            new_sound.export(new_tts_file_path, format="mp3")
+
+            vc.play(discord.FFmpegPCMAudio(source=new_tts_file_path))
+
+            while vc.is_playing():
+                await asyncio.sleep(1)
+
+            await vc.disconnect()
+
+            # Delete the TTS files after 10 seconds
+            await asyncio.sleep(5)
+            if os.path.exists(tts_file_path):
+                os.remove(tts_file_path)
+            if os.path.exists(new_tts_file_path):
+                os.remove(new_tts_file_path)
+        else:
+            await ctx.send("You aren't in a voice chat.")
+
 class LevelUIView(View):
     def __init__(self, username, avatar_url, points, current_level, next_level, progress_percentage, remaining_points):
         super().__init__(timeout=60)
@@ -631,24 +818,6 @@ class LevelUI(commands.Cog):
             await ctx.send(embed=embed, file=file)
         else:
             await ctx.send("An error occurred while generating the level image.")
-
-    @commands.command(name='leaderboard')
-    async def leaderboard(self, ctx):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = {user_id: data for user_id, data in activity_tracker.activity_data.items()}
-        sorted_stats = sorted(stats.items(), key=lambda x: x[1]['points'], reverse=True)[:20]
-        
-        df = pd.DataFrame(columns=["Rank", "Username", "Level", "Points"])
-        for idx, (user_id, data) in enumerate(sorted_stats, start=1):
-            member = ctx.guild.get_member(int(user_id))
-            if member:
-                df = pd.concat([df, pd.DataFrame({"Rank": [idx], "Username": [member.display_name], "Level": [data['level']], "Points": [data['points']]})], ignore_index=True)
-        
-        table_str = df.to_markdown(index=False)
-        embed = discord.Embed(title="Leaderboard", color=discord.Color.green())
-        embed.add_field(name="Top 20 Users", value=f"```\n{table_str}\n```", inline=False)
-
-        await ctx.send(embed=embed)
 
     @commands.command(name='leaderboard_today')
     async def leaderboard_today(self, ctx):
@@ -1100,18 +1269,16 @@ class BlackjackGame:
         activity_tracker = self.bot.get_cog('ActivityTracker')
         if result == "win":
             payout = self.bet * 2
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_WIN_POINTS, coins=self.bet)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_WIN_POINTS, coins=payout)
             await ctx.send(f"Congratulations {ctx.author.mention}, you win! You have been awarded {BLACKJACK_WIN_POINTS} points and {payout} {coin_icon}.")
         elif result == "bust":
-            payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS)
             await ctx.send(f"Sorry {ctx.author.mention}, you busted! You lost {self.bet} {coin_icon}.")
         elif result == "lose":
-            payout = -(self.bet)
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS, coins=payout)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_LOSS_POINTS)
             await ctx.send(f"Sorry {ctx.author.mention}, you lose! You lost {self.bet} {coin_icon}.")
         elif result == "push":
-            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_PUSH_POINTS, coins=0)
+            activity_tracker.update_user_activity(ctx.author, points=BLACKJACK_PUSH_POINTS, coins=self.bet)
             await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
 
         await self.cleanup_images()
@@ -1141,6 +1308,460 @@ class BlackjackGame:
             file_path = os.path.join(DUMP_IMAGES_FOLDER, filename)
             if os.path.isfile(file_path):
                 os.unlink(file_path)
+
+.\bot\games\dealerpoker.py
+import discord, random, os, asyncio, json, asyncio, itertools
+from discord.ext import commands
+from PIL import Image, ImageDraw, ImageFont
+from settings.settings import load_settings
+
+with open('settings/json/game_settings.json', 'r') as f:
+    game_settings = json.load(f)
+
+settings = load_settings()
+coin_icon = settings['coin_icon']
+
+# Poker Settings
+POKER_WIN_POINTS = 120
+
+
+class DealerPoker:
+    def __init__(self, ctx, bot):
+        self.bot = bot
+        self.ctx = ctx
+        self.player = ctx.author
+        self.dealer_hand = []
+        self.player_hands = {}
+        self.community_cards = []
+        self.DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'
+        self.DUMP_IMAGES_FOLDER = 'utils/images/pokerdump'
+        self.game_cancelled = False
+        self.player_bet = 0
+        self.ante = 0
+        self.player_balance = 0
+
+    async def start_game(self):
+        await self.ask_for_ante()
+        if self.game_cancelled:
+            return
+        
+        await self.deal_initial_cards()
+        await self.betting_round(pre_flop = True)
+        await self.reveal_community_cards(3)
+        await self.betting_round()
+        await self.reveal_community_cards(1)
+        await self.betting_round()
+        await self.reveal_community_cards(1)
+        await self.betting_round(final = True)
+        await self.showdown()
+        await self.cleanup()
+
+    async def ask_for_ante(self):
+        await self.ctx.send(f"{self.ctx.author.mention}, how many {coin_icon} would you like to ante?")
+
+        def check(m):
+            return m.author == self.ctx.author and m.channel == self.ctx.channel
+        
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=120)
+            self.ante = int(msg.content)
+            activity_tracker = self.bot.get_cog('ActivityTracker')
+            user_data = activity_tracker.get_statistics(str(self.player.id))
+            player_coins = user_data.get('coins', 0)
+
+            if player_coins < self.ante:
+                await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough {coin_icon} to ante that amount.")
+                self.game_cancelled = True
+                return
+            
+            activity_tracker.update_user_activity(self.ctx.author, coins=-(self.ante))
+            self.player_balance = self.ante
+            self.player_hands[self.ctx.author] = []
+            await self.ctx.send(f"{self.ctx.author.mention}, you have anted {self.ante} {coin_icon}.  Starting Dealer Poker..")
+        except asyncio.TimeoutError:
+            await self.ctx.send(f"{self.ctx.author.mention} took too long to respond.  Game has been cancelled without refund.")
+            self.game_cancelled = True
+        except ValueError:
+            await self.ctx.send(f"{msg.content} is not a valid number.  Game cancelled.")
+            self.game_cancelled = True
+
+    async def deal_initial_cards(self):
+        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
+        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
+        random.shuffle(self.deck)
+
+        self.player_hands[self.player] = [self.deck.pop(), self.deck.pop()]
+        await self.send_hand(self.ctx, self.player)
+
+        self.dealer_hand = [self.deck.pop(), self.deck.pop()]
+
+    async def betting_round(self, pre_flop=False, final=False):
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.get_statistics(str(self.player.id))
+        player_total_coins = int(user_data.get('coins', 0))
+
+        max_bet = int(4 * self.ante if pre_flop else 1.5 * self.ante if final else 2 * self.ante)
+        action_message = "you can `!check` or place a `!bet`" if not final else "you can `!fold` or place a `!bet`"
+        await self.ctx.send(f"{self.ctx.author.mention}, {action_message} of {max_bet} {coin_icon}. Your current balance is {player_total_coins} {coin_icon}.")
+
+        def check(m):
+            return m.author == self.ctx.author and m.channel == self.ctx.channel
+
+        try:
+            while True:
+                msg = await self.bot.wait_for('message', check=check, timeout=120)
+                content = msg.content.lower().split()
+                
+                if content[0] == '!check' and not final:
+                    await self.ctx.send(f"{self.ctx.author.mention} checks.")
+                    break  # Exit the loop as a valid action was taken
+
+                elif content[0] == '!bet':
+                    try:
+                        bet_amount = max_bet if len(content) == 1 else int(content[1])
+
+                        if bet_amount < 1 or bet_amount > max_bet:
+                            await self.ctx.send(f"{self.ctx.author.mention}, invalid bet amount. Please bet up to {max_bet} {coin_icon}.")
+                        elif bet_amount > player_total_coins:
+                            await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough balance to place this bet.")
+                        else:
+                            self.player_bet += bet_amount
+                            player_total_coins -= bet_amount
+                            activity_tracker.update_user_activity(self.ctx.author, coins=-bet_amount)
+                            await self.ctx.send(f"{self.ctx.author.mention} places a bet of {bet_amount} {coin_icon}. Total bet: {self.player_bet} {coin_icon}. Current balance: {player_total_coins} {coin_icon}.")
+                            break  # Exit the loop as a valid action was taken
+                    except ValueError:
+                        await self.ctx.send(f"{self.ctx.author.mention}, please enter a valid bet amount.")
+
+                elif content[0] == '!fold' and final:
+                    await self.ctx.send(f"{self.ctx.author.mention} folds. Game over.")
+                    self.game_cancelled = True
+                    return
+
+                else:
+                    await self.ctx.send("Invalid action. Please try again.")
+        except asyncio.TimeoutError:
+            await self.ctx.send(f"{self.ctx.author.mention} took too long to respond. Game over.")
+            self.game_cancelled = True
+
+    def get_max_bet(self, pre_flop, final):
+        if pre_flop:
+            return 4 * self.ante
+        elif final:
+            return 1 * self.ante
+        return 2 * self.ante
+
+    async def reveal_community_cards(self, num):
+        for _ in range(num):
+            self.deck.pop()  # Burn card
+            self.community_cards.append(self.deck.pop())
+
+        await self.display_community_cards()
+
+    async def display_community_cards(self):
+        cards = [await self.get_card_image(card) for card in self.community_cards]
+        concatenated_image_path = await self.concatenate_images(cards, 'community_cards.png')
+        file = discord.File(concatenated_image_path, filename="community_cards.png")
+
+        embed = discord.Embed(title="Community Cards")
+        embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=file, embed=embed)
+
+    async def showdown(self):
+        player_hand = self.player_hands[self.ctx.author]
+        dealer_hand = self.dealer_hand
+        player_best_hand = self.get_best_hand(player_hand + self.community_cards)
+        dealer_best_hand = self.get_best_hand(dealer_hand + self.community_cards)
+
+        player_rank = self.hand_rank(player_best_hand)
+        dealer_rank = self.hand_rank(dealer_best_hand)
+        if player_rank > dealer_rank:
+            result = f"{self.ctx.author.mention} wins with {self.rank_description(player_rank)}!"
+        elif player_rank < dealer_rank:
+            result = f"The dealer wins with {self.rank_description(dealer_rank)}. Better luck next time!"
+        else:
+            result = "It's a tie!"
+
+        # Create images for the showdown
+        player_hand_image = await self.get_hand_image(player_hand)
+        dealer_hand_image = await self.get_hand_image(dealer_hand)
+        community_cards_image = await self.get_hand_image(self.community_cards)
+
+        # Concatenate all parts into one image
+        final_showdown_image = await self.concatenate_images([player_hand_image, community_cards_image, dealer_hand_image], 'final_showdown.png')
+
+        # Send the result with the final image
+        file = discord.File(final_showdown_image, filename="final_showdown.png")
+        embed = discord.Embed(title="Final Showdown", description=result)
+        embed.set_image(url="attachment://final_showdown.png")
+        await self.ctx.send(file=file, embed=embed)
+
+        # Clean up images
+        for img_path in [player_hand_image, dealer_hand_image, community_cards_image, final_showdown_image]:
+            os.remove(img_path)
+
+    async def display_final_hands(self, player_hand, dealer_hand):
+        player_hand_images = [await self.get_card_image(card) for card in player_hand]
+        dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
+
+        # Create a combined image of the player and dealer hands
+        player_hand_image = await self.concatenate_images(player_hand_images, 'player_final_hand.png')
+        dealer_hand_image = await self.concatenate_images(dealer_hand_images, 'dealer_final_hand.png')
+
+        embed = discord.Embed(title="Final Hands")
+        embed.set_image(url="attachment://player_final_hand.png")
+        player_file = discord.File(player_hand_image, filename="player_final_hand.png")
+        dealer_file = discord.File(dealer_hand_image, filename="dealer_final_hand.png")
+
+        msg = await self.ctx.send(file=player_file, embed=embed)
+
+        # Wait and reveal the dealer's hand
+        await asyncio.sleep(2)
+        embed.set_image(url="attachment://dealer_final_hand.png")
+        await msg.edit(embed=embed)
+        await self.ctx.send(file=dealer_file)
+
+    def rank_description(self, rank):
+        descriptions = [
+            "High Card", 
+            "One Pair", 
+            "Two Pair", 
+            "Three of a Kind", 
+            "Straight", 
+            "Flush", 
+            "Full House", 
+            "Four of a Kind", 
+            "Straight Flush", 
+            "Royal Flush"
+        ]
+        return descriptions[rank[0]]
+
+    async def get_hand_image(self, hand):
+        cards = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(cards, 'showdown_hand.png')
+        return concatenated_image_path
+
+    async def send_hand(self, ctx, player, reveal=False, dealer=False):
+        hand = self.player_hands[player] if not dealer else self.dealer_hand
+        card_images = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(card_images, f'poker_{player.id}_hand.png')
+        file = discord.File(concatenated_image_path, filename="hand.png")
+
+        title = f"{player.display_name}'s Hand" if not dealer else "Dealer's Hand"
+        embed = discord.Embed(title=title)
+        embed.set_image(url="attachment://hand.png")
+        await ctx.send(file=file, embed=embed)
+
+    async def get_card_image(self, card):
+        card_value = card[:-1]
+        card_suit = card[-1].upper()
+        if card_value == '10':
+            card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, '10', f'10{card_suit}.png')
+        else:
+            card_value = card_value[0].upper()
+            card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, card_value, f'{card_value}{card_suit}.png')
+        return card_image_path
+
+    async def concatenate_images(self, image_paths, filename, vertical=False):
+        images = [Image.open(path) for path in image_paths]
+        widths, heights = zip(*(img.size for img in images))
+        
+        if vertical:
+            total_width = max(widths)
+            total_height = sum(heights)
+        else:
+            total_width = sum(widths)
+            total_height = max(heights)
+
+        new_image = Image.new('RGB', (total_width, total_height))
+
+        x_offset, y_offset = 0, 0
+        for img in images:
+            if vertical:
+                new_image.paste(img, (0, y_offset))
+                y_offset += img.size[1]
+            else:
+                new_image.paste(img, (x_offset, 0))
+                x_offset += img.size[0]
+
+        output_path = os.path.join(self.DUMP_IMAGES_FOLDER, filename)
+        new_image.save(output_path)
+
+        return output_path
+
+
+    def hand_rank(self, hand):
+        # Define ranks and handle '10' separately
+        ranks = '23456789JQKA'
+        values = {r: i for i, r in enumerate(ranks, start=2)}
+        values['10'] = 10  # Explicitly add '10' to the values
+
+        # Extract ranks and suits from hand
+        hand_ranks = sorted([values[card[:-1]] for card in hand], reverse=True)
+        suits = [card[-1] for card in hand]
+
+        # Check for flush
+        is_flush = len(set(suits)) == 1
+        flush_ranks = [values[card[:-1]] for card in hand if card[-1] == suits[0]]
+        flush_ranks.sort(reverse=True)
+
+        # Check for straight within the flush cards
+        is_straight_flush = len(set(flush_ranks)) == 5 and (flush_ranks[0] - flush_ranks[-1] == 4)
+
+        # Special case: Ace can be low in a straight (A-2-3-4-5)
+        if set(flush_ranks) == {14, 5, 4, 3, 2}:
+            is_straight_flush = True
+            flush_ranks = [5, 4, 3, 2, 1]
+
+        # Check for Royal Flush
+        if is_straight_flush and flush_ranks == [14, 13, 12, 11, 10]:
+            return (9, flush_ranks)  # Royal Flush
+
+        # Check for Straight Flush
+        if is_straight_flush:
+            return (8, flush_ranks)  # Straight Flush
+
+        # Check for normal Straight
+        is_straight = len(set(hand_ranks)) == 5 and (hand_ranks[0] - hand_ranks[-1] == 4)
+        if set(hand_ranks) == {14, 5, 4, 3, 2}:
+            is_straight = True
+            hand_ranks = [5, 4, 3, 2, 1]
+
+        # Other rankings
+        rank_counter = {r: hand_ranks.count(r) for r in hand_ranks}
+        rank_values = sorted(((count, rank) for rank, count in rank_counter.items()), reverse=True)
+
+        # Four of a kind
+        if rank_values[0][0] == 4:
+            return (7, rank_values[0][1], rank_values[1][1])
+
+        # Full house
+        if rank_values[0][0] == 3 and rank_values[1][0] == 2:
+            return (6, rank_values[0][1], rank_values[1][1])
+
+        # Flush (not a straight flush)
+        if is_flush:
+            return (5, flush_ranks)
+
+        # Straight (not a straight flush)
+        if is_straight:
+            return (4, hand_ranks)
+
+        # Three of a kind
+        if rank_values[0][0] == 3:
+            return (3, rank_values[0][1], hand_ranks)
+
+        # Two pair
+        if rank_values[0][0] == 2 and rank_values[1][0] == 2:
+            return (2, rank_values[0][1], rank_values[1][1], hand_ranks)
+
+        # One pair
+        if rank_values[0][0] == 2:
+            return (1, rank_values[0][1], hand_ranks)
+
+        # High card
+        return (0, hand_ranks)
+
+    def get_best_hand(self, hand):
+        all_combinations = itertools.combinations(hand, 5)
+        best_hand = max(all_combinations, key=self.hand_rank)
+        return best_hand
+
+    async def reveal_hand(self, player, hand, dealer=False):
+        cards = [await self.get_card_image(card) for card in hand]
+        concatenated_image_path = await self.concatenate_images(cards, f'poker_{player.id}_hand.png')
+        file = discord.File(concatenated_image_path, filename="hand.png")
+
+        title = f"{player.display_name}'s Hand" if not dealer else "Dealer's Hand"
+        embed = discord.Embed(title=title)
+        embed.set_image(url="attachment://hand.png")
+        msg = await self.ctx.send(file=file, embed=embed)
+
+        # Dramatic reveal of each card
+        for i, card in enumerate(cards):
+            await asyncio.sleep(1)  # Adding delay for dramatic effect
+            if i < len(cards) - 1:
+                await msg.edit(content=f"{player.display_name} reveals {card}.")
+            else:
+                await self.ctx.send(f"{player.display_name} reveals {card}.")
+
+    async def create_final_showdown_image(self, player_hand, dealer_hand):
+        # Get image paths for each hand and community cards
+        player_hand_images = [await self.get_card_image(card) for card in player_hand]
+        dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
+        community_cards_images = [await self.get_card_image(card) for card in self.community_cards]
+
+        # Load all images
+        player_imgs = [Image.open(img) for img in player_hand_images]
+        dealer_imgs = [Image.open(img) for img in dealer_hand_images]
+        community_imgs = [Image.open(img) for img in community_cards_images]
+
+        # Determine maximum width and height for card images
+        max_card_width = max(img.width for img in player_imgs + dealer_imgs + community_imgs)
+        max_card_height = max(img.height for img in player_imgs + dealer_imgs + community_imgs)
+
+        # Define spacing
+        spacing = 10
+        text_height = 30
+
+        # Calculate total width and height
+        total_width = max_card_width * max(len(player_imgs), len(dealer_imgs), len(community_imgs)) + spacing * 2
+        total_height = max_card_height * 3 + text_height * 3 + spacing * 5
+
+        # Create a new image
+        combined_image = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+        draw = ImageDraw.Draw(combined_image)
+        font = ImageFont.truetype("arial.ttf", 20)  # You may need to specify the path to a font file
+
+        # Draw Player's Hand
+        draw.text((spacing, spacing), "Player's Hand", font=font, fill="black")
+        y_offset = spacing + text_height
+        x_offset = spacing
+        for img in player_imgs:
+            combined_image.paste(img, (x_offset, y_offset))
+            x_offset += img.width + spacing
+
+        # Draw Community Cards
+        draw.text((spacing, y_offset + max_card_height + spacing), "Community Cards", font=font, fill="black")
+        y_offset += max_card_height + spacing + text_height
+        x_offset = spacing
+        for img in community_imgs:
+            combined_image.paste(img, (x_offset, y_offset))
+            x_offset += img.width + spacing
+
+        # Draw Dealer's Hand
+        draw.text((spacing, y_offset + max_card_height + spacing), "Dealer's Hand", font=font, fill="black")
+        y_offset += max_card_height + spacing + text_height
+        x_offset = spacing
+        for img in dealer_imgs:
+            combined_image.paste(img, (x_offset, y_offset))
+            x_offset += img.width + spacing
+
+        # Save the combined image
+        final_image_path = os.path.join(self.DUMP_IMAGES_FOLDER, 'final_showdown.png')
+        combined_image.save(final_image_path)
+
+        return final_image_path
+
+
+    async def cleanup(self):
+        """Clean up temporary images and reset state if needed."""
+        for filename in os.listdir(self.DUMP_IMAGES_FOLDER):
+            file_path = os.path.join(self.DUMP_IMAGES_FOLDER, filename)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+
+    def cleanup_image(self, image_path):
+        """Remove the image file after it's used."""
+        try:
+            os.remove(image_path)
+        except Exception as e:
+            print(f"Error deleting image {image_path}: {e}")
+
+
 
 .\bot\games\duel.py
 import random, aiohttp, discord, json
@@ -1237,10 +1858,10 @@ class Duel:
 .\bot\games\game_manager.py
 import discord, asyncio, json, logging
 from discord.ext import commands
-from duel import Duel
-from blackjack import BlackjackGame
-from lottery import Lottery
-from poker import PokerGame
+from .duel import Duel
+from .blackjack import BlackjackGame
+from .lottery import Lottery
+from .dealerpoker import DealerPoker
 from settings.settings import load_settings
 
 logging.basicConfig(level=logging.INFO)
@@ -1264,7 +1885,7 @@ class CommandHandler(commands.Cog):
         self.bot = bot
         self.duels = {}
         self.blackjack_games = {}
-        self.poker_games = {}
+        self.dealerpoker_games = {}
         self.lottery = Lottery(bot)
 
     @commands.command(name='challenge')
@@ -1320,6 +1941,9 @@ class CommandHandler(commands.Cog):
                 await ctx.send("You took too long to respond! Please use !blackjack again.")
                 return
 
+        reduction_amt = -(bet)
+        activity_tracker.update_user_activity(ctx.author, coins=reduction_amt)
+
         game = BlackjackGame(ctx.author, self.bot)
         await game.start_game(bet)
         self.blackjack_games[ctx.author.id] = game
@@ -1337,86 +1961,6 @@ class CommandHandler(commands.Cog):
         game = self.blackjack_games.get(ctx.author.id)
         if game:
             await game.stand(ctx)
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    def find_member(self, guild, name):
-        members = [member for member in guild.members if member.display_name.lower() == name.lower()]
-        if len(members) == 1:
-            return members[0]
-        return None
-    
-    @commands.command(name='poker')
-    async def start_poker(self, ctx):
-        if ctx.author.id in self.poker_games:
-            await ctx.send("You are already in a game!")
-            return
-
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(ctx.author.id))
-        current_coins = stats.get('coins', 0)
-
-        await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to set as the buy-in amount for the game?")
-
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
-
-        while True:
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=30.0)
-                buy_in = int(msg.content)
-                if buy_in > 0 and buy_in <= current_coins:
-                    break
-                else:
-                    await ctx.send(f"Invalid response. Buy-in must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
-            except asyncio.TimeoutError:
-                await ctx.send("You took too long to respond! Please use !poker again.")
-                return
-
-        game = PokerGame(ctx, self.bot, buy_in)
-        self.poker_games[ctx.author.id] = game
-        try:
-            await game.start_game()
-        finally:
-            del self.poker_games[ctx.author.id]
-
-        @commands.command(name='join poker')
-        async def join_poker(self, ctx):
-            if ctx.author.id not in self.poker_games:
-                await ctx.send("You need to start a game first using !poker.")
-                return
-            game = self.poker_games[ctx.author.id]
-            await game.collect_players()
-
-    @commands.command(name='peek')
-    async def peek(self, ctx):
-        # Ensure the author is part of an active poker game
-        for game in self.poker_games.values():
-            if ctx.author in game.players:
-                await game.peek(ctx)
-                return
-        await ctx.send(f"{ctx.author.mention}, you are not part of an active poker game!")
-
-    @commands.command(name='forcestart')
-    async def forcestart(self, ctx):
-        # Ensure the author is part of an active poker game
-        game = self.poker_games.get(ctx.author.id)
-        if not game:
-            await ctx.send(f"{ctx.author.mention}, you are not hosting any poker game!")
-            return
-
-        if len(game.players) >= game.POKER_MIN_PLAYERS:
-            await ctx.send("Minimum player requirements met. Starting the game now!")
-            await game.start_game()
-        else:
-            await ctx.send(f"Not enough players to start the game. Minimum required is {game.POKER_MIN_PLAYERS}.")
 
     # Command to enter the lottery
     @commands.command(name='enterlottery')
@@ -1467,6 +2011,20 @@ class CommandHandler(commands.Cog):
         current_lottery_pot = self.lottery.get_current_lottery_pot()
         await ctx.send(f"__**Current Lottery Status:**__\nTotal Tickets Sold: {total_tickets}\nNumber of Participants: {participants}\nCurrent Lottery Pot: {current_lottery_pot} {coin_icon}")
 
+    @commands.command(name='dealerpoker', help='Starts a dealer vs. player poker game')
+    async def start_dealer_poker(self, ctx):
+        if ctx.channel.id in self.dealerpoker_games:
+            await ctx.send("A dealer poker game is already running in this channel!")
+            return
+
+        self.dealerpoker_games[ctx.channel.id] = True
+
+        try:
+            poker_game = DealerPoker(ctx, self.bot)
+            await poker_game.start_game()
+        finally:
+            self.dealerpoker_games.pop(ctx.channel.id, None)
+
 
 async def setup(bot):
     await bot.add_cog(CommandHandler(bot))
@@ -1489,7 +2047,7 @@ class Lottery:
     def __init__(self, bot):
         self.bot = bot  # Set the bot for the lottery.
         self.check_lottery_draw.start()  # Starting the task that checks the lottery draw time.
-        self.initial_pot = 5000  # Initial pot amount
+        self.initial_pot = 15000  # Initial pot amount
         self.LOTTERY_FILE = 'data/games/lottery/lottery.json'
 
     def load_lottery_data(self):
@@ -1539,15 +2097,16 @@ class Lottery:
 
     @tasks.loop(minutes=1)
     async def check_lottery_draw(self):
+        data = self.load_lottery_data()
         channel = self.bot.get_channel(1252055670778368013)
         now = datetime.now(timezone.utc)
         logging.info(f"Current UTC time: {now}")
         if now.hour == 3 and now.minute == 0:
             logging.info("It's time to announce the winner!")
             await self.announce_winner()
-        elif (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
+        elif (now.hour == 16 and now.minute == 0) or (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
             await channel.send(f"Remember that 11 PM, the lottery will be drawn!  Type `!enterlottery` to buy tickets.")
-            await channel.send(f"Current Pot: {self.initial_plot} {coin_icon}")
+            await channel.send(f"Current Pot: {data['current_pot']} {coin_icon}")
 
     async def announce_winner(self):
         data = self.load_lottery_data()
@@ -1591,411 +2150,120 @@ class Lottery:
             activity_tracker.update_user_activity(winner, coins=current_pot)
             await channel.send(content=f"Congratulations {winner.display_name}! Your new balance is {activity_tracker.get_statistics(str(winner.id)).get('coins', 0)} {coin_icon}.")
 
-.\bot\games\poker.py
-import discord, random, os, asyncio, itertools, json
-from discord.ext import commands
-from PIL import Image
-from settings.settings import load_settings
-from datetime import timedelta
+.\bot\games\__init__.py
 
+
+.\bot\misc\referral.py
+import discord
+import json
+from discord.ext import commands
+from settings.settings import load_settings
+from datetime import datetime, timezone, timedelta
+
+# Load game settings from a JSON file
 with open('settings/json/game_settings.json', 'r') as f:
     game_settings = json.load(f)
 
+# Load settings from a settings file
 settings = load_settings()
 coin_icon = settings['coin_icon']
 
-# Poker settings
-POKER_WIN_POINTS = game_settings['poker']['win_points']
-POKER_PREFLOP_MAX_BET = game_settings['poker']['preflop_max_bet']
-POKER_MIN_PLAYERS = game_settings['poker']['min_players']
-POKER_MAX_PLAYERS = game_settings['poker']['max_players']
-DUMP_IMAGES_FOLDER_POKER = 'utils/images/pokerdump'
+# The reward for inviting a new member
+INVITE_REWARD = 50000
 
-# Game Settings
-BOT_TESTING_MODE = game_settings['game']['bot_testing_mode']  # Whether bot testing mode is enabled
-if BOT_TESTING_MODE:
-    POKER_MIN_PLAYERS = 1
-    POKER_MAX_PLAYERS = 1
+class ReferralTracker(commands.Cog):
+    """
+    A Cog for tracking member invites and rewarding both the inviter and the new member with coins.
+    """
 
-class PokerGame:
-    def __init__(self, ctx, bot, buy_in):
-        self.bot = bot  # The bot instance
-        self.ctx = ctx  # The context from Discord
-        self.buy_in = buy_in  # The buy-in amount for the game
-        self.players = []  # List to store players
-        self.betting_order = []  # Order in which players will bet
-        self.current_bet = 0  # Current bet amount
-        self.pot = 0  # Total pot amount
-        self.current_player_index = 0  # Index to track the current player
-        self.community_cards = []  # List to store community cards
-        self.player_hands = {}  # Dictionary to store each player's hand
-        self.player_balances = {}  # Dictionary to store each player's balance
-        self.all_in_players = set()  # Set to track players who are all-in
-        self.DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'  # Folder for card images
-        self.DUMP_IMAGES_FOLDER = 'utils/images/pokerdump'  # Folder for dumping images
-        self.game_cancelled = False  # Flag to check if the game is cancelled
+    def __init__(self, bot):
+        """
+        Initialize the ReferralTracker cog.
 
-    async def start_game(self):
-        await self.collect_players()  # Collect players for the game
-        if len(self.players) < POKER_MIN_PLAYERS:  # Check if there are enough players
-            await self.ctx.send("Not enough players to start the game. Refunding buy-ins.")
-            await self.refund_buy_ins()  # Refund the buy-ins if not enough players
+        Parameters:
+            bot (commands.Bot): The bot instance.
+        """
+        self.bot = bot
+        self.invite_tracker = {}  # Dictionary to track the current invite uses
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        """
+        Event listener for when a member joins the server.
+
+        Parameters:
+            member (discord.Member): The member who joined the server.
+        """
+        # Check if the member's account is older than 60 days
+        if (datetime.now(timezone.utc) - member.created_at).days < 60:
+            lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
+            if lickertalk_channel:
+                await lickertalk_channel.send(f"{member.mention}'s account is not eligible for the referral reward (account must be over 60 days old).")
             return
 
-        self.betting_order = self.players[:]  # Set the betting order to the list of players
-        random.shuffle(self.betting_order)  # Shuffle the betting order
-        await self.deal_cards()  # Deal the initial cards to the players
-        await self.betting_round(pre_flop=True)  # Run the first betting round (pre-flop)
-        await self.reveal_community_cards(3)  # Reveal the flop (3 community cards)
-        await self.betting_round()  # Run the second betting round
-        await self.reveal_community_cards(1)  # Reveal the turn (1 community card)
-        await self.betting_round()  # Run the third betting round
-        await self.reveal_community_cards(1)  # Reveal the river (1 community card)
-        await self.betting_round()  # Run the final betting round
-        await self.showdown()  # Determine the winner and show the final hands
+        # Get the invites before the member joined
+        invites_before_join = self.invite_tracker.get(member.guild.id, {})
+        # Get the current invites after the member joined
+        invites_after_join = await member.guild.invites()
 
-    async def collect_players(self):
-        await self.ctx.send(f"A new poker game is starting with a buy-in of {self.buy_in} coins! Type `!join poker` to join. You have 2 minutes to join. The host can type `!cancel poker` to cancel the game or `!forcestart` to start the game if the minimum player requirements are met.")
+        # Determine which invite was used by comparing the uses before and after
+        for invite in invites_after_join:
+            if invite.uses > invites_before_join.get(invite.code, 0):
+                inviter = invite.inviter
+                activity_tracker = self.bot.get_cog('ActivityTracker')
+                # Update the inviter's and the new member's coin balance
+                activity_tracker.update_user_coins(inviter, INVITE_REWARD)
+                activity_tracker.update_user_coins(member, INVITE_REWARD)
 
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        player_coins = activity_tracker.get_statistics(str(self.ctx.author.id)).get('coins', 0)
-        if player_coins < self.buy_in:
-            await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough coins to start the game.")
-            return
+                # Announce the successful invite in the "lickertalk" channel
+                lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
+                if lickertalk_channel:
+                    await lickertalk_channel.send(
+                        f"{inviter.mention} has successfully invited {member.mention} to this server. Both have been rewarded {INVITE_REWARD} {coin_icon}!"
+                    )
 
-        self.players.append(self.ctx.author)
-        self.player_balances[self.ctx.author] = self.buy_in
-        activity_tracker.update_user_activity(self.ctx.author, coins=-(self.buy_in))
-        await self.display_player_list()
-
-        def join_check(m):
-            return m.content.lower() == "!join poker" and m.channel == self.ctx.channel
-
-        def cancel_check(m):
-            return m.content.lower() == "!cancel poker" and m.channel == self.ctx.channel and m.author == self.ctx.author
-
-        def forcestart_check(m):
-            return m.content.lower() == "!forcestart" and m.channel == self.ctx.channel and m.author == self.ctx.author
-
-        end_time = discord.utils.utcnow() + timedelta(minutes=2)
-        warning_times = [60, 30, 10]  # Times to send warnings in seconds
-        sent_warnings = set()
-
-        while True:
-            remaining_time = (end_time - discord.utils.utcnow()).total_seconds()
-
-            # Send warning messages
-            for warning in warning_times:
-                if remaining_time <= warning and warning not in sent_warnings:
-                    await self.ctx.send(f"{int(warning)} seconds remaining to join the game!")
-                    sent_warnings.add(warning)
-
-            if remaining_time <= 0:
+                # Update the invite tracker with the new number of uses
+                self.invite_tracker[member.guild.id][invite.code] = invite.uses
                 break
 
-            try:
-                done, pending = await asyncio.wait(
-                    [asyncio.create_task(self.bot.wait_for('message', check=join_check)), 
-                    asyncio.create_task(self.bot.wait_for('message', check=cancel_check)),
-                    asyncio.create_task(self.bot.wait_for('message', check=forcestart_check))],
-                    timeout=1,
-                    return_when=asyncio.FIRST_COMPLETED
-                )
-
-                if not done:
-                    continue
-
-                msg = done.pop().result()
-
-                if msg.content.lower() == "!cancel poker":
-                    await self.cancel_game()
-                    return
-
-                if msg.content.lower() == "!forcestart":
-                    if len(self.players) >= 2:
-                        await self.ctx.send("Minimum player requirements met. Starting the game now!")
-                        break
-                    else:
-                        await self.ctx.send(f"Not enough players to start the game. Minimum required is 2.")
-                        continue
-
-                if msg.author in self.players:
-                    await self.ctx.send(f"{msg.author.mention}, you are already in the game!")
-                    continue
-
-                player_coins = activity_tracker.get_statistics(str(msg.author.id)).get('coins', 0)
-                if player_coins < self.buy_in:
-                    await self.ctx.send(f"{msg.author.mention}, you do not have enough coins to join the game.")
-                    continue
-
-                self.players.append(msg.author)
-                self.player_balances[msg.author] = self.buy_in
-                activity_tracker.update_user_activity(msg.author, coins=-self.buy_in)
-                await self.ctx.send(f"{msg.author.mention} has joined the Poker session!")
-                await self.display_player_list()
-
-                if len(self.players) > 8:
-                    await self.ctx.send(f"MAX PLAYER EXCEEDED ERROR! The game has been cancelled.")
-                    await self.cancel_game()
-                    return
-
-                if len(self.players) == 8:
-                    await self.ctx.send("Maximum number of players reached. Starting the game now!")
-                    break
-            except asyncio.TimeoutError:
-                continue
-
-        if len(self.players) < 2:
-            await self.ctx.send("Not enough players to start the game. Refunding buy-ins.")
-            for player in self.players:
-                activity_tracker.update_user_activity(player, coins=self.buy_in)
-                await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} coins.")
-            return
-
-        await self.deal_cards()
-
-    async def cancel_game(self):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        for player in self.players:
-            activity_tracker.update_user_activity(player, coins=self.buy_in)
-            await self.ctx.send(f"{player.mention}, you have been refunded {self.buy_in} coins.")
-        await self.ctx.send("The poker game has been cancelled by the host.")
-
-    async def deal_cards(self):
-        self.deck = [f'{value}{suit}' for value in '23456789JQKA' for suit in 'CDHS']
-        self.deck.extend([f'10{suit}' for suit in 'CDHS'])
-        random.shuffle(self.deck)
-        for player in self.players:
-            self.player_hands[player] = [self.deck.pop(), self.deck.pop()]
-            await self.send_hand(self.ctx, player)
-    
-    async def send_hand(self, ctx, player, reveal=False):
-        hand = self.player_hands[player]
-        card_images = [await self.get_card_image(card) for card in hand]
-        concatenated_image_path = await self.concatenate_images(card_images, f'poker_{player.id}_hand.png')
-        file = discord.File(concatenated_image_path, filename="hand.png")
-
-        if reveal:
-            embed = discord.Embed(title=f"{player.display_name}'s Hand")
-        else:
-            embed = discord.Embed(title="Your Hand")
-        
-        embed.set_image(url="attachment://hand.png")
-        await ctx.send(file=file, embed=embed, ephemeral=True)
-
-    async def get_card_image(self, card):
-            card_value = card[:-1]
-            card_suit = card[-1].upper()
-            if card_value == '10':
-                card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, '10', f'10{card_suit}.png')
-            else:
-                card_value = card_value[0].upper()
-                card_image_path = os.path.join(self.DECK_OF_CARDS_FOLDER, card_value, f'{card_value}{card_suit}.png')
-            return card_image_path
-    
-    async def concatenate_images(self, image_paths, filename):
-        images = [Image.open(path) for path in image_paths]
-        widths, heights = zip(*(img.size for img in images))
-        total_width = sum(widths)
-        max_height = max(heights)
-        new_image = Image.new('RGB', (total_width, max_height))
-
-        x_offset = 0
-        for img in images:
-            new_image.paste(img, (x_offset, 0))
-            x_offset += img.size[0]
-
-        output_path = os.path.join(self.DUMP_IMAGES_FOLDER, filename)
-        new_image.save(output_path)
-
-        return output_path
-
-    async def betting_round(self, pre_flop=False):
-        self.current_bet = 0 if pre_flop else self.current_bet
-        for player in self.betting_order:
-            if player in self.all_in_players:
-                continue
-            await self.prompt_player_action(player)
-
-    async def prompt_player_action(self, player):
-        if self.current_bet == 0:
-            await self.ctx.send(f"{player.mention}, it's your turn. You can `!check`, `check`, `!fold`, `fold`, `!raise`, `raise`, or `!allin`, `allin`. Your balance: {self.player_balances[player]} {coin_icon}. Pot: {self.pot} {coin_icon}.")
-            valid_actions = ['!check', 'check', '!fold', 'fold', '!raise', 'raise', '!allin', 'allin']
-        else:
-            await self.ctx.send(f"{player.mention}, it's your turn. You can `!call`, `call`, `!fold`, `fold`, `!raise`, `raise`, or `!allin`, `allin`. Your balance: {self.player_balances[player]} {coin_icon}. Pot: {self.pot} {coin_icon}.")
-            valid_actions = ['!call', 'call', '!fold', 'fold', '!raise', 'raise', '!allin', 'allin']
-
-        def check(m):
-            return m.author == player and m.channel == self.ctx.channel and m.content.lower() in valid_actions
-
-        try:
-            msg = await self.bot.wait_for('message', check=check, timeout=120)
-            action = msg.content.lower().lstrip('!')
-            if action == 'check':
-                await self.check(player)
-            elif action == 'call':
-                await self.call(player)
-            elif action == 'fold':
-                await self.fold(player)
-            elif action == 'raise':
-                await self.raise_bet(player)
-            elif action == 'allin':
-                await self.allin(player)
-        except asyncio.TimeoutError:
-            await self.fold(player)
-
-    async def check(self, player):
-        await self.ctx.send(f"{player.mention} checks.")
-
-    async def call(self, player):
-        call_amount = self.current_bet - self.player_balances[player]
-        if self.player_balances[player] < call_amount:
-            await self.allin(player)
-        else:
-            self.player_balances[player] -= call_amount
-            self.pot += call_amount
-            await self.ctx.send(f"{player.mention} calls {call_amount} coins. Pot is now {self.pot} {coin_icon}.")
-
-    async def fold(self, player):
-        self.betting_order.remove(player)
-        await self.ctx.send(f"{player.mention} folds.")
-
-    async def raise_bet(self, player):
-        await self.ctx.send(f"{player.mention}, how much would you like to raise? Type an amount or `!allin` or `allin`.")
-        def check(m):
-            return m.author == player and m.channel == self.ctx.channel
-        try:
-            msg = await self.bot.wait_for('message', check=check, timeout=120)
-            if msg.content.lower().lstrip('!') == 'allin':
-                await self.allin(player)
-            else:
-                try:
-                    raise_amount = int(msg.content)
-                    if raise_amount > self.player_balances[player]:
-                        await self.ctx.send(f"You don't have enough {coin_icon} to raise that amount.")
-                        await self.raise_bet(player)
-                    else:
-                        self.current_bet += raise_amount
-                        self.player_balances[player] -= raise_amount
-                        self.pot += raise_amount
-                        await self.ctx.send(f"{player.mention} raises by {raise_amount} {coin_icon}. Current bet is now {self.current_bet} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
-                except ValueError:
-                    await self.ctx.send(f"{msg.content} is not a valid amount. Please enter a valid number or type `!allin` or `allin`.")
-                    await self.raise_bet(player)
-        except asyncio.TimeoutError:
-            await self.fold(player)
-            await self.fold(player)
-
-    async def allin(self, player):
-        allin_amount = self.player_balances[player]
-        self.all_in_players.add(player)
-        self.player_balances[player] = 0
-        self.pot += allin_amount
-        await self.ctx.send(f"{player.mention} goes all-in with {allin_amount} {coin_icon}. Pot is now {self.pot} {coin_icon}.")
-
-    async def reveal_community_cards(self, num):
-        for _ in range(num):
-            self.deck.pop()  # Burn card
-            self.community_cards.append(self.deck.pop())
-        cards = [await self.get_card_image(card) for card in self.community_cards]
-        concatenated_image_path = await self.concatenate_images(cards, 'community_cards.png')
-        file = discord.File(concatenated_image_path, filename="community_cards.png")
-
-        embed = discord.Embed(title="Community Cards")
-        embed.set_image(url="attachment://community_cards.png")
-        await self.ctx.send(file=file, embed=embed)
-
-    async def showdown(self):
-        await self.ctx.send("Showdown! Revealing hands...")
-        hands = []
-        for player in self.betting_order:
-            hand = self.player_hands[player] + self.community_cards
-            best_hand = self.get_best_hand(hand)
-            hands.append((player, best_hand))
-            await self.reveal_hand(player, best_hand)
-
-        if not hands:
-            await self.ctx.send("No hands to compare, ending showdown.")
-            return
-
-        winner = max(hands, key=lambda h: self.hand_rank(h[1]))[0]
-        await self.ctx.send(f"{winner.mention} wins the pot of {self.pot} {coin_icon}!")
-
-    async def display_player_list(self):
-        if self.players:
-            player_list = "\n".join([player.mention for player in self.players])
-            embed = discord.Embed(title="Current Player List", description=player_list, color=discord.Color.blue())
-            await self.ctx.send(embed=embed)
-        else:
-            await self.ctx.send("No players have joined yet.")
-
-    def hand_rank(self, hand):
+    @commands.Cog.listener()
+    async def on_ready(self):
         """
-        Determine the rank of a given poker hand.
-
-        :param hand: List of 5 card strings (e.g., ['2H', '3D', '5S', '9C', 'KD'])
-        :return: Tuple representing the hand rank and its components for comparison
+        Event listener for when the bot is ready.
+        Initializes the invite tracker with the current invite uses for each guild.
         """
+        for guild in self.bot.guilds:
+            self.invite_tracker[guild.id] = {invite.code: invite.uses for invite in await guild.invites()}
 
-        # Define card ranks and their corresponding values
-        ranks = '2345678910JQKA'
-        values = {r: i for i, r in enumerate(ranks.split(), start=2)}
-
-        # Get the numeric value of each card in the hand
-        hand_ranks = sorted(
-            [values['10'] if card[:-1] == '10' else values[card[0]] for card in hand],
-            reverse=True
+    @commands.command(name='invitemessage')
+    async def invitemessage(self, ctx):
+        """
+        Command to generate an invite link and provide a message template for the user to share.
+        """
+        # Create a new invite link with a maximum of 1 use and a 1-day expiration time
+        invite = await ctx.channel.create_invite(max_uses=1, max_age=86400, unique=True)
+        invite_message = (
+            f"Hey! Join Gilligan Lickers for you and me to get {INVITE_REWARD} {coin_icon}. "
+            f"Use my referral link (valid for one day): {invite.url}"
         )
 
-        # Check for flush (all cards have the same suit)
-        is_flush = len(set(card[-1] for card in hand)) == 1
+        await ctx.send(
+            f"{ctx.author.mention}, here's your invite link and message to share:\n\n"
+            f"{invite_message}"
+        )
 
-        # Check for straight (consecutive card values)
-        is_straight = len(set(hand_ranks)) == 5 and (hand_ranks[0] - hand_ranks[-1] == 4)
+async def setup(bot):
+    """
+    Setup function to add the ReferralTracker cog to the bot.
 
-        # Special case: A-5 straight
-        if hand_ranks == [14, 5, 4, 3, 2]:
-            hand_ranks = [5, 4, 3, 2, 1]
-            is_straight = True
+    Parameters:
+        bot (commands.Bot): The bot instance.
+    """
+    await bot.add_cog(ReferralTracker(bot))
 
-        # Count the occurrences of each rank in the hand
-        rank_counter = {r: hand_ranks.count(r) for r in hand_ranks}
-        rank_values = sorted(((count, rank) for rank, count in rank_counter.items()), reverse=True)
 
-        # Determine the rank of the hand
-        if is_straight and is_flush:
-            return (8, hand_ranks[0])  # Straight flush
-        elif rank_values[0][0] == 4:
-            return (7, rank_values[0][1], rank_values[1][1])  # Four of a kind
-        elif rank_values[0][0] == 3 and rank_values[1][0] == 2:
-            return (6, rank_values[0][1], rank_values[1][1])  # Full house
-        elif is_flush:
-            return (5, hand_ranks)  # Flush
-        elif is_straight:
-            return (4, hand_ranks[0])  # Straight
-        elif rank_values[0][0] == 3:
-            return (3, rank_values[0][1], hand_ranks)  # Three of a kind
-        elif rank_values[0][0] == 2 and rank_values[1][0] == 2:
-            return (2, rank_values[0][1], rank_values[1][1], hand_ranks)  # Two pair
-        elif rank_values[0][0] == 2:
-            return (1, rank_values[0][1], hand_ranks)  # One pair
-        else:
-            return (0, hand_ranks)  # High card
-        
-    def get_best_hand(self, hand):
-        """
-        From the 7 cards, choose the best 5-card hand.
-        """
-        all_combinations = itertools.combinations(hand, 5)
-        best_hand = max(all_combinations, key=self.hand_rank)
-        return best_hand
+.\bot\misc\__init__.py
 
-    async def reveal_hand(self, player, hand):
-        cards = [await self.get_card_image(card) for card in hand]
-        embed = discord.Embed(title=f"{player.display_name}'s Hand")
-        for card in cards:
-            embed.set_image(url=card)
-        await self.ctx.send(embed=embed)
 
 .\bot\status\offline.py
 import aiohttp

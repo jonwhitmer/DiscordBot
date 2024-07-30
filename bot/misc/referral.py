@@ -13,7 +13,7 @@ settings = load_settings()
 coin_icon = settings['coin_icon']
 
 # The reward for inviting a new member
-INVITE_REWARD = 30000
+INVITE_REWARD = 50000
 
 class ReferralTracker(commands.Cog):
     """
@@ -40,9 +40,9 @@ class ReferralTracker(commands.Cog):
         """
         # Check if the member's account is older than 60 days
         if (datetime.now(timezone.utc) - member.created_at).days < 60:
-            lickertalk_channel = discord.utils.get(member.guild.text_channels, name='lickertalk')
+            lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
             if lickertalk_channel:
-                await lickertalk_channel.send(f"@{member.name}'s account is not eligible for the referral reward (account must be over 60 days old).")
+                await lickertalk_channel.send(f"{member.mention}'s account is not eligible for the referral reward (account must be over 60 days old).")
             return
 
         # Get the invites before the member joined
@@ -60,10 +60,10 @@ class ReferralTracker(commands.Cog):
                 activity_tracker.update_user_coins(member, INVITE_REWARD)
 
                 # Announce the successful invite in the "lickertalk" channel
-                lickertalk_channel = discord.utils.get(member.guild.text_channels, name='lickertalk')
+                lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
                 if lickertalk_channel:
                     await lickertalk_channel.send(
-                        f"@{inviter.name} has successfully invited @{member.name} to this server. Both have been rewarded {INVITE_REWARD} {coin_icon}!"
+                        f"{inviter.mention} has successfully invited {member.mention} to this server. Both have been rewarded {INVITE_REWARD} {coin_icon}!"
                     )
 
                 # Update the invite tracker with the new number of uses
@@ -87,7 +87,7 @@ class ReferralTracker(commands.Cog):
         # Create a new invite link with a maximum of 1 use and a 1-day expiration time
         invite = await ctx.channel.create_invite(max_uses=1, max_age=86400, unique=True)
         invite_message = (
-            f"Hey! Join Gilligan Lickers for you and me to get 30000 {coin_icon}. "
+            f"Hey! Join Gilligan Lickers for you and me to get {INVITE_REWARD} {coin_icon}. "
             f"Use my referral link (valid for one day): {invite.url}"
         )
 
