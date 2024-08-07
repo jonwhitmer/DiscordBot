@@ -70,7 +70,7 @@ class GeneralCommands(commands.Cog):
         data = {
             "Rank": list(range(1, len(sorted_coin_list) + 1)),
             "Player Name": [self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User" for user_id, _ in sorted_coin_list],
-            f"Coins": [coins for _, coins in sorted_coin_list]
+            "Coins": [f"{coins:,}" for _, coins in sorted_coin_list]  # This formats the coins with commas
         }
         df = pd.DataFrame(data)
 
@@ -181,6 +181,10 @@ class GeneralCommands(commands.Cog):
 
     @commands.command(name='daily')
     async def daily(self, ctx):
+        if ctx.channel.id != 1252055670778368013 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1252055670778368013> channel to use the `!daily` command.")
+            return
+    
         user_id = str(ctx.author.id)
         activity_tracker = self.bot.get_cog('ActivityTracker')
         user_data = activity_tracker.activity_data.get(user_id, {})
@@ -221,6 +225,106 @@ class GeneralCommands(commands.Cog):
         activity_tracker.save_activity_data()
 
         await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
+        
+    @commands.command(name='loandisbursement')
+    async def loandisbursement(self, ctx):
+        if ctx.channel.id != 1252055670778368013 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1252055670778368013> channel to use the `!loandisbursement` command.")
+            return
+
+        user_id = str(ctx.author.id)
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.activity_data.get(user_id, {})
+
+        if ctx.message.content.strip() != '!loandisbursement':
+            return
+
+        if TESTING:
+            last_loan_disbursement = None
+        else:
+            last_loan_disbursement = user_data.get('last_loan_disbursement', None)
+
+        now = datetime.utcnow()
+
+        if last_loan_disbursement:
+            last_loan_time = datetime.strptime(last_loan_disbursement, "%Y-%m-%d %H:%M:%S")
+            if now < last_loan_time + timedelta(hours=24):
+                next_claim_time = last_loan_time + timedelta(hours=24)
+                est = pytz.timezone('US/Eastern')
+                next_claim_time_est = next_claim_time.replace(tzinfo=pytz.utc).astimezone(est)
+                next_claim_time_str = next_claim_time_est.strftime('%Y-%m-%d %I:%M:%S %p')
+                await ctx.send(f"You have already signaled a loan disbursement today. NEXT SIGNAL TIME: {next_claim_time_str} EST.")
+                return
+
+        members = ctx.guild.members
+        eligible_members = [member for member in members if not member.bot and member.id != ctx.author.id]
+
+        if not eligible_members:
+            await ctx.send("No eligible members found for loan disbursement.")
+            return
+
+        random_member = random.choice(eligible_members)
+        loan_amount = random.randint(0, 10000)
+        digits = str(loan_amount)
+
+        await ctx.send(f"{ctx.author.mention} has signaled a loan disbursement!")
+        await ctx.send(f"A lucky member will be getting a loan disbursement!")
+
+        accumulated_digits = ""
+        for digit in digits:
+            accumulated_digits += digit
+            await ctx.send(f"{accumulated_digits}")
+            await asyncio.sleep(0.5)
+
+        activity_tracker.update_user_activity(random_member, coins=loan_amount)
+
+        activity_tracker.activity_data[user_id]['last_loan_disbursement'] = now.strftime('%Y-%m-%d %H:%M:%S')
+        activity_tracker.save_activity_data()
+
+        await ctx.send(f"{random_member.mention} has been rewarded {loan_amount} {coin_icon} for the day! Their balance is now {activity_tracker.activity_data[str(random_member.id)]['coins']} {coin_icon}.")
+
+    @commands.command(name='medicare')
+    async def medicare(self, ctx):
+        await ctx.send("Joe Biden has officially beat medicare!")
+        await asyncio.sleep(5)
+        await ctx.send("Oh wait.. ***I forgot.***")
+
+        # Image URL
+        image_url = 'https://www.indy100.com/media-library/image.png?id=33573844&width=1200&height=800&quality=85&coordinates=0%2C14%2C0%2C13'
+        
+        embed = discord.Embed()
+        embed.set_image(url=image_url)
+    
+        await ctx.send(embed=embed)
+
+    @commands.command(name='boner')
+    async def boner(self, ctx):
+        responses = [
+            "You know you're getting old when your boner takes longer to rise than your morning coffee.",
+            "Had a boner this morning...then realized I was just excited for breakfast.",
+            "Why don't boners get arrested? They always get off with a stiff warning.",
+            "Just saw a guy with a boner in public. I guess some people really are morning people.",
+            "Got a boner today, but it was just my cat rubbing against me. Thanks, Fluffy.",
+            "Why did my boner cross the road? To get away from my ex.",
+            "My boner and I have an understanding: it shows up at the worst times possible.",
+            "Ever had a boner so awkward it should come with an apology note?",
+            "Boner in public? Just tell them it's your phone on vibrate. Works every time.",
+            "My boner just texted me: 'Stop wearing tight pants!'",
+            "Got a boner during a Zoom call. Thank God for the mute button.",
+            "You know it's going to be a good day when your boner wakes up before you do.",
+            "My boner and my alarm clock should synchronize. That way, I can hit snooze on both.",
+            "Boner during a meeting? Just pretend you’re deeply pondering the budget report.",
+            "If boners could talk, mine would constantly be saying, 'Not now, dude!'",
+            "Boner and gym shorts: a match made in awkward heaven.",
+            "Had a boner while reading...a menu. Guess I was really hungry.",
+            "Boner in a tight spot? Just start a conversation about politics; it'll go away instantly.",
+            "Ever had a boner so random you had to question your life choices?",
+            "My boner has a better social life than I do. It's always up for something.",
+            "Nothing like a boner to remind you that your body has a mind of its own.",
+            "Got a boner while watching cartoons. Childhood nostalgia hit differently."
+        ]
+        response = random.choice(responses)
+        await ctx.send(response)
 
     @commands.command(name='coinbalance')
     async def coinbalance(self, ctx, mentioned_user: discord.Member = None):
@@ -267,7 +371,7 @@ class GeneralCommands(commands.Cog):
 
             # Deepen the pitch (lowering by 4 semitones)
             new_sound = sound._spawn(sound.raw_data, overrides={
-                "frame_rate": int(sound.frame_rate * 0.7)
+                "frame_rate": int(sound.frame_rate * 0.6)
             }).set_frame_rate(sound.frame_rate)
 
             # Save the new sound
@@ -392,15 +496,6 @@ class LevelUI(commands.Cog):
             await member.send(embed=embed, file=file)
         else:
             await ctx.send("No statistics available for this user.")
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            botlog_channel = discord.utils.get(ctx.guild.channels, name='botlog')
-            if botlog_channel:
-                await botlog_channel.send("Invalid Command Called.")
-        else:
-            raise error
         
 class Music(commands.Cog):
     def __init__(self, bot):

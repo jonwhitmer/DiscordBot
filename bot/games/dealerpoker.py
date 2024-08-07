@@ -11,6 +11,8 @@ coin_icon = settings['coin_icon']
 
 # Poker Settings
 POKER_WIN_POINTS = 120
+POKER_TIE_POINTS = 90
+POKER_LOSS_POINTS = 30
 
 
 class DealerPoker:
@@ -23,29 +25,60 @@ class DealerPoker:
         self.community_cards = []
         self.DECK_OF_CARDS_FOLDER = 'utils/images/deckofcards'
         self.DUMP_IMAGES_FOLDER = 'utils/images/pokerdump'
+        self.previous_community_cards_message = None
         self.game_cancelled = False
+        self.raised = False
         self.player_bet = 0
         self.ante = 0
-        self.player_balance = 0
+        self.bot_messages = []
 
     async def start_game(self):
         await self.ask_for_ante()
         if self.game_cancelled:
             return
-        
+
         await self.deal_initial_cards()
-        await self.betting_round(pre_flop = True)
+        if self.game_cancelled:
+            return
+
+        await self.betting_round(stage='pre_flop')
+        if self.game_cancelled:
+            return
+
         await self.reveal_community_cards(3)
-        await self.betting_round()
+        if self.game_cancelled:
+            return
+
+        await self.betting_round(stage='flop')
+        if self.game_cancelled:
+            return
+
         await self.reveal_community_cards(1)
-        await self.betting_round()
+        if self.game_cancelled:
+            return
+
+        await self.betting_round(stage='turn')
+        if self.game_cancelled:
+            return
+
         await self.reveal_community_cards(1)
-        await self.betting_round(final = True)
+        if self.game_cancelled:
+            return
+
+        await self.betting_round(stage='river')
+        if self.game_cancelled:
+            return
+
         await self.showdown()
+        if self.game_cancelled:
+            return
+
         await self.cleanup()
 
     async def ask_for_ante(self):
-        await self.ctx.send(f"{self.ctx.author.mention}, how many {coin_icon} would you like to ante?")
+        activity_tracker = self.bot.get_cog('ActivityTracker')
+        user_data = activity_tracker.get_statistics(str(self.player.id))
+        await self.ctx.send(f"{self.ctx.author.mention}, how many {coin_icon} would you like to ante?  Current balance: {int(user_data.get('coins', 0))} {coin_icon}")
 
         def check(m):
             return m.author == self.ctx.author and m.channel == self.ctx.channel
@@ -63,7 +96,7 @@ class DealerPoker:
                 return
             
             activity_tracker.update_user_activity(self.ctx.author, coins=-(self.ante))
-            self.player_balance = self.ante
+            self.player_bet = self.ante
             self.player_hands[self.ctx.author] = []
             await self.ctx.send(f"{self.ctx.author.mention}, you have anted {self.ante} {coin_icon}.  Starting Dealer Poker..")
         except asyncio.TimeoutError:
@@ -83,61 +116,168 @@ class DealerPoker:
 
         self.dealer_hand = [self.deck.pop(), self.deck.pop()]
 
-    async def betting_round(self, pre_flop=False, final=False):
+    async def betting_round(self, stage='pre_flop'):
         activity_tracker = self.bot.get_cog('ActivityTracker')
         user_data = activity_tracker.get_statistics(str(self.player.id))
         player_total_coins = int(user_data.get('coins', 0))
 
-        max_bet = int(4 * self.ante if pre_flop else 1.5 * self.ante if final else 2 * self.ante)
-        action_message = "you can `!check` or place a `!bet`" if not final else "you can `!fold` or place a `!bet`"
-        await self.ctx.send(f"{self.ctx.author.mention}, {action_message} of {max_bet} {coin_icon}. Your current balance is {player_total_coins} {coin_icon}.")
+        # Determine the max bet based on the game stage
+        if stage == 'pre_flop':
+            max_bet = self.ante * 4
+        elif stage == 'flop':
+            max_bet = self.ante * 2 + self.player_bet
+        elif stage == 'turn':
+            max_bet = int(self.ante * 1.75 + self.player_bet)
+        elif stage == 'river':
+            max_bet = int(self.ante * 1.35 + self.player_bet)
+        else:
+            max_bet = self.player_bet  # In case of an invalid stage, default to the current bet
+
+        # Calculate the additional amount needed to reach the max bet
+        additional_amount = max_bet - self.player_bet
+
+        # Determine the action message based on the game stage
+        if self.raised == True:
+            await asyncio.sleep(2)
+            return
+        
+        if stage == 'river':
+            if additional_amount > player_total_coins:
+                action_message = (f"you can `!fold` or go `!allin` with {player_total_coins} {coin_icon}.")
+            else:
+                action_message = (f"you can `!fold`, raise the `!bet` to {max_bet} {coin_icon} "
+                                  f"({additional_amount} more).")
+        else:
+            action_message = (f"you can `!check` or raise the `!bet` to {max_bet} {coin_icon} "
+                                f"({additional_amount} more).")
+
+        # Send the message with the current bet, action options, and player's balance at the end
+        message = await self.ctx.send(f"{self.ctx.author.mention}, the current bet is {self.player_bet} {coin_icon}. "
+                            f"{action_message} Your current balance is {player_total_coins} {coin_icon}.")
+        
+        self.bot_messages.append(message)
 
         def check(m):
             return m.author == self.ctx.author and m.channel == self.ctx.channel
 
         try:
             while True:
-                msg = await self.bot.wait_for('message', check=check, timeout=120)
+                msg = await self.bot.wait_for('message', check=check, timeout=50)
                 content = msg.content.lower().split()
                 
-                if content[0] == '!check' and not final:
-                    await self.ctx.send(f"{self.ctx.author.mention} checks.")
+                if content[0] == '!check' and stage != 'river':
+                    rsp_msg = await self.ctx.send(f"{self.ctx.author.mention} checks.")
+                    self.bot_messages.append(rsp_msg)
                     break  # Exit the loop as a valid action was taken
+
+                elif content[0] == '!fold' and stage == 'river':
+                    await self.ctx.send(f"{self.ctx.author.mention} folds. Game over.")
+                    await self.display_winner_if_folded()
+                    self.game_cancelled = True
+                    return
 
                 elif content[0] == '!bet':
                     try:
                         bet_amount = max_bet if len(content) == 1 else int(content[1])
 
-                        if bet_amount < 1 or bet_amount > max_bet:
-                            await self.ctx.send(f"{self.ctx.author.mention}, invalid bet amount. Please bet up to {max_bet} {coin_icon}.")
-                        elif bet_amount > player_total_coins:
-                            await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough balance to place this bet.")
+                        if bet_amount < self.player_bet or bet_amount > max_bet:
+                            rsp_msg = await self.ctx.send(f"{self.ctx.author.mention}, invalid bet amount. Please bet between {self.player_bet} and {max_bet} {coin_icon}.")
+                            self.bot_messages.append(rsp_msg)
+                        elif additional_amount > player_total_coins:
+                            rsp_msg = await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough balance to place this bet.")
+                            self.bot_messages.append(rsp_msg)
                         else:
-                            self.player_bet += bet_amount
-                            player_total_coins -= bet_amount
-                            activity_tracker.update_user_activity(self.ctx.author, coins=-bet_amount)
-                            await self.ctx.send(f"{self.ctx.author.mention} places a bet of {bet_amount} {coin_icon}. Total bet: {self.player_bet} {coin_icon}. Current balance: {player_total_coins} {coin_icon}.")
+                            self.player_bet = bet_amount  # Update player's total bet to include the new bet amount
+                            player_total_coins -= additional_amount
+                            activity_tracker.update_user_activity(self.ctx.author, coins=-additional_amount)
+                            rsp_msg = await self.ctx.send(f"{self.ctx.author.mention} places a bet of {additional_amount} {coin_icon}. Total bet: {self.player_bet} {coin_icon}. Current balance: {player_total_coins} {coin_icon}.")
+                            self.bot_messages.append(rsp_msg)
+                            self.raised = True
                             break  # Exit the loop as a valid action was taken
                     except ValueError:
-                        await self.ctx.send(f"{self.ctx.author.mention}, please enter a valid bet amount.")
-
-                elif content[0] == '!fold' and final:
-                    await self.ctx.send(f"{self.ctx.author.mention} folds. Game over.")
-                    self.game_cancelled = True
-                    return
-
+                        rsp_msg = await self.ctx.send(f"{self.ctx.author.mention}, please enter a valid bet amount.")
+                        self.bot_messages.append(rsp_msg)
+                
+                elif content[0] == '!allin' and stage == 'river' and (additional_amount > player_total_coins):
+                    if additional_amount > player_total_coins:
+                        # Going all-in
+                        additional_amount = player_total_coins
+                        self.player_bet += player_total_coins
+                        activity_tracker.update_user_activity(self.ctx.author, coins=-player_total_coins)
+                        rsp_msg = await self.ctx.send(f"{self.ctx.author.mention} goes all-in with {player_total_coins} {coin_icon}. Total bet: {self.player_bet} {coin_icon}.")
+                        self.bot_messages.append(rsp_msg)
+                        self.raised = True
+                        break
+                    else:
+                        continue
                 else:
-                    await self.ctx.send("Invalid action. Please try again.")
+                    rsp_msg = await self.ctx.send("Invalid action. Please try again.")
+                    self.bot_messages.append(rsp_msg)
         except asyncio.TimeoutError:
             await self.ctx.send(f"{self.ctx.author.mention} took too long to respond. Game over.")
             self.game_cancelled = True
 
-    def get_max_bet(self, pre_flop, final):
-        if pre_flop:
-            return 4 * self.ante
-        elif final:
-            return 1 * self.ante
-        return 2 * self.ante
+    async def display_winner_if_folded(self):
+        # Simulate a showdown to determine who would have won
+        player_hand = self.player_hands[self.ctx.author]
+        dealer_hand = self.dealer_hand
+        player_best_hand = self.get_best_hand(player_hand + self.community_cards)
+        dealer_best_hand = self.get_best_hand(dealer_hand + self.community_cards)
+
+        player_rank = self.hand_rank(player_best_hand)
+        dealer_rank = self.hand_rank(dealer_best_hand)
+
+        # Determine the winner based on ranks
+        if player_rank > dealer_rank:
+            result = f"Would have won: {self.ctx.author.display_name} with a {self.rank_description(player_rank)}"
+        elif player_rank < dealer_rank:
+            result = f"Would have won: Dealer with a {self.rank_description(dealer_rank)}"
+        else:
+            result = "It would have been a tie!"
+
+        await asyncio.sleep(1)
+        await self.ctx.send(f"**HYPOTHETICAL RESULT**")
+        await asyncio.sleep(1)
+
+        # Create and send Player's Hand embed
+        player_hand_images = [await self.get_card_image(card) for card in player_hand]
+        player_hand_image_path = await self.concatenate_images(player_hand_images, 'player_hand.png')
+        player_hand_file = discord.File(player_hand_image_path, filename="player_hand.png")
+        player_embed = discord.Embed(title="Player's Hand")
+        player_embed.set_image(url="attachment://player_hand.png")
+        await self.ctx.send(file=player_hand_file, embed=player_embed)
+
+        await asyncio.sleep(2)
+
+        # Create and send Community Cards embed
+        community_cards_images = [await self.get_card_image(card) for card in self.community_cards]
+        community_cards_image_path = await self.concatenate_images(community_cards_images, 'community_cards.png')
+        community_cards_file = discord.File(community_cards_image_path, filename="community_cards.png")
+        community_embed = discord.Embed(title="Community Cards")
+        community_embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=community_cards_file, embed=community_embed)
+
+        await asyncio.sleep(2)
+
+        # Create and send Dealer's Hand embed
+        dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
+        dealer_hand_image_path = await self.concatenate_images(dealer_hand_images, 'dealer_hand.png')
+        dealer_hand_file = discord.File(dealer_hand_image_path, filename="dealer_hand.png")
+        dealer_embed = discord.Embed(title="Dealer's Hand")
+        dealer_embed.set_image(url="attachment://dealer_hand.png")
+        await self.ctx.send(file=dealer_hand_file, embed=dealer_embed)
+
+        await asyncio.sleep(3)
+
+        # Send the result message
+        await self.ctx.send(result)
+
+        await self.clear_messages()
+
+        # Clean up images
+        os.remove(player_hand_image_path)
+        os.remove(community_cards_image_path)
+        os.remove(dealer_hand_image_path)
 
     async def reveal_community_cards(self, num):
         for _ in range(num):
@@ -147,13 +287,36 @@ class DealerPoker:
         await self.display_community_cards()
 
     async def display_community_cards(self):
+        if self.previous_community_cards_message:
+            await self.previous_community_cards_message.delete()
+        
+        message = await self.ctx.send("**|**")
+        await asyncio.sleep(1)
+        await message.edit(content="**| |**")
+        await asyncio.sleep(1)
+        await message.edit(content="**| | |**")
+        await asyncio.sleep(1)
+        
+        await message.delete()
+
         cards = [await self.get_card_image(card) for card in self.community_cards]
         concatenated_image_path = await self.concatenate_images(cards, 'community_cards.png')
         file = discord.File(concatenated_image_path, filename="community_cards.png")
 
         embed = discord.Embed(title="Community Cards")
         embed.set_image(url="attachment://community_cards.png")
-        await self.ctx.send(file=file, embed=embed)
+        
+        self.previous_community_cards_message = await self.ctx.send(file=file, embed=embed)
+
+    async def clear_messages(self):
+        for message in self.bot_messages:
+            try:
+                await message.delete()
+            except discord.NotFound:
+                pass
+        
+        self.bot_messages.clear()
+        await self.previous_community_cards_message.delete()
 
     async def showdown(self):
         player_hand = self.player_hands[self.ctx.author]
@@ -163,30 +326,64 @@ class DealerPoker:
 
         player_rank = self.hand_rank(player_best_hand)
         dealer_rank = self.hand_rank(dealer_best_hand)
+
+        activity_tracker = self.bot.get_cog('ActivityTracker')
         if player_rank > dealer_rank:
-            result = f"{self.ctx.author.mention} wins with {self.rank_description(player_rank)}!"
+            result = f"{self.ctx.author.mention} wins with a {self.rank_description(player_rank)} and has won {POKER_WIN_POINTS} points and {self.player_bet * 2} {coin_icon}!"
+            payout = self.player_bet * 2
+            activity_tracker.update_user_activity(self.ctx.author, points=POKER_WIN_POINTS, coins=payout)
         elif player_rank < dealer_rank:
-            result = f"The dealer wins with {self.rank_description(dealer_rank)}. Better luck next time!"
+            result = f"The dealer wins with a {self.rank_description(dealer_rank)}. Better luck next time! You have received {POKER_LOSS_POINTS} points."
+            payout = 0
+            activity_tracker.update_user_activity(self.ctx.author, points=POKER_LOSS_POINTS)
         else:
-            result = "It's a tie!"
+            result = f"It's a tie! Both you and the dealer have the same hand. You have received {POKER_TIE_POINTS} points, and your ante of {self.ante} {coin_icon} has been returned."
+            payout = self.player_bet  # Usually, in a tie, the player gets their ante back or a portion of it
+            activity_tracker.update_user_activity(self.ctx.author, points=POKER_TIE_POINTS, coins=payout)
 
-        # Create images for the showdown
-        player_hand_image = await self.get_hand_image(player_hand)
-        dealer_hand_image = await self.get_hand_image(dealer_hand)
-        community_cards_image = await self.get_hand_image(self.community_cards)
+        await asyncio.sleep(1)
+        await self.ctx.send(f"**SHOWDOWN**")
+        await asyncio.sleep(1)
 
-        # Concatenate all parts into one image
-        final_showdown_image = await self.concatenate_images([player_hand_image, community_cards_image, dealer_hand_image], 'final_showdown.png')
+        # Create and send Player's Hand embed
+        player_hand_images = [await self.get_card_image(card) for card in player_hand]
+        player_hand_image_path = await self.concatenate_images(player_hand_images, 'player_hand.png')
+        player_hand_file = discord.File(player_hand_image_path, filename="player_hand.png")
+        player_embed = discord.Embed(title="Player's Hand")
+        player_embed.set_image(url="attachment://player_hand.png")
+        await self.ctx.send(file=player_hand_file, embed=player_embed)
 
-        # Send the result with the final image
-        file = discord.File(final_showdown_image, filename="final_showdown.png")
-        embed = discord.Embed(title="Final Showdown", description=result)
-        embed.set_image(url="attachment://final_showdown.png")
-        await self.ctx.send(file=file, embed=embed)
+        await asyncio.sleep(2)
+
+        # Create and send Community Cards embed
+        community_cards_images = [await self.get_card_image(card) for card in self.community_cards]
+        community_cards_image_path = await self.concatenate_images(community_cards_images, 'community_cards.png')
+        community_cards_file = discord.File(community_cards_image_path, filename="community_cards.png")
+        community_embed = discord.Embed(title="Community Cards")
+        community_embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=community_cards_file, embed=community_embed)
+
+        await asyncio.sleep(2)
+
+        # Create and send Dealer's Hand embed
+        dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
+        dealer_hand_image_path = await self.concatenate_images(dealer_hand_images, 'dealer_hand.png')
+        dealer_hand_file = discord.File(dealer_hand_image_path, filename="dealer_hand.png")
+        dealer_embed = discord.Embed(title="Dealer's Hand")
+        dealer_embed.set_image(url="attachment://dealer_hand.png")
+        await self.ctx.send(file=dealer_hand_file, embed=dealer_embed)
+
+        await asyncio.sleep(3)
+
+        # Send the result message
+        await self.ctx.send(result)
+
+        await self.clear_messages()
 
         # Clean up images
-        for img_path in [player_hand_image, dealer_hand_image, community_cards_image, final_showdown_image]:
-            os.remove(img_path)
+        os.remove(player_hand_image_path)
+        os.remove(community_cards_image_path)
+        os.remove(dealer_hand_image_path)
 
     async def display_final_hands(self, player_hand, dealer_hand):
         player_hand_images = [await self.get_card_image(card) for card in player_hand]
@@ -238,7 +435,9 @@ class DealerPoker:
         title = f"{player.display_name}'s Hand" if not dealer else "Dealer's Hand"
         embed = discord.Embed(title=title)
         embed.set_image(url="attachment://hand.png")
-        await ctx.send(file=file, embed=embed)
+        initial = await ctx.send(file=file, embed=embed)
+
+        self.bot_messages.append(initial)
 
     async def get_card_image(self, card):
         card_value = card[:-1]
@@ -277,78 +476,51 @@ class DealerPoker:
 
         return output_path
 
-
     def hand_rank(self, hand):
-        # Define ranks and handle '10' separately
-        ranks = '23456789JQKA'
+        # Define ranks and handle '10' separately using 'T'
+        ranks = '23456789TJQKA'
         values = {r: i for i, r in enumerate(ranks, start=2)}
-        values['10'] = 10  # Explicitly add '10' to the values
+        values['T'] = 10
 
         # Extract ranks and suits from hand
-        hand_ranks = sorted([values[card[:-1]] for card in hand], reverse=True)
+        hand_ranks = sorted([values[card[:-1].replace('10', 'T')] for card in hand], reverse=True)
         suits = [card[-1] for card in hand]
 
         # Check for flush
         is_flush = len(set(suits)) == 1
-        flush_ranks = [values[card[:-1]] for card in hand if card[-1] == suits[0]]
-        flush_ranks.sort(reverse=True)
+        flush_ranks = hand_ranks if is_flush else []
 
-        # Check for straight within the flush cards
-        is_straight_flush = len(set(flush_ranks)) == 5 and (flush_ranks[0] - flush_ranks[-1] == 4)
-
-        # Special case: Ace can be low in a straight (A-2-3-4-5)
-        if set(flush_ranks) == {14, 5, 4, 3, 2}:
-            is_straight_flush = True
-            flush_ranks = [5, 4, 3, 2, 1]
-
-        # Check for Royal Flush
-        if is_straight_flush and flush_ranks == [14, 13, 12, 11, 10]:
-            return (9, flush_ranks)  # Royal Flush
-
-        # Check for Straight Flush
-        if is_straight_flush:
-            return (8, flush_ranks)  # Straight Flush
-
-        # Check for normal Straight
+        # Check for straight
         is_straight = len(set(hand_ranks)) == 5 and (hand_ranks[0] - hand_ranks[-1] == 4)
+        # Special case: Ace can be low in a straight (A-2-3-4-5)
         if set(hand_ranks) == {14, 5, 4, 3, 2}:
             is_straight = True
             hand_ranks = [5, 4, 3, 2, 1]
 
-        # Other rankings
+        # Check for other hands using rank counts
         rank_counter = {r: hand_ranks.count(r) for r in hand_ranks}
         rank_values = sorted(((count, rank) for rank, count in rank_counter.items()), reverse=True)
 
-        # Four of a kind
+        # Determine the hand ranking
+        if is_straight and is_flush:
+            if hand_ranks == [14, 13, 12, 11, 10]:
+                return (9, hand_ranks)  # Royal Flush
+            return (8, hand_ranks)      # Straight Flush
         if rank_values[0][0] == 4:
-            return (7, rank_values[0][1], rank_values[1][1])
-
-        # Full house
+            return (7, rank_values[0][1], rank_values[1][1])  # Four of a Kind
         if rank_values[0][0] == 3 and rank_values[1][0] == 2:
-            return (6, rank_values[0][1], rank_values[1][1])
-
-        # Flush (not a straight flush)
+            return (6, rank_values[0][1], rank_values[1][1])  # Full House
         if is_flush:
-            return (5, flush_ranks)
-
-        # Straight (not a straight flush)
+            return (5, flush_ranks)  # Flush
         if is_straight:
-            return (4, hand_ranks)
-
-        # Three of a kind
+            return (4, hand_ranks)   # Straight
         if rank_values[0][0] == 3:
-            return (3, rank_values[0][1], hand_ranks)
-
-        # Two pair
+            return (3, rank_values[0][1], rank_values[1][1])  # Three of a Kind
         if rank_values[0][0] == 2 and rank_values[1][0] == 2:
-            return (2, rank_values[0][1], rank_values[1][1], hand_ranks)
-
-        # One pair
+            return (2, rank_values[0][1], rank_values[1][1], rank_values[2][1])  # Two Pair
         if rank_values[0][0] == 2:
-            return (1, rank_values[0][1], hand_ranks)
-
-        # High card
-        return (0, hand_ranks)
+            return (1, rank_values[0][1], rank_values[1][1], rank_values[2][1], rank_values[3][1])  # One Pair
+        return (0, hand_ranks)  # High Card
 
     def get_best_hand(self, hand):
         all_combinations = itertools.combinations(hand, 5)
@@ -379,57 +551,47 @@ class DealerPoker:
         dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
         community_cards_images = [await self.get_card_image(card) for card in self.community_cards]
 
-        # Load all images
-        player_imgs = [Image.open(img) for img in player_hand_images]
-        dealer_imgs = [Image.open(img) for img in dealer_hand_images]
-        community_imgs = [Image.open(img) for img in community_cards_images]
+        # Create and send Player's Hand embed
+        player_hand_image_path = await self.concatenate_images(player_hand_images, 'player_hand.png')
+        player_hand_file = discord.File(player_hand_image_path, filename="player_hand.png")
+        player_embed = discord.Embed(title="Player's Hand")
+        player_embed.set_image(url="attachment://player_hand.png")
+        await self.ctx.send(file=player_hand_file, embed=player_embed)
 
-        # Determine maximum width and height for card images
-        max_card_width = max(img.width for img in player_imgs + dealer_imgs + community_imgs)
-        max_card_height = max(img.height for img in player_imgs + dealer_imgs + community_imgs)
+        # Create and send Community Cards embed
+        community_cards_image_path = await self.concatenate_images(community_cards_images, 'community_cards.png')
+        community_cards_file = discord.File(community_cards_image_path, filename="community_cards.png")
+        community_embed = discord.Embed(title="Community Cards")
+        community_embed.set_image(url="attachment://community_cards.png")
+        await self.ctx.send(file=community_cards_file, embed=community_embed)
 
-        # Define spacing
-        spacing = 10
-        text_height = 30
+        # Create and send Dealer's Hand embed
+        dealer_hand_image_path = await self.concatenate_images(dealer_hand_images, 'dealer_hand.png')
+        dealer_hand_file = discord.File(dealer_hand_image_path, filename="dealer_hand.png")
+        dealer_embed = discord.Embed(title="Dealer's Hand")
+        dealer_embed.set_image(url="attachment://dealer_hand.png")
+        await self.ctx.send(file=dealer_hand_file, embed=dealer_embed)
 
-        # Calculate total width and height
-        total_width = max_card_width * max(len(player_imgs), len(dealer_imgs), len(community_imgs)) + spacing * 2
-        total_height = max_card_height * 3 + text_height * 3 + spacing * 5
+        # Determine winner and hand rank description
+        player_best_hand = self.get_best_hand(player_hand + self.community_cards)
+        dealer_best_hand = self.get_best_hand(dealer_hand + self.community_cards)
+        player_rank = self.hand_rank(player_best_hand)
+        dealer_rank = self.hand_rank(dealer_best_hand)
 
-        # Create a new image
-        combined_image = Image.new('RGB', (total_width, total_height), (255, 255, 255))
-        draw = ImageDraw.Draw(combined_image)
-        font = ImageFont.truetype("arial.ttf", 20)  # You may need to specify the path to a font file
+        if player_rank > dealer_rank:
+            result = f"{self.ctx.author.display_name} wins with a {self.rank_description(player_rank)}!"
+        elif player_rank < dealer_rank:
+            result = f"The dealer wins with a {self.rank_description(dealer_rank)}. Better luck next time!"
+        else:
+            result = "It's a tie!"
 
-        # Draw Player's Hand
-        draw.text((spacing, spacing), "Player's Hand", font=font, fill="black")
-        y_offset = spacing + text_height
-        x_offset = spacing
-        for img in player_imgs:
-            combined_image.paste(img, (x_offset, y_offset))
-            x_offset += img.width + spacing
+        # Send the result message
+        await self.ctx.send(result)
 
-        # Draw Community Cards
-        draw.text((spacing, y_offset + max_card_height + spacing), "Community Cards", font=font, fill="black")
-        y_offset += max_card_height + spacing + text_height
-        x_offset = spacing
-        for img in community_imgs:
-            combined_image.paste(img, (x_offset, y_offset))
-            x_offset += img.width + spacing
-
-        # Draw Dealer's Hand
-        draw.text((spacing, y_offset + max_card_height + spacing), "Dealer's Hand", font=font, fill="black")
-        y_offset += max_card_height + spacing + text_height
-        x_offset = spacing
-        for img in dealer_imgs:
-            combined_image.paste(img, (x_offset, y_offset))
-            x_offset += img.width + spacing
-
-        # Save the combined image
-        final_image_path = os.path.join(self.DUMP_IMAGES_FOLDER, 'final_showdown.png')
-        combined_image.save(final_image_path)
-
-        return final_image_path
+        # Clean up images
+        os.remove(player_hand_image_path)
+        os.remove(community_cards_image_path)
+        os.remove(dealer_hand_image_path)
 
 
     async def cleanup(self):

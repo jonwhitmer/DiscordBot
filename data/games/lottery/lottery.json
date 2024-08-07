@@ -1,9 +1,6 @@
 {
-    "total_tickets": 670,
-    "participants": {
-        "462165652719927318": 370,
-        "1170556246257057888": 300
-    },
+    "total_tickets": 0,
+    "participants": {},
     "ticket_numbers": {},
-    "current_pot": 97000
+    "current_pot": 30000
 }

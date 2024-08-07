@@ -149,7 +149,7 @@ class BlackjackGame:
             await ctx.send(f"It's a push, {ctx.author.mention}. Your bet of {self.bet} {coin_icon} has been returned.")
 
         await self.cleanup_images()
-        del self.bot.get_cog('CommandHandler').blackjack_games[ctx.author.id]
+        del self.bot.get_cog('GameManager').blackjack_games[ctx.author.id]
 
     async def send_hand(self, ctx, reveal_dealer=False):
         player_images = await self.create_hand_image(self.player_hand)

@@ -5,6 +5,7 @@ import json
 import os
 import asyncio
 import random
+import sqlite3
 from datetime import datetime, timezone
 from gtts import gTTS
 from pydub import AudioSegment
@@ -114,7 +115,7 @@ class ActivityTracker(commands.Cog):
             await main_channel.send(f"{user.mention} has leveled up from Level {previous_level} to Level {new_level}. Congratulations, Gilligano!")
             await main_channel.send(f"To celebrate, here's a gift!  Generating..")
 
-            generated_coins = random.randint(0, 50000)
+            generated_coins = random.randint(0, 15000)
             digits = str(generated_coins)
         
             accumulated_digits = ""

@@ -1,6 +1,6 @@
 import random, aiohttp, discord, json
 from settings.settings import load_settings
-
+from discord.ext import commands
 
 # Load game settings from a JSON file
 with open('settings/json/game_settings.json', 'r') as f:
@@ -22,6 +22,25 @@ class Duel:
 
     def generate_letter(self):
         self.letter = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # Generate a random letter
+
+    @commands.command(name='challenge')
+    async def challenge(self, ctx, opponent_name: str):
+        opponent = self.find_member(ctx.guild, opponent_name)
+        if opponent is None:
+            await ctx.send(f"Could not find a unique member with the name '{opponent_name}'. Please specify a more exact name or use mention.")
+            return
+
+        if ctx.author.id in self.duels or opponent.id in self.duels:
+            await ctx.send("One of the players is already in a duel!")
+            return
+
+        self.duels[ctx.author.id] = Duel(ctx.author.id, opponent.id)
+        self.duels[opponent.id] = self.duels[ctx.author.id]
+
+        if opponent == self.bot.user:
+            await self.accept_duel(ctx)
+        else:
+            await ctx.send(f"{ctx.author.mention} has challenged {opponent.mention} to a duel! Use `!accept` to accept the challenge.")
 
     async def is_valid_word(self, word):
         url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word.lower()}"  # URL to check if the word is valid

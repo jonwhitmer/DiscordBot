@@ -67,9 +67,7 @@ class Lottery:
         data = self.load_lottery_data()
         channel = self.bot.get_channel(1252055670778368013)
         now = datetime.now(timezone.utc)
-        logging.info(f"Current UTC time: {now}")
         if now.hour == 3 and now.minute == 0:
-            logging.info("It's time to announce the winner!")
             await self.announce_winner()
         elif (now.hour == 16 and now.minute == 0) or (now.hour == 19 and now.minute == 0) or (now.hour == 1 and now.minute == 0): 
             await channel.send(f"Remember that 11 PM, the lottery will be drawn!  Type `!enterlottery` to buy tickets.")

@@ -1,9 +1,11 @@
 import discord, asyncio, json, logging
 from discord.ext import commands
+from discord.ext.commands import CommandOnCooldown
 from .duel import Duel
 from .blackjack import BlackjackGame
 from .lottery import Lottery
 from .dealerpoker import DealerPoker
+from .slots import SlotMachine
 from settings.settings import load_settings
 
 logging.basicConfig(level=logging.INFO)
@@ -22,32 +24,37 @@ coin_icon = settings['coin_icon']
 
 TICKET_COST = 100
 
-class CommandHandler(commands.Cog):
+class GameManager(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.duels = {}
         self.blackjack_games = {}
         self.dealerpoker_games = {}
+        self.slot_games = {}
         self.lottery = Lottery(bot)
+        self.load_game_data()
 
-    @commands.command(name='challenge')
-    async def challenge(self, ctx, opponent_name: str):
-        opponent = self.find_member(ctx.guild, opponent_name)
-        if opponent is None:
-            await ctx.send(f"Could not find a unique member with the name '{opponent_name}'. Please specify a more exact name or use mention.")
-            return
+    def load_game_data(self):
+        try:
+            with open('data/games/game_data.json', 'r') as file:
+                self.game_data = json.load(file)
+        except FileNotFoundError:
+            self.game_data = self.initialize_game_data()
 
-        if ctx.author.id in self.duels or opponent.id in self.duels:
-            await ctx.send("One of the players is already in a duel!")
-            return
+    def save_game_data(self):
+        with open('game_data.json', 'w') as file:
+            json.dump(self.game_data, file, indent=4)
 
-        self.duels[ctx.author.id] = Duel(ctx.author.id, opponent.id)
-        self.duels[opponent.id] = self.duels[ctx.author.id]
-
-        if opponent == self.bot.user and BOT_TESTING_MODE:
-            await self.accept_duel(ctx)
+    def update_game_stats(self, game, key, value):
+        if game in self.game_data:
+            if key in self.game_data[game]:
+                self.game_data[game][key] += value
+            else:
+                self.game_data[game][key] = value
         else:
-            await ctx.send(f"{ctx.author.mention} has challenged {opponent.mention} to a duel! Use `!accept` to accept the challenge.")
+            self.game_data[game] = {}
+            self.game_data[game][key] = value
+        self.save_game_data()   
 
     @commands.command(name='accept')
     async def accept_duel(self, ctx):
@@ -61,7 +68,12 @@ class CommandHandler(commands.Cog):
         await self.handle_duel(ctx, duel)
 
     @commands.command(name='blackjack')
+    @commands.cooldown(1, 60, commands.BucketType.channel)
     async def blackjack(self, ctx):
+        if ctx.channel.id != 1268242188328763474 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1268242188328763474> channel to use the `!blackjack` command.")
+            return
+        
         activity_tracker = self.bot.get_cog('ActivityTracker')
         stats = activity_tracker.get_statistics(str(ctx.author.id))
         current_coins = stats.get('coins', 0)
@@ -75,7 +87,9 @@ class CommandHandler(commands.Cog):
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=30.0)
                 bet = int(msg.content)
-                if bet > 0 and bet <= current_coins:
+                if bet < 500:
+                    await ctx.send(f"Bet must be at least 500 {coin_icon}. You have 30 seconds to respond accurately.")
+                elif bet > 0 and bet <= current_coins:
                     break
                 else:
                     await ctx.send(f"Invalid response. Bet must be a positive number and less than or equal to your balance ({current_coins} {coin_icon}). You have 30 seconds to respond accurately.")
@@ -154,7 +168,12 @@ class CommandHandler(commands.Cog):
         await ctx.send(f"__**Current Lottery Status:**__\nTotal Tickets Sold: {total_tickets}\nNumber of Participants: {participants}\nCurrent Lottery Pot: {current_lottery_pot} {coin_icon}")
 
     @commands.command(name='dealerpoker', help='Starts a dealer vs. player poker game')
+    @commands.cooldown(1, 90, commands.BucketType.channel)
     async def start_dealer_poker(self, ctx):
+        if ctx.channel.id != 1268244378787254354 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1268244378787254354> channel to use the `!dealerpoker` command.")
+            return
+        
         if ctx.channel.id in self.dealerpoker_games:
             await ctx.send("A dealer poker game is already running in this channel!")
             return
@@ -167,6 +186,40 @@ class CommandHandler(commands.Cog):
         finally:
             self.dealerpoker_games.pop(ctx.channel.id, None)
 
+    @commands.command(name='slots')
+    @commands.cooldown(1, 45, commands.BucketType.channel)
+    async def play_slots(self, ctx):
+        if ctx.channel.id != 1269351770107285575 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1269351770107285575> channel to use the `!slots` command.")
+            return
+        
+        if ctx.channel.id in self.slot_games:
+            await ctx.send("A slot game is already running in this channel!")
+            return
+    
+        self.slot_games[ctx.channel.id] = True
+        
+        try:
+            slots = SlotMachine(ctx, self.bot)
+            await slots.start_game()
+        finally:
+            self.slot_games.pop(ctx.channel.id, None)
+
+    @play_slots.error
+    async def play_slots_error(self, ctx, error):
+        if isinstance(error, CommandOnCooldown):
+            await ctx.send(f"`!slots` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
+
+    @start_dealer_poker.error
+    async def start_dealer_poker_error(self, ctx, error):
+        if isinstance(error, CommandOnCooldown):
+            await ctx.send(f"`!dealerpoker` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
+
+    @blackjack.error
+    async def blackjack_error(self, ctx, error):
+        if isinstance(error, CommandOnCooldown):
+            await ctx.send(f"`!blackjack` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
+
 
 async def setup(bot):
-    await bot.add_cog(CommandHandler(bot))
+    await bot.add_cog(GameManager(bot))

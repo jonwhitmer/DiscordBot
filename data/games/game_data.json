@@ -1,0 +1,19 @@
+{
+    "Poker": {
+      "TotalGamesPlayed": 0,
+      "PlayerWins": 0,
+      "PlayerLosses": 0,
+      "TotalCoinsWagered": 0,
+      "TotalCoinsAwarded": 0,
+      "CasinoProfit": 0
+    },
+    "Blackjack": {
+      "TotalGamesPlayed": 0,
+      "PlayerWins": 0,
+      "PlayerLosses": 0,
+      "TotalCoinsWagered": 0,
+      "TotalCoinsAwarded": 0,
+      "CasinoProfit": 0
+    }
+  }
+  
