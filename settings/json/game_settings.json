@@ -28,19 +28,6 @@
     {
       "win_points": 100,
       "win_coins": 500
-    },
-
-    "poker":
-    {
-      "win_points": 500,
-
-      "preflop_max_bet": 10000,
-
-      "min_players": 2,
-      "max_players": 10,
-      "lobby_time": 120,
-
-      "time_per_turn": 90
     }
   }
   
