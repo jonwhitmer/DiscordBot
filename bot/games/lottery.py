@@ -14,7 +14,7 @@ class Lottery:
     def __init__(self, bot):
         self.bot = bot  # Set the bot for the lottery.
         self.check_lottery_draw.start()  # Starting the task that checks the lottery draw time.
-        self.initial_pot = 30000  # Initial pot amount
+        self.initial_pot = 100000  # Initial pot amount
         self.LOTTERY_FILE = 'data/games/lottery/lottery.json'
 
     def load_lottery_data(self):
@@ -110,7 +110,7 @@ class Lottery:
         await channel.send(content=f"{winner.display_name} has won {current_pot} {coin_icon}!")
 
         # Update the winner's activity
-        activity_tracker = self.bot.get_cog('ActivityTracker')
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
         if winner:
-            activity_tracker.update_user_activity(winner, coins=current_pot)
-            await channel.send(content=f"Congratulations {winner.display_name}! Your new balance is {activity_tracker.get_statistics(str(winner.id)).get('coins', 0)} {coin_icon}.")
+            ActivityTracker.update_coins(winner.id, current_pot)
+            await channel.send(content=f"Congratulations {winner.display_name}! Your new balance is {ActivityTracker.get_coins(winner.id)} {coin_icon}.")

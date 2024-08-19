@@ -41,6 +41,8 @@ class GeneralCommands(commands.Cog):
     
     @commands.command(name='gift')
     async def gift(self, ctx, recipient: discord.Member, amount: int, *, reason: str):
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+
         if amount <= 0:
             await ctx.send("Gift amount must be positive.")
             return
@@ -49,8 +51,7 @@ class GeneralCommands(commands.Cog):
             await ctx.send(f"You cannot gift {coin_icon} to yourself.")
             return
 
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        success, message = activity_tracker.transfer_coins(ctx.author, recipient, amount)
+        success, message = ActivityTracker.transfer_coins(ctx.author, recipient, amount)
         
         if success:
             await ctx.send(f"{ctx.author.mention} gifted {amount} {coin_icon} to {recipient.mention} for: {reason}")
@@ -59,18 +60,14 @@ class GeneralCommands(commands.Cog):
 
     @commands.command(name='forbeslist')
     async def forbeslist(self, ctx):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        all_data = activity_tracker.activity_data
-
-        # Convert data to a list of tuples and sort by coins
-        coin_list = [(user_id, data['coins']) for user_id, data in all_data.items() if 'coins' in data]
-        sorted_coin_list = sorted(coin_list, key=lambda x: x[1], reverse=True)[:10]
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        top_users = ActivityTracker.get_top_users_by_coins()
 
         # Create DataFrame
         data = {
-            "Rank": list(range(1, len(sorted_coin_list) + 1)),
-            "Player Name": [self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User" for user_id, _ in sorted_coin_list],
-            "Coins": [f"{coins:,}" for _, coins in sorted_coin_list]  # This formats the coins with commas
+            "Rank": list(range(1, len(top_users) + 1)),
+            "Player Name": [self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else username for user_id, username, _ in top_users],
+            "Coins": [f"{coins:,}" for _, _, coins in top_users]  # This formats the coins with commas
         }
         df = pd.DataFrame(data)
 
@@ -107,44 +104,37 @@ class GeneralCommands(commands.Cog):
 
     @commands.command(name='leaderboard')
     async def leaderboard(self, ctx):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        all_data = activity_tracker.activity_data
-
-        # Convert data to a list of tuples and sort by points
-        leaderboard_list = [
-            (user_id, data.get('level', 0), data.get('points', 0), data.get('coins', 0))
-            for user_id, data in all_data.items()
-        ]
-        sorted_leaderboard_list = sorted(leaderboard_list, key=lambda x: x[2], reverse=True)[:10]  # Sort by points
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        top_users = ActivityTracker.get_points_leaderboard()
 
         # Create DataFrame
         data = {
-            "Rank": list(range(1, len(sorted_leaderboard_list) + 1)),
+            "Rank": list(range(1, len(top_users) + 1)),
             "Player Name": [
-                self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else "Unknown User"
-                for user_id, _, _, _ in sorted_leaderboard_list
+                self.bot.get_user(int(user_id)).display_name if self.bot.get_user(int(user_id)) else username 
+                for user_id, username, level, points, coins in top_users
             ],
-            "Level": [level for _, level, _, _ in sorted_leaderboard_list],
-            "Points": [points for _, _, points, _ in sorted_leaderboard_list],
-            "Coins": [coins for _, _, _, coins in sorted_leaderboard_list]
+            "Level": [level for _, _, level, _, _ in top_users],
+            "Points": [f"{points:,}" for _, _, _, points, _ in top_users],
+            "Coins": [f"{coins:,}" for _, _, _, _, coins in top_users]  # This formats the coins with commas
         }
         df = pd.DataFrame(data)
 
         # Plot the table with a cleaner style
-        fig, ax = plt.subplots(figsize=(6, 3))  # Adjusted figsize for better appearance
+        fig, ax = plt.subplots(figsize=(6, 5))  # Adjusted figsize for better appearance
         ax.axis('tight')
         ax.axis('off')
 
         # Create table
         table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center', edges='horizontal')
         table.auto_set_font_size(False)
-        table.set_fontsize(10)
-        table.scale(1.2, 1.2)  # Scale up the table for better readability
+        table.set_fontsize(15)
+        table.scale(1.5, 2.0)  # Scale up the table for better readability
 
         # Customize header row
         for key, cell in table.get_celld().items():
             cell.set_edgecolor('black')
-            cell.set_linewidth(1)
+            cell.set_linewidth(1.5)
             if key[0] == 0:
                 cell.set_text_props(weight='bold', color='black')  # Bold headers
 
@@ -161,24 +151,6 @@ class GeneralCommands(commands.Cog):
         # Clean up the saved image file
         os.remove(image_path)
 
-    @commands.command(name='update_notes')
-    async def update_notes(self, ctx, *, notes):
-        try:
-            # Determine if the bot is online or offline
-            online_status = True  # Replace with your logic to determine the status
-
-            script_path = os.path.join('bot', 'status', 'online.py' if online_status else 'offline.py')
-
-            # Run the update_additional_notes method in the respective script
-            process = subprocess.run([sys.executable, script_path, notes], capture_output=True, text=True)
-
-            if process.returncode == 0:
-                print("Successful Notes Change")
-            else:
-                await ctx.send(f"Failed to update additional notes. Error: {process.stderr}")
-        except Exception as e:
-            await ctx.send(f"An error occurred: {str(e)}")
-
     @commands.command(name='daily')
     async def daily(self, ctx):
         if ctx.channel.id != 1252055670778368013 and ctx.channel.id != 1259664562924552213:
@@ -186,16 +158,17 @@ class GeneralCommands(commands.Cog):
             return
     
         user_id = str(ctx.author.id)
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_data = activity_tracker.activity_data.get(user_id, {})
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+
+        last_daily = ActivityTracker.fetch_query('SELECT "Last Daily" FROM user_stats WHERE ID = ?', (user_id,))
+        last_daily = last_daily[0][0]
+
+        if not last_daily:
+            await ctx.send("User data not found.")
+            return
 
         if ctx.message.content.strip() != '!daily':
             return
-
-        if TESTING:
-            last_daily = None
-        else:
-            last_daily = user_data.get('last_daily', None)
 
         now = datetime.utcnow()
 
@@ -220,11 +193,15 @@ class GeneralCommands(commands.Cog):
             await ctx.send(f"{accumulated_digits}")
             await asyncio.sleep(0.5)
 
-        activity_tracker.update_user_coins(ctx.author, daily_coins)
-        activity_tracker.activity_data[user_id]['last_daily'] = now.strftime('%Y-%m-%d %H:%M:%S')
-        activity_tracker.save_activity_data()
+        coin_balance = ActivityTracker.fetch_query('SELECT Coins FROM user_info WHERE ID = ?', (user_id,))
+        coin_balance = coin_balance[0][0]
 
-        await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {activity_tracker.activity_data[user_id]['coins']} {coin_icon}.")
+        new_balance = coin_balance + daily_coins
+
+        ActivityTracker.execute_query('UPDATE user_info SET Coins = ? WHERE ID = ?', (new_balance, user_id))
+        ActivityTracker.execute_query('UPDATE user_stats SET "Last Daily" = ? WHERE ID = ?', (now.strftime('%Y-%m-%d %H:%M:%S'), user_id))
+
+        await ctx.send(f"You have been rewarded {daily_coins} {coin_icon} for the day!  Your balance is now {new_balance} {coin_icon}.")
         
     @commands.command(name='loandisbursement')
     async def loandisbursement(self, ctx):
@@ -233,16 +210,17 @@ class GeneralCommands(commands.Cog):
             return
 
         user_id = str(ctx.author.id)
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_data = activity_tracker.activity_data.get(user_id, {})
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+
+        last_loan_disbursement = ActivityTracker.fetch_query('SELECT "Last Loan Disbursement" FROM user_stats WHERE ID = ?', (user_id,))
+
+        if last_loan_disbursement and last_loan_disbursement[0][0]:
+            last_loan_disbursement = last_loan_disbursement[0][0]
+        else:
+            last_loan_disbursement = None
 
         if ctx.message.content.strip() != '!loandisbursement':
             return
-
-        if TESTING:
-            last_loan_disbursement = None
-        else:
-            last_loan_disbursement = user_data.get('last_loan_disbursement', None)
 
         now = datetime.utcnow()
 
@@ -264,6 +242,7 @@ class GeneralCommands(commands.Cog):
             return
 
         random_member = random.choice(eligible_members)
+        random_member_id = str(random_member.id)
         loan_amount = random.randint(0, 10000)
         digits = str(loan_amount)
 
@@ -275,13 +254,20 @@ class GeneralCommands(commands.Cog):
             accumulated_digits += digit
             await ctx.send(f"{accumulated_digits}")
             await asyncio.sleep(0.5)
+        
+        random_member_balance = ActivityTracker.fetch_query('SELECT Coins FROM user_info WHERE ID = ?', (random_member_id,))
 
-        activity_tracker.update_user_activity(random_member, coins=loan_amount)
+        if random_member_balance:
+            random_member_balance = random_member_balance[0][0]
+        else:
+            random_member_balance = 0
 
-        activity_tracker.activity_data[user_id]['last_loan_disbursement'] = now.strftime('%Y-%m-%d %H:%M:%S')
-        activity_tracker.save_activity_data()
+        new_balance = random_member_balance + loan_amount
 
-        await ctx.send(f"{random_member.mention} has been rewarded {loan_amount} {coin_icon} for the day! Their balance is now {activity_tracker.activity_data[str(random_member.id)]['coins']} {coin_icon}.")
+        ActivityTracker.execute_query('UPDATE user_info SET Coins = ? WHERE ID = ?', (new_balance, random_member_id))
+        ActivityTracker.execute_query('UPDATE user_stats SET "Last Loan Disbursement" = ? WHERE ID = ?', (now.strftime('%Y-%m-%d %H:%M:%S'), user_id))
+
+        await ctx.send(f"{random_member.mention} has been rewarded {loan_amount} {coin_icon} for the day! Their balance is now {new_balance} {coin_icon}.")
 
     @commands.command(name='medicare')
     async def medicare(self, ctx):
@@ -336,10 +322,8 @@ class GeneralCommands(commands.Cog):
             user_id = str(ctx.author.id)
             user_name = ctx.author.display_name
 
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_data = activity_tracker.activity_data.get(user_id, {})
-        coins = user_data.get('coins', 0)
-        coin_icon = load_settings()['coin_icon']
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        coins = ActivityTracker.get_coins(user_id)
 
         if mentioned_user == ctx.author:
             await ctx.send(f"{ctx.author.mention}, you have {coins} {coin_icon} in your account.")
@@ -414,15 +398,11 @@ class LevelUI(commands.Cog):
         if member is None:
             member = ctx.author
 
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_stats = activity_tracker.get_statistics(str(member.id))
-        if not user_stats:
-            await ctx.send("No statistics available for this user.")
-            return
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
 
         username = member.display_name
         avatar_url = member.avatar.url
-        points = user_stats.get("points", 0)
+        points = ActivityTracker.get_points(member.id)
         current_level, remaining_points = get_current_level(points)
         next_level = current_level + 1
         progress_percentage = (points - points_for_next_level(current_level - 1)) / remaining_points * 100
@@ -460,23 +440,19 @@ class LevelUI(commands.Cog):
     async def statistics(self, ctx, *, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        stats = self.bot.get_cog('ActivityTracker').get_statistics(str(member.id))
-        if stats:
-            embed = discord.Embed(title="Statistics", color=discord.Color.purple())
-            embed.add_field(name="Username", value=member.display_name, inline=True)
-            embed.add_field(name="Total Points", value=stats.get('points', 0), inline=True)
-            embed.add_field(name="Level", value=stats.get('level', 1), inline=True)
-            embed.add_field(name="XP to Next Level", value=stats.get('xp_to_next_level', 0), inline=True)
-            embed.add_field(name="Minutes in Voice", value=stats.get('minutes_in_voice', 0), inline=True)
-            embed.add_field(name="Minutes Online", value=stats.get('minutes_online', 0), inline=True)
-            embed.add_field(name="Messages Sent", value=stats.get('messages_sent', 0), inline=True)
-            embed.add_field(name="Characters Typed", value=stats.get('characters_typed', 0), inline=True)
-            embed.add_field(name="Points Today", value=stats.get('points_today', 0), inline=True)
+        
+        ActivityTracker = self.bot.get_cog("ActivityTracker")
+        user_id = member.id
 
-            # Add coin information
-            coins = stats.get('coins', 0)
-            coin_icon_url = "https://cdn4.iconfinder.com/data/icons/coins-virtual-currency/104/Guarani-256.png"
-            embed.add_field(name=f"\u200b", value=f"[![coins]({coin_icon_url})]({coin_icon_url}) **{coins}**", inline=False)
+        if ActivityTracker:
+            embed = discord.Embed(title="Statistics", color=discord.Color.purple())
+            embed.add_field(name="Username", value=f"**{member.display_name}**", inline=True)
+            embed.add_field(name="Total Points", value=ActivityTracker.get_points(user_id), inline=True)
+            embed.add_field(name="Level", value=ActivityTracker.get_level(user_id), inline=True)
+            embed.add_field(name="Total Minutes in Voice Chat", value=ActivityTracker.get_from_database(user_id, "Total Minutes in Voice Chat"), inline=True)
+            embed.add_field(name="Total Minutes Online", value=ActivityTracker.get_from_database(user_id, "Total Minutes Online"), inline=True)
+            embed.add_field(name="Total Messages Sent", value=ActivityTracker.get_from_database(user_id, "Total Messages Sent"), inline=True)
+            embed.add_field(name="Total Characters Typed", value=ActivityTracker.get_from_database(user_id, "Total Characters Typed"), inline=True)
 
             await ctx.send(embed=embed)
         else:
@@ -496,7 +472,8 @@ class LevelUI(commands.Cog):
             await member.send(embed=embed, file=file)
         else:
             await ctx.send("No statistics available for this user.")
-        
+
+'''    
 class Music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -650,9 +627,9 @@ class Music(commands.Cog):
             mp3_filename = filename.replace('.webm', '.mp3')
         
         return mp3_filename
+'''
 
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
     await bot.add_cog(LevelUI(bot))
-    await bot.add_cog(Music(bot))
 

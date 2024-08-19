@@ -5,6 +5,7 @@ from .duel import Duel
 from .blackjack import BlackjackGame
 from .lottery import Lottery
 from .dealerpoker import DealerPoker
+from .gifthunt import GiftHunt
 from .slots import SlotMachine
 from settings.settings import load_settings
 
@@ -31,6 +32,7 @@ class GameManager(commands.Cog):
         self.blackjack_games = {}
         self.dealerpoker_games = {}
         self.slot_games = {}
+        self.gifthunt_games = {}
         self.lottery = Lottery(bot)
         self.load_game_data()
 
@@ -56,6 +58,17 @@ class GameManager(commands.Cog):
             self.game_data[game][key] = value
         self.save_game_data()   
 
+    async def CoinsAreOut(self, ctx, user_id):
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        if ActivityTracker.get_coins(user_id) == 0:
+            await ctx.send(f"You are out of coins.  Get a job or don't gamble.")
+            return True
+        elif ActivityTracker.get_coins(user_id) < 0:
+            print("ERROR: Under 0?")
+            return True
+        else:
+            return False
+
     @commands.command(name='accept')
     async def accept_duel(self, ctx):
         if ctx.author.id not in self.duels:
@@ -70,13 +83,18 @@ class GameManager(commands.Cog):
     @commands.command(name='blackjack')
     @commands.cooldown(1, 60, commands.BucketType.channel)
     async def blackjack(self, ctx):
+        user_id = ctx.author.id
+
         if ctx.channel.id != 1268242188328763474 and ctx.channel.id != 1259664562924552213:
             await ctx.send("Please utilize the <#1268242188328763474> channel to use the `!blackjack` command.")
             return
         
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        stats = activity_tracker.get_statistics(str(ctx.author.id))
-        current_coins = stats.get('coins', 0)
+        if await self.CoinsAreOut(ctx, user_id) == True:
+            return
+        
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        user_id = str(ctx.author.id)
+        current_coins = ActivityTracker.get_coins(user_id)
 
         await ctx.send(f"You have {current_coins} {coin_icon}. How many {coin_icon} would you like to bet?")
 
@@ -98,7 +116,7 @@ class GameManager(commands.Cog):
                 return
 
         reduction_amt = -(bet)
-        activity_tracker.update_user_activity(ctx.author, coins=reduction_amt)
+        ActivityTracker.update_coins(ctx.author.id, reduction_amt)
 
         game = BlackjackGame(ctx.author, self.bot)
         await game.start_game(bet)
@@ -138,22 +156,21 @@ class GameManager(commands.Cog):
 
             msg = await self.bot.wait_for('message', check=check, timeout=50.0)
             if msg.content.lower() == '!accept':
-                activity_tracker = self.bot.get_cog('ActivityTracker')
-                user_data = activity_tracker.get_statistics(user_id)
-                user_balance = user_data.get('coins', 0)
+                ActivityTracker = self.bot.get_cog('ActivityTracker')
+                user_balance = ActivityTracker.get_coins(user_id)
 
                 if user_balance < cost:
                     await ctx.send(f"{ctx.author.mention}, you do not have enough {coin_icon} to buy {num_tickets} tickets. Your current balance is {user_balance} {coin_icon}.")
                     return
 
-                activity_tracker.update_user_activity(ctx.author, coins=-cost)
+                ActivityTracker.update_coins(ctx.author.id, -(cost))
                 self.lottery.add_tickets(user_id, num_tickets)
                 total_tickets = self.lottery.load_lottery_data()['participants'][user_id]
 
                 current_lottery_pot = self.lottery.get_current_lottery_pot()
                 await ctx.send(f"Purchase Successful. Check back at 11 PM EST for the lottery results. You now have a total of {total_tickets} tickets in the lottery. \nYour {coin_icon} Balance: {user_balance - cost} {coin_icon}, Current Lottery Pot: {current_lottery_pot} {coin_icon}")
             else:
-                await ctx.send("Purchase canceled.")
+                await ctx.send("Purchase cancelled")
         except ValueError:
             await ctx.send("Invalid number of tickets.")
         except asyncio.TimeoutError:
@@ -168,8 +185,10 @@ class GameManager(commands.Cog):
         await ctx.send(f"__**Current Lottery Status:**__\nTotal Tickets Sold: {total_tickets}\nNumber of Participants: {participants}\nCurrent Lottery Pot: {current_lottery_pot} {coin_icon}")
 
     @commands.command(name='dealerpoker', help='Starts a dealer vs. player poker game')
-    @commands.cooldown(1, 90, commands.BucketType.channel)
+    @commands.cooldown(1, 50, commands.BucketType.channel)
     async def start_dealer_poker(self, ctx):
+        user_id = ctx.author.id
+
         if ctx.channel.id != 1268244378787254354 and ctx.channel.id != 1259664562924552213:
             await ctx.send("Please utilize the <#1268244378787254354> channel to use the `!dealerpoker` command.")
             return
@@ -177,6 +196,10 @@ class GameManager(commands.Cog):
         if ctx.channel.id in self.dealerpoker_games:
             await ctx.send("A dealer poker game is already running in this channel!")
             return
+        
+        if await self.CoinsAreOut(ctx, user_id) == True:
+            return
+
 
         self.dealerpoker_games[ctx.channel.id] = True
 
@@ -185,16 +208,45 @@ class GameManager(commands.Cog):
             await poker_game.start_game()
         finally:
             self.dealerpoker_games.pop(ctx.channel.id, None)
+        
+    @commands.command(name='gifthunt', help='Starts a dealer vs. player poker game')
+    @commands.cooldown(1, 120, commands.BucketType.channel)
+    async def start_gifthunt(self, ctx):
+        user_id = ctx.author.id
+
+        if ctx.channel.id != 1272829974478585889 and ctx.channel.id != 1259664562924552213:
+            await ctx.send("Please utilize the <#1272829974478585889> channel to use the `!gifthunt` command.")
+            return
+        
+        if ctx.channel.id in self.gifthunt_games:
+            await ctx.send("A gift hunt game is already running in this channel!")
+            return
+        
+        if await self.CoinsAreOut(ctx, user_id) == True:
+            return
+
+        self.gifthunt_games[ctx.channel.id] = True
+
+        try:
+            gift_hunt = GiftHunt(self.bot, ctx)
+            await gift_hunt.start_game()
+        finally:
+            self.gifthunt_games.pop(ctx.channel.id, None)
 
     @commands.command(name='slots')
     @commands.cooldown(1, 45, commands.BucketType.channel)
     async def play_slots(self, ctx):
+        user_id = ctx.author.id
+
         if ctx.channel.id != 1269351770107285575 and ctx.channel.id != 1259664562924552213:
             await ctx.send("Please utilize the <#1269351770107285575> channel to use the `!slots` command.")
             return
         
         if ctx.channel.id in self.slot_games:
             await ctx.send("A slot game is already running in this channel!")
+            return
+        
+        if await self.CoinsAreOut(ctx, user_id) == True:
             return
     
         self.slot_games[ctx.channel.id] = True
@@ -213,13 +265,17 @@ class GameManager(commands.Cog):
     @start_dealer_poker.error
     async def start_dealer_poker_error(self, ctx, error):
         if isinstance(error, CommandOnCooldown):
-            await ctx.send(f"`!dealerpoker` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
+            await ctx.send(f"`!dealerpoker` is on cooldown.  Please wait {error.retry_after:.3f} seconds.")
 
     @blackjack.error
     async def blackjack_error(self, ctx, error):
         if isinstance(error, CommandOnCooldown):
             await ctx.send(f"`!blackjack` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
 
+    @start_gifthunt.error
+    async def start_gifthunt_error(self, ctx, error):
+        if isinstance(error, CommandOnCooldown):
+            await ctx.send(f"`!gifthunt` is on cooldown.  Please wait {error.retry_after:.2f} seconds.")
 
 async def setup(bot):
     await bot.add_cog(GameManager(bot))

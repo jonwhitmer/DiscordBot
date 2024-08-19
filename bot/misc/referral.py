@@ -14,7 +14,7 @@ settings = load_settings()
 coin_icon = settings['coin_icon']
 
 # The reward for inviting a new member
-INVITE_REWARD = 50000
+INVITE_REWARD = 100000
 
 INVITE_TRACKER_FILE = 'data/serverside/invitetracker.json'
 
@@ -41,14 +41,25 @@ class ReferralTracker(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        # Initializes the invite tracker with the current invite uses for each guild.
+        # Initializes the invite tracker with the current invite uses and inviter ID for each server.
         for guild in self.bot.guilds:
-            self.invite_tracker[guild.id] = {invite.code: invite.uses for invite in await guild.invites()}
+            guild_id = str(guild.id)
+            if guild_id not in self.invite_tracker:
+                self.invite_tracker[guild_id] = {}
+            for invite in await guild.invites():
+                print(f"Tracking invite: {invite.code} by {invite.inviter} with {invite.uses} uses.")
+                self.invite_tracker[guild_id][invite.code] = {
+                    'uses': invite.uses,
+                    'inviter_id': invite.inviter.id
+                }
         save_invite_tracker(self.invite_tracker)
         print("Invite tracker initialized.")
 
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        guild_id = str(member.guild.id)
+
         # Check if the member's account is older than 60 days
         if (datetime.now(timezone.utc) - member.created_at).days < 60:
             lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
@@ -57,26 +68,27 @@ class ReferralTracker(commands.Cog):
             return
 
         # Get the invites before the member joined
-        invites_before_join = self.invite_tracker.get(member.guild.id, {})
+        invites_before_join = self.invite_tracker.get(guild_id, {})
         # Get the current invites after the member joined
         invites_after_join = await member.guild.invites()
 
         # Determine which invite was used by comparing the uses before and after
         used_invite = None
         for invite in invites_after_join:
-            if invite.uses > invites_before_join.get(invite.code, 0):
+            if invite.uses > invites_before_join.get(invite.code, {}).get('uses', 0):
                 used_invite = invite
                 break
 
         if used_invite:
-            inviter = used_invite.inviter
-            activity_tracker = self.bot.get_cog('ActivityTracker')
+            inviter_id = invites_before_join[used_invite.code]['inviter_id']
+            inviter = member.guild.get_member(inviter_id)
+            ActivityTracker = self.bot.get_cog('ActivityTracker')
 
-            if activity_tracker:
+            if ActivityTracker:
                 try:
                     # Update the inviter's and the new member's coin balance
-                    activity_tracker.update_user_coins(inviter, INVITE_REWARD)
-                    activity_tracker.update_user_coins(member, INVITE_REWARD)
+                    ActivityTracker.update_coins(inviter.id, INVITE_REWARD)
+                    ActivityTracker.update_coins(member.id, INVITE_REWARD)
 
                     # Announce the successful invite in the "lickertalk" channel
                     lickertalk_channel = discord.utils.get(member.guild.text_channels, name='licker-talk')
@@ -86,7 +98,7 @@ class ReferralTracker(commands.Cog):
                         )
 
                     # Update the invite tracker with the new number of uses
-                    self.invite_tracker[member.guild.id][used_invite.code] = used_invite.uses
+                    self.invite_tracker[guild_id][used_invite.code]['uses'] = used_invite.uses
                     save_invite_tracker(self.invite_tracker)
 
                 except Exception as e:
@@ -100,6 +112,19 @@ class ReferralTracker(commands.Cog):
     async def invitemessage(self, ctx):
         # Create a new invite link with a maximum of 1 use and a 1-day expiration time
         invite = await ctx.channel.create_invite(max_uses=1, max_age=86400, unique=True)
+
+        # Ensure the guild_id exists in the invite_tracker dictionary
+        guild_id = str(ctx.guild.id)
+        if guild_id not in self.invite_tracker:
+            self.invite_tracker[guild_id] = {}
+
+        # Track this new invite in the JSON file
+        self.invite_tracker[guild_id][invite.code] = {
+            'uses': invite.uses,
+            'inviter_id': ctx.author.id
+        }
+        save_invite_tracker(self.invite_tracker)
+
         invite_message = (
             f"Hey! Join Gilligan Lickers for you and me to get {INVITE_REWARD} {coin_icon}. "
             f"Use my referral link (valid for one day): {invite.url}"

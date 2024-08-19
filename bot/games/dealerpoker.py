@@ -76,9 +76,9 @@ class DealerPoker:
         await self.cleanup()
 
     async def ask_for_ante(self):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_data = activity_tracker.get_statistics(str(self.player.id))
-        await self.ctx.send(f"{self.ctx.author.mention}, how many {coin_icon} would you like to ante?  Current balance: {int(user_data.get('coins', 0))} {coin_icon}")
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        user_id = self.player.id
+        await self.ctx.send(f"{self.ctx.author.mention}, how many {coin_icon} would you like to ante?  Current balance: {int(ActivityTracker.get_coins(user_id))} {coin_icon}")
 
         def check(m):
             return m.author == self.ctx.author and m.channel == self.ctx.channel
@@ -86,16 +86,15 @@ class DealerPoker:
         try:
             msg = await self.bot.wait_for('message', check=check, timeout=120)
             self.ante = int(msg.content)
-            activity_tracker = self.bot.get_cog('ActivityTracker')
-            user_data = activity_tracker.get_statistics(str(self.player.id))
-            player_coins = user_data.get('coins', 0)
+            ActivityTracker = self.bot.get_cog('ActivityTracker')
+            player_coins = ActivityTracker.get_coins(user_id)
 
             if player_coins < self.ante:
                 await self.ctx.send(f"{self.ctx.author.mention}, you do not have enough {coin_icon} to ante that amount.")
                 self.game_cancelled = True
                 return
             
-            activity_tracker.update_user_activity(self.ctx.author, coins=-(self.ante))
+            ActivityTracker.update_coins(user_id, -(self.ante))
             self.player_bet = self.ante
             self.player_hands[self.ctx.author] = []
             await self.ctx.send(f"{self.ctx.author.mention}, you have anted {self.ante} {coin_icon}.  Starting Dealer Poker..")
@@ -117,9 +116,9 @@ class DealerPoker:
         self.dealer_hand = [self.deck.pop(), self.deck.pop()]
 
     async def betting_round(self, stage='pre_flop'):
-        activity_tracker = self.bot.get_cog('ActivityTracker')
-        user_data = activity_tracker.get_statistics(str(self.player.id))
-        player_total_coins = int(user_data.get('coins', 0))
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        user_id = self.player.id
+        player_total_coins = int(ActivityTracker.get_coins(user_id))
 
         # Determine the max bet based on the game stage
         if stage == 'pre_flop':
@@ -189,7 +188,8 @@ class DealerPoker:
                         else:
                             self.player_bet = bet_amount  # Update player's total bet to include the new bet amount
                             player_total_coins -= additional_amount
-                            activity_tracker.update_user_activity(self.ctx.author, coins=-additional_amount)
+                            ActivityTracker = self.bot.get_cog('ActivityTracker')
+                            ActivityTracker.update_coins(user_id, -(additional_amount))
                             rsp_msg = await self.ctx.send(f"{self.ctx.author.mention} places a bet of {additional_amount} {coin_icon}. Total bet: {self.player_bet} {coin_icon}. Current balance: {player_total_coins} {coin_icon}.")
                             self.bot_messages.append(rsp_msg)
                             self.raised = True
@@ -203,7 +203,7 @@ class DealerPoker:
                         # Going all-in
                         additional_amount = player_total_coins
                         self.player_bet += player_total_coins
-                        activity_tracker.update_user_activity(self.ctx.author, coins=-player_total_coins)
+                        ActivityTracker.update_coins(user_id, -(player_total_coins))
                         rsp_msg = await self.ctx.send(f"{self.ctx.author.mention} goes all-in with {player_total_coins} {coin_icon}. Total bet: {self.player_bet} {coin_icon}.")
                         self.bot_messages.append(rsp_msg)
                         self.raised = True
@@ -327,19 +327,24 @@ class DealerPoker:
         player_rank = self.hand_rank(player_best_hand)
         dealer_rank = self.hand_rank(dealer_best_hand)
 
-        activity_tracker = self.bot.get_cog('ActivityTracker')
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+        user_id = self.player.id
+
         if player_rank > dealer_rank:
             result = f"{self.ctx.author.mention} wins with a {self.rank_description(player_rank)} and has won {POKER_WIN_POINTS} points and {self.player_bet * 2} {coin_icon}!"
             payout = self.player_bet * 2
-            activity_tracker.update_user_activity(self.ctx.author, points=POKER_WIN_POINTS, coins=payout)
+            ActivityTracker.update_coins(user_id, payout)
+            ActivityTracker.update_points(user_id, POKER_WIN_POINTS)
         elif player_rank < dealer_rank:
             result = f"The dealer wins with a {self.rank_description(dealer_rank)}. Better luck next time! You have received {POKER_LOSS_POINTS} points."
             payout = 0
-            activity_tracker.update_user_activity(self.ctx.author, points=POKER_LOSS_POINTS)
+            ActivityTracker.update_coins(user_id, payout)
+            ActivityTracker.update_points(user_id, POKER_LOSS_POINTS)
         else:
             result = f"It's a tie! Both you and the dealer have the same hand. You have received {POKER_TIE_POINTS} points, and your ante of {self.ante} {coin_icon} has been returned."
             payout = self.player_bet  # Usually, in a tie, the player gets their ante back or a portion of it
-            activity_tracker.update_user_activity(self.ctx.author, points=POKER_TIE_POINTS, coins=payout)
+            ActivityTracker.update_coins(user_id, payout)
+            ActivityTracker.update_points(user_id, POKER_TIE_POINTS)
 
         await asyncio.sleep(1)
         await self.ctx.send(f"**SHOWDOWN**")
@@ -389,7 +394,6 @@ class DealerPoker:
         player_hand_images = [await self.get_card_image(card) for card in player_hand]
         dealer_hand_images = [await self.get_card_image(card) for card in dealer_hand]
 
-        # Create a combined image of the player and dealer hands
         player_hand_image = await self.concatenate_images(player_hand_images, 'player_final_hand.png')
         dealer_hand_image = await self.concatenate_images(dealer_hand_images, 'dealer_final_hand.png')
 
@@ -400,7 +404,6 @@ class DealerPoker:
 
         msg = await self.ctx.send(file=player_file, embed=embed)
 
-        # Wait and reveal the dealer's hand
         await asyncio.sleep(2)
         embed.set_image(url="attachment://dealer_final_hand.png")
         await msg.edit(embed=embed)
