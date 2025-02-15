@@ -473,6 +473,72 @@ class LevelUI(commands.Cog):
         else:
             await ctx.send("No statistics available for this user.")
 
+    @commands.command(name='flipoff')
+    async def flipoff(self, ctx, *, target: discord.Member = None):
+        ActivityTracker = self.bot.get_cog('ActivityTracker')
+
+        if target is None:
+            await ctx.send(f"{ctx.author.mention}, you need to specify someone to flip off! Example: `!flipoff @user`.")
+            return
+
+        if target == ctx.author:
+            await ctx.send(f"{ctx.author.mention}, you cannot flip yourself off!")
+            return
+
+        await ctx.send(f"{ctx.author.mention} is flipping off {target.mention}!")
+
+        flipoff_art = "\n".join([
+            "⠀⠀⠀⢀⣠⣤⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⢠⣾⡿⠛⠻⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⠸⣿⠧⠿⠶⠋⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⠀⢻⡄⠀⢀⣀⠈⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⠀⠈⣿⡀⠛⠉⠀⠹⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⠀⠀⢸⣧⠀⠀⠀⠀⢻⣦⣤⣤⣤⣤⢤⣄⡀⠀⠀⠀⠀⠀",
+            "⠀⠀⠀⢰⡿⡿⡄⢀⣠⣤⣀⢻⡁⠀⠈⢧⠀⠈⠻⣦⠀⠀⠀⠀",
+            "⠀⠀⣰⣿⣛⣀⣷⠘⠫⠟⠛⠀⢣⠀⠀⠀⢣⠀⠀⠘⢷⡀⠀⠀",
+            "⢀⣾⣿⠟⠃⠀⠘⣇⠀⠀⠀⠀⠈⢧⠀⠀⠀⢧⠀⠀⠈⢻⣄⠀",
+            "⢸⡇⡇⠀⠀⠀⠀⠈⢆⠀⠀⠀⠀⠈⣆⠀⠀⠘⣧⠀⠀⠀⢻⡄",
+            "⠈⣷⢹⡀⠀⠀⠀⠀⠘⣆⠀⠀⠀⠀⠘⡄⠀⠀⠋⠀⠀⢀⣿⠁",
+            "⠀⣿⠈⢇⠀⠀⠀⠀⠐⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢀⣾⠃⠀",
+            "⠀⣿⠀⠘⡄⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⢠⠀⠀⣸⡿⠃⠀⠀",
+            "⠀⠙⠳⣦⣽⡄⠀⠀⠀⠀⢸⡀⠀⠀⠀⠀⣸⡶⠾⠋⠀⠀⠀⠀",
+            "⠀⠀⠀⠈⠻⣿⣦⣄⣀⣤⠴⠷⢤⣤⠶⠟⠁⠀⠀⠀⠀⠀⠀⠀",
+            "⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        ])
+
+        await ctx.send(f"{flipoff_art}")
+        await asyncio.sleep(2)
+
+        # Randomization game: Coin Spinner
+        await ctx.send(f"{target.mention}, a coin spinner is deciding your fate!")
+
+        spinner_message = await ctx.send("Spinning: 🟢🔴")
+        outcomes = ["🟢", "🔴", "🟢"]
+        mugged = random.choice([True, False])
+        spin_result = random.choice(outcomes)
+
+        for _ in range(10):
+            random_spin = random.choice(outcomes)
+            await spinner_message.edit(content=f"Spinning: {random_spin}")
+            await asyncio.sleep(1)
+
+        # Final outcome
+        await asyncio.sleep(1)
+        await spinner_message.edit(content=f"Final Result: {spin_result}")
+
+        if mugged and spin_result == "🔴":
+            user_id = str(target.id)
+            plr_id = str(ctx.author.id)
+            coins = ActivityTracker.get_coins(user_id)
+            loss = random.randint(1, coins)  # Limit loss to available coins or 10,000
+
+            ActivityTracker.update_coins(user_id, -loss)
+            ActivityTracker.update_coins(plr_id, loss)
+            await ctx.send(f"Oh no! {target.mention}, you got mugged and lost {loss} coins! Better luck next time!")
+            await asyncio.sleep(2)
+            await ctx.send(f"{ctx.author.id}, you stole {loss} of {target.mention}'s coins!")
+        else:
+            await ctx.send(f"{target.mention}, you got lucky and escaped the mugging! 🎉")
 '''    
 class Music(commands.Cog):
     def __init__(self, bot):
@@ -632,4 +698,3 @@ class Music(commands.Cog):
 async def setup(bot):
     await bot.add_cog(GeneralCommands(bot))
     await bot.add_cog(LevelUI(bot))
-

@@ -1,6 +1,8 @@
 {
-    "total_tickets": 0,
-    "participants": {},
+    "total_tickets": 100,
+    "participants": {
+        "624678686980833312": 100
+    },
     "ticket_numbers": {},
-    "current_pot": 30000
+    "current_pot": 40000
 }
